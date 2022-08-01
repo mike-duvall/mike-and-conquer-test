@@ -164,33 +164,6 @@ class MiscTests extends Specification {
 
         when:
         gameEventList = simulationClient.getSimulationStateUpdateEvents()
-//        expectedEventList.add(new EventBlock("UnitOrderedToMove",1 ))
-//        expectedEventList.add(new EventBlock("UnitMovementPlanCreated",1 ))
-////        expectedEventList.add(new EventBlock("UnitPositionChanged", expectedTotalEvents - 4 ))
-//        expectedEventList.add(new EventBlock("UnitPositionChanged", 1 ))
-//        expectedEventList.add(new EventBlock("UnitArrivedAtPathStep", 1 ))
-//        expectedEventList.add(new EventBlock("UnitPositionChanged", 9 ))
-//        expectedEventList.add(new EventBlock("UnitArrivedAtPathStep", 1 ))
-//
-//        expectedEventList.add(new EventBlock("UnitPositionChanged", 9 ))
-//        expectedEventList.add(new EventBlock("UnitArrivedAtPathStep", 1 ))
-//
-//        expectedEventList.add(new EventBlock("UnitPositionChanged", 9 ))
-//        expectedEventList.add(new EventBlock("UnitArrivedAtPathStep", 1 ))
-//
-//        expectedEventList.add(new EventBlock("UnitPositionChanged", 9 ))
-//        expectedEventList.add(new EventBlock("UnitArrivedAtPathStep", 1 ))
-//
-//        expectedEventList.add(new EventBlock("UnitPositionChanged", 9 ))
-//        expectedEventList.add(new EventBlock("UnitArrivedAtPathStep", 1 ))
-//
-//        expectedEventList.add(new EventBlock("UnitPositionChanged", 9 ))
-//        expectedEventList.add(new EventBlock("UnitArrivedAtPathStep", 1 ))
-
-//        expectedEventList.add(new EventBlock("UnitArrivedAtDestination",1 ))
-
-//        then:
-//        assertExpectedEventList(gameEventList, expectedEventList)
 
         then:
         SimulationStateUpdateEvent secondEvent = gameEventList.get(2)
