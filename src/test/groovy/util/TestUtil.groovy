@@ -37,6 +37,22 @@ class TestUtil {
         return minigunnerId
     }
 
+    def static assertCreationOfUnitTypeReceived(MikeAndConquerSimulationClient simulationClient, String expectedEventType) {
+        def jsonSlurper = new JsonSlurper()
+        int unitId
+        List<SimulationStateUpdateEvent> events = simulationClient.getSimulationStateUpdateEvents()
+        for(event in events) {
+            if (event.eventType == expectedEventType) {
+                def eventData = jsonSlurper.parseText(event.eventData)
+
+                unitId = eventData.UnitId
+            }
+        }
+
+        return unitId
+    }
+
+
 
     static boolean  assertUnitIsSelected(MikeAndConquerUIClient uiClient, int unitId) {
 

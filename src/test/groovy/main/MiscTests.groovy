@@ -11,7 +11,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 import spock.util.concurrent.PollingConditions
 import util.TestUtil
-import util.Util
+
 
 
 class MiscTests extends Specification {
@@ -101,8 +101,6 @@ class MiscTests extends Specification {
                 .worldMapTileCoordinatesY(unitStartLocation.YInWorldMapTileCoordinates())
                 .build()
 
-
-
         List<SimulationStateUpdateEvent> gameEventList = null
         List<EventBlock> expectedEventList = []
 
@@ -166,12 +164,6 @@ class MiscTests extends Specification {
 
         when:
         gameEventList = simulationClient.getSimulationStateUpdateEvents()
-        expectedEventList.add(new EventBlock("UnitOrderedToMove",1 ))
-        expectedEventList.add(new EventBlock("UnitPositionChanged", expectedTotalEvents - 4 ))
-        expectedEventList.add(new EventBlock("UnitArrivedAtDestination",1 ))
-
-        then:
-        assertExpectedEventList(gameEventList, expectedEventList)
 
         then:
         SimulationStateUpdateEvent secondEvent = gameEventList.get(2)
@@ -205,14 +197,14 @@ class MiscTests extends Specification {
 
         where:
         unitType    | expectedTotalEvents   | expectedTimeInMillis  | gameSpeed
-        "Jeep"      |  123                  |  30236                | "Slowest"
-        "Jeep"      |  123                  |  15120                | "Slower"
-        "Jeep"      |  123                  |  10082                | "Slow"
-        "Jeep"      |  123                  |  7560                 | "Moderate"
-        "Jeep"      |  123                  |  5040                 | "Normal"
-        "Jeep"      |  123                  | 3697                  | "Fast"
-        "Jeep"      |  123                  | 3024                  | "Faster"
-        "Jeep"      |  123                  | 2855                  | "Fastest"
+        "Jeep"      |  140                  |  30236                | "Slowest"
+        "Jeep"      |  140                  |  15120                | "Slower"
+        "Jeep"      |  140                  |  10082                | "Slow"
+        "Jeep"      |  140                  |  7560                 | "Moderate"
+        "Jeep"      |  140                  |  5040                 | "Normal"
+        "Jeep"      |  140                  | 3697                  | "Fast"
+        "Jeep"      |  140                  | 3024                  | "Faster"
+        "Jeep"      |  140                  | 2855                  | "Fastest"
         "MCV"       |  302                  | 75597                 | "Slowest"
         "MCV"       |  302                  | 37801                 | "Slower"
         "MCV"       |  302                  | 25201                 | "Slow"
@@ -238,8 +230,6 @@ class MiscTests extends Specification {
 
         simulationClient.addMinigunner(startLocation)
 
-
-
         then:
         TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 2)
 
@@ -248,7 +238,6 @@ class MiscTests extends Specification {
 
         then:
         assert minigunnerId != -1
-
 
         when:
         WorldCoordinatesLocation destinationLocation = new WorldCoordinatesLocationBuilder()
@@ -327,6 +316,107 @@ class MiscTests extends Specification {
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, minigunnerId)
 
     }
+
+    def "Move a jeep and assert correct path is followed"() {
+        given:
+        int unitId = -1
+
+
+        when:
+        WorldCoordinatesLocation startLocation = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(14)
+                .worldMapTileCoordinatesY(13)
+                .build()
+
+        simulationClient.addJeep(startLocation)
+
+        then:
+        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 2)
+
+        when:
+        unitId = TestUtil.assertCreationOfUnitTypeReceived(simulationClient, "JeepCreated")
+
+        then:
+        assert unitId != -1
+
+        when:
+        WorldCoordinatesLocation destinationLocation = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(7)
+                .worldMapTileCoordinatesY(15)
+                .build()
+
+        simulationClient.moveUnit(unitId, destinationLocation )
+
+        and:
+        int expectedTotalEvents = 102
+
+        and:
+        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient,expectedTotalEvents)
+        ArrayList<PathStep> expectedPathSteps = []
+        expectedPathSteps.add( new PathStep(x: 14, y:13))
+        expectedPathSteps.add( new PathStep(x:14, y:14 ))
+        expectedPathSteps.add( new PathStep(x:14 , y:15))
+        expectedPathSteps.add( new PathStep(x:13 , y:16))
+        expectedPathSteps.add( new PathStep(x:12 , y:17))
+        expectedPathSteps.add( new PathStep(x:11 , y:17))
+        expectedPathSteps.add( new PathStep(x:10 , y:17))
+        expectedPathSteps.add( new PathStep(x: 9, y:17))
+        expectedPathSteps.add( new PathStep(x: 8, y:17))
+        expectedPathSteps.add( new PathStep(x: 7, y:16))
+        expectedPathSteps.add( new PathStep(x: 7, y:15))
+
+        then:
+        List<SimulationStateUpdateEvent> gameEventList = simulationClient.getSimulationStateUpdateEvents()
+        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = gameEventList.get(2)
+        TestUtil.assertUnitOrderedToMoveEvent(
+                expectedUnitOrderedToMoveEvent,
+                unitId,
+                destinationLocation.XInWorldCoordinates(),
+                destinationLocation.YInWorldCoordinates())
+
+        and: "Planned path is equal to expected path"
+        SimulationStateUpdateEvent expectedUnitMovementPlanCreatedEvent = gameEventList.get(3)
+        assert expectedUnitMovementPlanCreatedEvent.eventType == "UnitMovementPlanCreated"
+
+        def jsonSlurper = new JsonSlurper()
+        def expectedUnitMovementPlanCreatedEventDataAsObject = jsonSlurper.parseText(expectedUnitMovementPlanCreatedEvent.eventData)
+
+        int expectedNumPathSteps = 11
+        assert expectedUnitMovementPlanCreatedEventDataAsObject.UnitId == unitId
+        assert expectedUnitMovementPlanCreatedEventDataAsObject.PathSteps.size() == expectedNumPathSteps
+
+        def pathStepList = expectedUnitMovementPlanCreatedEventDataAsObject.PathSteps
+
+        int expectedPathStepIndex = 0
+        for(def nextPathStep  : pathStepList) {
+            assert nextPathStep.X == expectedPathSteps[expectedPathStepIndex].x
+            assert nextPathStep.Y == expectedPathSteps[expectedPathStepIndex].y
+            expectedPathStepIndex++
+        }
+
+        and: "Actual traveled path is equal to expected path"
+        int currentGameEventListIndex = 3
+
+        for(expectedPathStepIndex = 0; expectedPathStepIndex < expectedNumPathSteps; expectedPathStepIndex++) {
+
+            currentGameEventListIndex =
+                    assertReceivedUnitArrivedAtPathStepEvent(
+                            currentGameEventListIndex,
+                            gameEventList,
+                            expectedPathSteps[expectedPathStepIndex].x,
+                            expectedPathSteps[expectedPathStepIndex].y
+                    )
+        }
+
+        and: "Assert we are at the end of the event list, no more ArrivedAtPathStep events"
+        assert currentGameEventListIndex == expectedTotalEvents - 1
+
+        then:
+        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = gameEventList.get(expectedTotalEvents - 1)
+        TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, unitId)
+
+    }
+
 
 
 
