@@ -152,5 +152,129 @@ class MikeAndConquerUIClient {
     }
 
 
+    void dragSelect(int x1, int y1, int x2, int y2) {
+
+        Point point1 = new Point(x1, y1)
+
+        Point point2 = new Point(x2,y2)
+
+//        def resp = restClient.post(
+//                path: '/mac/leftClickAndHoldInWorldCoordinates',
+//                body: point1,
+//                requestContentType: 'application/json' )
+//
+//        assert resp.status == 200
+
+
+        // TODO:  Just have generic Command class instead of SelectU
+        DoLeftClickAndHold(point1)
+        sleep(2000)
+        DoMoveMouse(point2)
+        sleep(2000)
+        DoReleaseLeftMouseButton(point2)
+        sleep(2000)
+
+
+
+//        resp = restClient.post(
+//                path: '/mac/moveMouseToWorldCoordinates',
+//                body: point2,
+//                requestContentType: 'application/json' )
+//
+//        assert resp.status == 200
+
+
+//        resp = restClient.post(
+//                path: '/mac/releaseLeftMouseClick',
+//                body: point2,
+//                requestContentType: 'application/json' )
+//
+//        assert resp.status == 200
+
+
+    }
+
+    private void DoLeftClickAndHold(Point point1) {
+        SelectUnitCommand command = new SelectUnitCommand()
+        command.commandType = "LeftClickAndHold"
+
+        def commandParams =
+                [
+                        XInWorldCoordinates: point1.x,
+                        YInWorldCoordinates: point1.y
+                ]
+
+        command.commandData = JsonOutput.toJson(commandParams)
+
+
+        try {
+            def resp = restClient.post(
+                    path: '/ui/command',
+                    body: command,
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch (HttpResponseException e) {
+            throw e
+        }
+    }
+
+    private void DoMoveMouse(Point point1) {
+        SelectUnitCommand command = new SelectUnitCommand()
+        command.commandType = "MoveMouse"
+
+        def commandParams =
+                [
+                        XInWorldCoordinates: point1.x,
+                        YInWorldCoordinates: point1.y
+                ]
+
+        command.commandData = JsonOutput.toJson(commandParams)
+
+
+        try {
+            def resp = restClient.post(
+                    path: '/ui/command',
+                    body: command,
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch (HttpResponseException e) {
+            throw e
+        }
+    }
+
+    private void DoReleaseLeftMouseButton(Point point1) {
+        SelectUnitCommand command = new SelectUnitCommand()
+        command.commandType = "ReleaseLeftMouseButton"
+
+        def commandParams =
+                [
+                        XInWorldCoordinates: point1.x,
+                        YInWorldCoordinates: point1.y
+
+                ]
+
+        command.commandData = JsonOutput.toJson(commandParams)
+
+
+        try {
+            def resp = restClient.post(
+                    path: '/ui/command',
+                    body: command,
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch (HttpResponseException e) {
+            throw e
+        }
+    }
+
 
 }

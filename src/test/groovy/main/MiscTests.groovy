@@ -418,8 +418,6 @@ class MiscTests extends Specification {
     }
 
 
-
-
     FindEventResult findNextEventAfter(int index,List<SimulationStateUpdateEvent> gameEventList, String eventType) {
         int totalNumEvents = gameEventList.size()
         SimulationStateUpdateEvent foundEvent = null
