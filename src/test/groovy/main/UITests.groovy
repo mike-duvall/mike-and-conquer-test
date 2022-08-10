@@ -165,19 +165,29 @@ class UITests extends Specification {
         assert gdiMinigunner3.selected == false
         assert gdiMinigunner4.selected == false
 
-//        when:
-//        gameClient.rightClick(10,10)
-//
-//        and:
-//        gdiMinigunner1 = gameClient.getGdiMinigunnerById(gdiMinigunner1.id)
-//        gdiMinigunner2 = gameClient.getGdiMinigunnerById(gdiMinigunner2.id)
-//        gdiMinigunner3 = gameClient.getGdiMinigunnerById(gdiMinigunner3.id)
-//
-//
-//        then:
-//        assert gdiMinigunner1.selected == false
-//        assert gdiMinigunner2.selected == false
-//        assert gdiMinigunner3.selected == false
+        when:
+        WorldCoordinatesLocation rightClickLocation = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(10)
+                .worldMapTileCoordinatesY(10)
+                .build()
+
+        uiClient.rightClick(rightClickLocation)
+        sleep(1000)
+
+
+        and:
+        gdiMinigunner1 = uiClient.getUnit(gdiMinigunner1Id)
+        gdiMinigunner2 = uiClient.getUnit(gdiMinigunner2Id)
+        gdiMinigunner3 = uiClient.getUnit(gdiMinigunner3Id)
+        gdiMinigunner4 = uiClient.getUnit(gdiMinigunner4Id)
+
+
+
+        then:
+        assert gdiMinigunner1.selected == false
+        assert gdiMinigunner2.selected == false
+        assert gdiMinigunner3.selected == false
+        assert gdiMinigunner4.selected == false
 
 
         where:

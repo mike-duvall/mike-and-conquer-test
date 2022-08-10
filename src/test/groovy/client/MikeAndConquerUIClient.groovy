@@ -124,6 +124,41 @@ class MikeAndConquerUIClient {
 
     }
 
+    void rightClick(WorldCoordinatesLocation location) {
+
+        // Todo, decided if commands have commandType hard coded, or if we just need Command instead of specific subclasses
+        SelectUnitCommand command = new SelectUnitCommand()
+        command.commandType = "RightClick"
+
+        def commandParams =
+                [
+                        XInWorldCoordinates: location.XInWorldCoordinates(),
+                        YInWorldCoordinates: location.YInWorldCoordinates()
+                ]
+
+        command.commandData =  JsonOutput.toJson(commandParams)
+
+
+        try {
+            def resp = restClient.post(
+                    path: '/ui/command',
+                    body: command,
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch(HttpResponseException e) {
+            int x = 3
+            throw e
+        }
+
+        int y = 4
+
+
+    }
+
+
 
     Unit getUnit(int unitId) {
 
