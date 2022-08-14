@@ -190,43 +190,15 @@ class MikeAndConquerUIClient {
     void dragSelect(int x1, int y1, int x2, int y2) {
 
         Point point1 = new Point(x1, y1)
-
         Point point2 = new Point(x2,y2)
 
-//        def resp = restClient.post(
-//                path: '/mac/leftClickAndHoldInWorldCoordinates',
-//                body: point1,
-//                requestContentType: 'application/json' )
-//
-//        assert resp.status == 200
 
-
-        // TODO:  Just have generic Command class instead of SelectU
         DoLeftClickAndHold(point1)
-        sleep(2000)
+        sleep(1000)
         DoMoveMouse(point2)
         sleep(2000)
         DoReleaseLeftMouseButton(point2)
-        sleep(2000)
-
-
-
-//        resp = restClient.post(
-//                path: '/mac/moveMouseToWorldCoordinates',
-//                body: point2,
-//                requestContentType: 'application/json' )
-//
-//        assert resp.status == 200
-
-
-//        resp = restClient.post(
-//                path: '/mac/releaseLeftMouseClick',
-//                body: point2,
-//                requestContentType: 'application/json' )
-//
-//        assert resp.status == 200
-
-
+        sleep(1000)
     }
 
     private void DoLeftClickAndHold(Point point1) {

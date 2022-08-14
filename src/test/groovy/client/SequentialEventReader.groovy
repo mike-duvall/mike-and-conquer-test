@@ -18,7 +18,7 @@ class SequentialEventReader {
         int timeoutInSeconds = 30
         SimulationStateUpdateEvent foundEvent = null
         List<SimulationStateUpdateEvent> gameEventList
-        def conditions = new PollingConditions(timeout: timeoutInSeconds, initialDelay: 1.5, factor: 1.25)
+        def conditions = new PollingConditions(timeout: timeoutInSeconds, initialDelay: 0.3, factor: 1.25)
         conditions.eventually {
             gameEventList = simulationClient.getSimulationStateUpdateEvents()
             int readToIndex = 0
@@ -29,10 +29,6 @@ class SequentialEventReader {
                         readToIndex++
                         continue
                     }
-//                    while(readToIndex < currentIndex) {
-//                        readToIndex++
-//                        continue
-//                    }
                     currentIndex++
                     foundEvent = event
                     assert event.eventType == eventType

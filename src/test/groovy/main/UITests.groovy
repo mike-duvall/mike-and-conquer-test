@@ -112,24 +112,11 @@ class UITests extends Specification {
         uiClient.startScenario()
         sequentialEventReader = new SequentialEventReader(simulationClient)
 
-
-
         when:
-//        Minigunner gdiMinigunner1 = createGDIMinigunnerAtLocation(82,369)
-//        Minigunner gdiMinigunner2 = createGDIMinigunnerAtLocation(92,380)
-//
-//        Minigunner gdiMinigunner3 = createGDIMinigunnerAtLocation(230,300)
-//        Minigunner gdiMinigunner4 = createGDIMinigunnerAtLocation(82,300)
-
         int gdiMinigunner1Id = createGDIMinigunnerAtWorldCoordinates(82,369)
         int gdiMinigunner2Id = createGDIMinigunnerAtWorldCoordinates(92,380)
         int gdiMinigunner3Id = createGDIMinigunnerAtWorldCoordinates(230,300)
         int gdiMinigunner4Id = createGDIMinigunnerAtWorldCoordinates(82,300)
-
-        println gdiMinigunner1Id
-        println gdiMinigunner2Id
-        println gdiMinigunner3Id
-        println gdiMinigunner4Id
 
         Set<Integer> uniqueMinigunnerIds = []
         uniqueMinigunnerIds.add(gdiMinigunner1Id)
@@ -138,7 +125,6 @@ class UITests extends Specification {
         uniqueMinigunnerIds.add(gdiMinigunner4Id)
 
         then:
-
         assert uniqueMinigunnerIds.size() == 4
 
         Unit gdiMinigunner1 = uiClient.getUnit(gdiMinigunner1Id)
