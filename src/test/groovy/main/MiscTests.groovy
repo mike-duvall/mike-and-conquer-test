@@ -111,7 +111,7 @@ class MiscTests extends Specification {
         SimulationOptions simulationOptions = new SimulationOptions()
         simulationOptions.gameSpeed = gameSpeed
         simulationClient.setGameOptions(simulationOptions)
-        int allowedDelta = 250
+        int allowedDelta = 300
 
         when:
         if(unitType == "Jeep") {
@@ -416,8 +416,6 @@ class MiscTests extends Specification {
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, unitId)
 
     }
-
-
 
 
     FindEventResult findNextEventAfter(int index,List<SimulationStateUpdateEvent> gameEventList, String eventType) {

@@ -124,6 +124,41 @@ class MikeAndConquerUIClient {
 
     }
 
+    void rightClick(WorldCoordinatesLocation location) {
+
+        // Todo, decided if commands have commandType hard coded, or if we just need Command instead of specific subclasses
+        SelectUnitCommand command = new SelectUnitCommand()
+        command.commandType = "RightClick"
+
+        def commandParams =
+                [
+                        XInWorldCoordinates: location.XInWorldCoordinates(),
+                        YInWorldCoordinates: location.YInWorldCoordinates()
+                ]
+
+        command.commandData =  JsonOutput.toJson(commandParams)
+
+
+        try {
+            def resp = restClient.post(
+                    path: '/ui/command',
+                    body: command,
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch(HttpResponseException e) {
+            int x = 3
+            throw e
+        }
+
+        int y = 4
+
+
+    }
+
+
 
     Unit getUnit(int unitId) {
 
@@ -151,6 +186,102 @@ class MikeAndConquerUIClient {
         return unit
     }
 
+
+    void dragSelect(int x1, int y1, int x2, int y2) {
+
+        Point point1 = new Point(x1, y1)
+        Point point2 = new Point(x2,y2)
+
+
+        DoLeftClickAndHold(point1)
+        sleep(1000)
+        DoMoveMouse(point2)
+        sleep(2000)
+        DoReleaseLeftMouseButton(point2)
+        sleep(1000)
+    }
+
+    private void DoLeftClickAndHold(Point point1) {
+        SelectUnitCommand command = new SelectUnitCommand()
+        command.commandType = "LeftClickAndHold"
+
+        def commandParams =
+                [
+                        XInWorldCoordinates: point1.x,
+                        YInWorldCoordinates: point1.y
+                ]
+
+        command.commandData = JsonOutput.toJson(commandParams)
+
+
+        try {
+            def resp = restClient.post(
+                    path: '/ui/command',
+                    body: command,
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch (HttpResponseException e) {
+            throw e
+        }
+    }
+
+    private void DoMoveMouse(Point point1) {
+        SelectUnitCommand command = new SelectUnitCommand()
+        command.commandType = "MoveMouse"
+
+        def commandParams =
+                [
+                        XInWorldCoordinates: point1.x,
+                        YInWorldCoordinates: point1.y
+                ]
+
+        command.commandData = JsonOutput.toJson(commandParams)
+
+
+        try {
+            def resp = restClient.post(
+                    path: '/ui/command',
+                    body: command,
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch (HttpResponseException e) {
+            throw e
+        }
+    }
+
+    private void DoReleaseLeftMouseButton(Point point1) {
+        SelectUnitCommand command = new SelectUnitCommand()
+        command.commandType = "ReleaseLeftMouseButton"
+
+        def commandParams =
+                [
+                        XInWorldCoordinates: point1.x,
+                        YInWorldCoordinates: point1.y
+
+                ]
+
+        command.commandData = JsonOutput.toJson(commandParams)
+
+
+        try {
+            def resp = restClient.post(
+                    path: '/ui/command',
+                    body: command,
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch (HttpResponseException e) {
+            throw e
+        }
+    }
 
 
 }
