@@ -130,7 +130,7 @@ class MiscTests extends Specification {
         when:
         String expectedCreationEventType = unitType + "Created"
         gameEventList = simulationClient.getSimulationStateUpdateEvents();
-        expectedEventList.add(new EventBlock("InitializeScenario", 1))
+        expectedEventList.add(new EventBlock("ScenarioInitialized", 1))
         expectedEventList.add(new EventBlock(expectedCreationEventType, 1))
 
         then:
