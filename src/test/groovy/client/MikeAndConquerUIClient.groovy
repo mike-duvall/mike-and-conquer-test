@@ -7,6 +7,9 @@ import groovyx.net.http.RESTClient
 import org.apache.http.params.CoreConnectionPNames
 import util.Util
 
+import javax.imageio.ImageIO
+import java.awt.image.BufferedImage
+
 
 class MikeAndConquerUIClient {
 
@@ -282,6 +285,14 @@ class MikeAndConquerUIClient {
             throw e
         }
     }
+
+    BufferedImage  getScreenshot() {
+        def resp = restClient.get( path : '/ui/screenshot' )
+        ByteArrayInputStream byteArrayInputStream = resp.responseData
+        BufferedImage screenShotImage = ImageIO.read(byteArrayInputStream)
+        return screenShotImage
+    }
+
 
 
 }

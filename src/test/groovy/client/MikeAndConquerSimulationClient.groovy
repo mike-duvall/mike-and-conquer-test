@@ -96,6 +96,28 @@ class MikeAndConquerSimulationClient {
     }
 
 
+    void removeUnit(int unitId) {
+
+        // TODO:  Do we need a generic Command class instead of CreateMinigunnerCOmmand?
+        CreateMinigunnerCommand createUnitCommand = new CreateMinigunnerCommand()
+        createUnitCommand.commandType = "RemoveUnit"
+
+        def commandParams =
+                [
+                        unitId: unitId
+                ]
+
+        createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
+
+        def resp = restClient.post(
+                path: '/simulation/command',
+                body: createUnitCommand,
+                requestContentType: 'application/json')
+
+        assert resp.status == 200
+
+
+    }
 
 
     void addMinigunner( WorldCoordinatesLocation location) {
@@ -214,9 +236,14 @@ class MikeAndConquerSimulationClient {
     }
 
 
-    def List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents() {
+    List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents() {
+        getSimulationStateUpdateEvents(0)
+    }
+
+    List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents(int startIndex) {
         def resp = restClient.get(
                 path: '/simulation/query/events',
+                query: ['startIndex': startIndex],
                 requestContentType: 'application/json' )
 
         assert resp.status == 200
@@ -235,6 +262,21 @@ class MikeAndConquerSimulationClient {
         //int x = 3
 
     }
+
+    int getSimulationStateUpdateEventsCurrentIndex() {
+        def resp = restClient.get(
+                path: '/simulation/query/eventscount',
+                requestContentType: 'application/json' )
+
+        assert resp.status == 200
+
+        int numItems = resp.responseData
+
+        return numItems
+
+    }
+
+
 
     void moveUnit(int unitId, WorldCoordinatesLocation location) {
 

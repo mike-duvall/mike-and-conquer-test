@@ -55,7 +55,9 @@ class UITests extends Specification {
         simulationClient.addMinigunner(minigunnerStartLocation)
 
         then:
-        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 2)
+//        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 2)
+//        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 35)
+        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 31)
 
         when:
         minigunnerId = TestUtil.assertMinigunnerCreatedEventReceived(simulationClient)
@@ -80,7 +82,8 @@ class UITests extends Specification {
         int destinationYInWorldCoordinates =leftClickLocation.YInWorldCoordinates()
 
         and:
-        int expectedTotalEvents = 51
+//        int expectedTotalEvents = 51
+        int expectedTotalEvents = 120
 
         and:
         TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient,expectedTotalEvents)
