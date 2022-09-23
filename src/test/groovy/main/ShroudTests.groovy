@@ -95,11 +95,8 @@ class ShroudTests extends Specification {
                 .worldMapTileCoordinatesX(21)
                 .worldMapTileCoordinatesY(12)
                 .build()
-        def gameEventList = simulationClient.getSimulationStateUpdateEvents()
-        simulationClient.addMCV(mcvLocation)
 
-        gameEventList = simulationClient.getSimulationStateUpdateEvents()
-        int x = 3
+        simulationClient.addMCV(mcvLocation)
 
 
         when: "Test scenario 2"
@@ -114,8 +111,6 @@ class ShroudTests extends Specification {
 //        doMinigunnerPlacements(mcvLocation, movements)
         Point mcvLocationWoldMapTileCoordaintesAsPoint = new Point(mcvLocation.XInWorldMapTileCoordinates(), mcvLocation.YInWorldMapTileCoordinates())
         doMinigunnerPlacements(mcvLocationWoldMapTileCoordaintesAsPoint, movements)
-
-
 
         then:
         assertScreenshotMatches(testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
@@ -562,9 +557,6 @@ class ShroudTests extends Specification {
                 currentLocation.y--
             }
 
-            def gameEventList = simulationClient.getSimulationStateUpdateEvents()
-            int x = 3
-
 
             WorldCoordinatesLocation minigunnerLocation = new WorldCoordinatesLocationBuilder()
                     .worldMapTileCoordinatesX(currentLocation.x)
@@ -572,19 +564,11 @@ class ShroudTests extends Specification {
                     .build()
 
 
-            gameEventList = simulationClient.getSimulationStateUpdateEvents()
             int currentEventIndex = simulationClient.getSimulationStateUpdateEventsCurrentIndex()
-
-
             simulationClient.addMinigunner(minigunnerLocation)
-
-
-
-            gameEventList = simulationClient.getSimulationStateUpdateEvents(currentEventIndex)
 
             SequentialEventReader newSequentialEventReader = new SequentialEventReader(simulationClient)
             SimulationStateUpdateEvent simulationStateUpdateEvent = newSequentialEventReader.waitForEventOfType("MinigunnerCreated", currentEventIndex)
-
 
             JsonSlurper jsonSlurper = new JsonSlurper()
             def minigunnerCreatedEventData = jsonSlurper.parseText(simulationStateUpdateEvent.eventData)
