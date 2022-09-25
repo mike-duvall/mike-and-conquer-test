@@ -2,7 +2,7 @@ package main
 
 import client.MikeAndConquerSimulationClient
 import client.MikeAndConquerUIClient
-import client.SequentialEventReader
+import client.SequentialEventReader3
 import domain.MovementDirection
 
 
@@ -27,7 +27,7 @@ class ShroudTests extends Specification {
     MikeAndConquerSimulationClient simulationClient
     MikeAndConquerUIClient uiClient
 
-    SequentialEventReader sequentialEventReader
+    SequentialEventReader3 sequentialEventReader3
 
 
     def setup() {
@@ -50,7 +50,7 @@ class ShroudTests extends Specification {
 
 
         simulationClient = new MikeAndConquerSimulationClient(host, 5000, useTimeouts)
-        sequentialEventReader = new SequentialEventReader(simulationClient)
+        sequentialEventReader3 = new SequentialEventReader3(simulationClient)
 
 //        simulationClient.startScenario()
 //        sleep(1000)
@@ -578,11 +578,11 @@ class ShroudTests extends Specification {
                     .build()
 
 
-            int currentEventIndex = simulationClient.getSimulationStateUpdateEventsCurrentIndex()
+//            int currentEventIndex = simulationClient.getSimulationStateUpdateEventsCurrentIndex()
             simulationClient.addMinigunner(minigunnerLocation)
 
-            SequentialEventReader newSequentialEventReader = new SequentialEventReader(simulationClient)
-            SimulationStateUpdateEvent simulationStateUpdateEvent = newSequentialEventReader.waitForEventOfType("MinigunnerCreated", currentEventIndex)
+//            SequentialEventReader2 newSequentialEventReader = new SequentialEventReader2(simulationClient)
+            SimulationStateUpdateEvent simulationStateUpdateEvent = sequentialEventReader3.waitForEventOfType("MinigunnerCreated")
 
             JsonSlurper jsonSlurper = new JsonSlurper()
             def minigunnerCreatedEventData = jsonSlurper.parseText(simulationStateUpdateEvent.eventData)
