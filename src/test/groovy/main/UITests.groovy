@@ -5,6 +5,7 @@ import client.MikeAndConquerSimulationClient
 import client.MikeAndConquerUIClient
 import client.SequentialEventReader
 import client.SequentialEventReader3
+import domain.UIOptions
 import domain.Unit
 import domain.WorldCoordinatesLocation
 import domain.WorldCoordinatesLocationBuilder
@@ -36,6 +37,11 @@ class UITests extends Specification {
         boolean useTimeouts = true
 //        boolean useTimeouts = false
         uiClient = new MikeAndConquerUIClient(host, port, useTimeouts )
+        UIOptions uiOptions = new UIOptions()
+        uiOptions.drawShroud = false
+        uiOptions.mapZoomLevel = 2.0
+        uiClient.setUIOptions(uiOptions)
+
 
         simulationClient = new MikeAndConquerSimulationClient(host, 5000, useTimeouts)
         sequentialEventReader3 = new SequentialEventReader3(simulationClient)

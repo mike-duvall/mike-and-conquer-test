@@ -1,6 +1,7 @@
 package main
 
 import client.MikeAndConquerSimulationClient
+import client.MikeAndConquerUIClient
 import client.SequentialEventReader3
 import domain.*
 import domain.event.EventBlock
@@ -19,6 +20,7 @@ import util.TestUtil
 class MiscTests extends Specification {
 
     MikeAndConquerSimulationClient simulationClient
+    MikeAndConquerUIClient uiClient
     SequentialEventReader3 sequentialEventReader3
     JsonSlurper jsonSlurper
 
@@ -80,12 +82,20 @@ class MiscTests extends Specification {
 //        String host = localhost
         String host = remoteHost
 
-        int port = 5000
+        int simulationClientPort = 5000
         boolean useTimeouts = true
 //        boolean useTimeouts = false
-        simulationClient = new MikeAndConquerSimulationClient(host, port, useTimeouts )
+        simulationClient = new MikeAndConquerSimulationClient(host, simulationClientPort, useTimeouts )
         sequentialEventReader3 = new SequentialEventReader3(simulationClient)
         jsonSlurper = new JsonSlurper()
+
+        int uiClientPort = 5010
+        uiClient = new MikeAndConquerUIClient(host, uiClientPort, useTimeouts )
+        UIOptions uiOptions = new UIOptions()
+        uiOptions.drawShroud = false
+        uiOptions.mapZoomLevel = 2.0
+        uiClient.setUIOptions(uiOptions)
+        uiClient.startScenario()
 
 //        gameClient.resetScenario()
         simulationClient.startScenario()

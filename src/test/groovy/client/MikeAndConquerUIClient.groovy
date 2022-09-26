@@ -37,6 +37,38 @@ class MikeAndConquerUIClient {
         }
     }
 
+
+    void setUIOptions(UIOptions uiOptions) {
+        StartScenarioCommand command = new StartScenarioCommand()
+        command.commandType = "SetUIOptions"
+
+        def commandParams =
+                [
+                        DrawShroud: uiOptions.drawShroud,
+                        MapZoomLevel: uiOptions.mapZoomLevel
+                ]
+
+        command.commandData =  JsonOutput.toJson(commandParams)
+
+
+        try {
+            def resp = restClient.post(
+                    path: '/ui/command',
+                    body: command,
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch(HttpResponseException e) {
+            int x = 3
+            throw e
+        }
+
+        int y = 4
+
+    }
+
     void startScenario() {
 
         StartScenarioCommand command = new StartScenarioCommand()

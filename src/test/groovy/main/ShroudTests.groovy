@@ -9,6 +9,7 @@ import domain.MovementDirection
 //import domain.Minigunner
 //import domain.MovementDirection
 import domain.Point
+import domain.UIOptions
 import domain.WorldCoordinatesLocation
 import domain.WorldCoordinatesLocationBuilder
 import domain.event.SimulationStateUpdateEvent
@@ -45,6 +46,10 @@ class ShroudTests extends Specification {
         boolean useTimeouts = false
         uiClient = new MikeAndConquerUIClient(host, port, useTimeouts )
 
+        UIOptions uiOptions = new UIOptions()
+        uiOptions.drawShroud = true
+        uiOptions.mapZoomLevel = 1.0
+        uiClient.setUIOptions(uiOptions)
         uiClient.startScenario()
         sleep(1000)
 
