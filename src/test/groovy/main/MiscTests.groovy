@@ -2,7 +2,7 @@ package main
 
 import client.MikeAndConquerSimulationClient
 import client.MikeAndConquerUIClient
-import client.SequentialEventReader3
+import client.SequentialEventReader
 import domain.*
 import domain.event.EventBlock
 import domain.event.EventType
@@ -21,7 +21,7 @@ class MiscTests extends Specification {
 
     MikeAndConquerSimulationClient simulationClient
     MikeAndConquerUIClient uiClient
-    SequentialEventReader3 sequentialEventReader3
+    SequentialEventReader sequentialEventReader
     JsonSlurper jsonSlurper
 
     void assertExpectedEventList(List<SimulationStateUpdateEvent> simulationStateUpdateEvents, ArrayList<EventBlock> expectedEventList) {
@@ -82,15 +82,13 @@ class MiscTests extends Specification {
 //        String host = localhost
         String host = remoteHost
 
-        int simulationClientPort = 5000
         boolean useTimeouts = true
 //        boolean useTimeouts = false
-        simulationClient = new MikeAndConquerSimulationClient(host, simulationClientPort, useTimeouts )
-        sequentialEventReader3 = new SequentialEventReader3(simulationClient)
+        simulationClient = new MikeAndConquerSimulationClient(host,  useTimeouts )
+        sequentialEventReader = new SequentialEventReader(simulationClient)
         jsonSlurper = new JsonSlurper()
 
-        int uiClientPort = 5010
-        uiClient = new MikeAndConquerUIClient(host, uiClientPort, useTimeouts )
+        uiClient = new MikeAndConquerUIClient(host, useTimeouts )
         UIOptions uiOptions = new UIOptions()
         uiOptions.drawShroud = false
         uiOptions.mapZoomLevel = 2.0
@@ -141,10 +139,10 @@ class MiscTests extends Specification {
         }
 
         then:
-        sequentialEventReader3.waitForEventOfType("ScenarioInitialized")
+        sequentialEventReader.waitForEventOfType("ScenarioInitialized")
 
         String expectedCreationEventType = unitType + "Created"
-        SimulationStateUpdateEvent unitCreatedEvent = sequentialEventReader3.waitForEventOfType(expectedCreationEventType)
+        SimulationStateUpdateEvent unitCreatedEvent = sequentialEventReader.waitForEventOfType(expectedCreationEventType)
 
 
 //        assertNumberOfSimulationStateUpdateEvents(2)
@@ -191,7 +189,7 @@ class MiscTests extends Specification {
 //
 
         then:
-        SimulationStateUpdateEvent secondEvent = sequentialEventReader3.waitForEventOfType("UnitOrderedToMove")
+        SimulationStateUpdateEvent secondEvent = sequentialEventReader.waitForEventOfType("UnitOrderedToMove")
 //        then:
 //        SimulationStateUpdateEvent secondEvent = gameEventList.get(2)
 //        assert secondEvent.eventType == "UnitOrderedToMove"
@@ -207,7 +205,7 @@ class MiscTests extends Specification {
 
         then:
 //        SimulationStateUpdateEvent thirdEvent = gameEventList.get(expectedTotalEvents - 1)
-        SimulationStateUpdateEvent thirdEvent = sequentialEventReader3.waitForEventOfType("UnitArrivedAtDestination")
+        SimulationStateUpdateEvent thirdEvent = sequentialEventReader.waitForEventOfType("UnitArrivedAtDestination")
         assert thirdEvent.eventType == "UnitArrivedAtDestination"
         def thirdEventDataAsObject = jsonSlurper.parseText(thirdEvent.eventData)
         assert thirdEventDataAsObject.UnitId == createdUnitId
@@ -262,7 +260,7 @@ class MiscTests extends Specification {
         then:
 //        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 2)
         String expectedCreationEventType = EventType.MINIGUNNER_CREATED
-        SimulationStateUpdateEvent minigunnerCreatedEvent = sequentialEventReader3.waitForEventOfType(expectedCreationEventType)
+        SimulationStateUpdateEvent minigunnerCreatedEvent = sequentialEventReader.waitForEventOfType(expectedCreationEventType)
 
 
 //        when:
@@ -294,7 +292,7 @@ class MiscTests extends Specification {
 
 
         then:
-        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = sequentialEventReader3.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
+        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
 
 //        and:
 //        int expectedTotalEvents = 231
@@ -325,7 +323,7 @@ class MiscTests extends Specification {
 
         and: "Planned path is equal to expected path"
 //        SimulationStateUpdateEvent expectedUnitMovementPlanCreatedEvent = gameEventList.get(3)
-        SimulationStateUpdateEvent expectedUnitMovementPlanCreatedEvent = sequentialEventReader3.waitForEventOfType(EventType.UNIT_MOVEMENT_PLAN_CREATED)
+        SimulationStateUpdateEvent expectedUnitMovementPlanCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_MOVEMENT_PLAN_CREATED)
 //        assert expectedUnitMovementPlanCreatedEvent.eventType == "UnitMovementPlanCreated"
 //
 //        def jsonSlurper = new JsonSlurper()
@@ -359,7 +357,7 @@ class MiscTests extends Specification {
 //
 //        then:
 //        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = gameEventList.get(expectedTotalEvents - 1)
-        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader3.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
+        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, minigunnerId)
 
     }
@@ -505,7 +503,7 @@ class MiscTests extends Specification {
 
     def assertReceivedUnitArrivedAtPathStepEvent( int expectedXInMapTileSquareCoordinates, int expectedYInMapTileSquareCoordinates) {
 //        FindEventResult findEventResult = findNextEventAfter(index, gameEventList, "UnitArrivedAtPathStep")
-        SimulationStateUpdateEvent unitArrivedAtPathStepEvent = sequentialEventReader3.waitForEventOfType(EventType.UNIT_ARRIVED_AT_PATH_STEP)
+        SimulationStateUpdateEvent unitArrivedAtPathStepEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_PATH_STEP)
 
 //        SimulationStateUpdateEvent unitArrivedAtPathStepEvent = findEventResult.event
         assert unitArrivedAtPathStepEvent.eventType == "UnitArrivedAtPathStep"

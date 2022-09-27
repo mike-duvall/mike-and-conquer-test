@@ -13,6 +13,7 @@ class MikeAndConquerSimulationClient {
 
     String hostUrl
     RESTClient  restClient
+    int port = 5000
 
     private static final String GDI_MINIGUNNERS_BASE_URL = '/mac/gdiMinigunners'
     private static final String NOD_MINIGUNNERS_BASE_URL = '/mac/nodMinigunners'
@@ -24,7 +25,7 @@ class MikeAndConquerSimulationClient {
     private static final String GAME_HISTORY_EVENTS_URL = '/mac/gameHistoryEvents'
 
 
-    MikeAndConquerSimulationClient(String host, int port, boolean useTimeouts = true) {
+    MikeAndConquerSimulationClient(String host,  boolean useTimeouts = true) {
         hostUrl = "http://$host:$port"
         restClient = new RESTClient(hostUrl)
 

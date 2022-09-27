@@ -4,7 +4,6 @@ package main
 import client.MikeAndConquerSimulationClient
 import client.MikeAndConquerUIClient
 import client.SequentialEventReader
-import client.SequentialEventReader3
 import domain.UIOptions
 import domain.Unit
 import domain.WorldCoordinatesLocation
@@ -24,7 +23,7 @@ class UITests extends Specification {
 
     MikeAndConquerSimulationClient simulationClient
     MikeAndConquerUIClient uiClient
-    SequentialEventReader3 sequentialEventReader3
+    SequentialEventReader sequentialEventReader
 
     def setup() {
         String localhost = "localhost"
@@ -33,18 +32,17 @@ class UITests extends Specification {
 //        String host = localhost
         String host = remoteHost
 
-        int port = 5010
         boolean useTimeouts = true
 //        boolean useTimeouts = false
-        uiClient = new MikeAndConquerUIClient(host, port, useTimeouts )
+        uiClient = new MikeAndConquerUIClient(host, useTimeouts )
         UIOptions uiOptions = new UIOptions()
         uiOptions.drawShroud = false
         uiOptions.mapZoomLevel = 2.0
         uiClient.setUIOptions(uiOptions)
 
 
-        simulationClient = new MikeAndConquerSimulationClient(host, 5000, useTimeouts)
-        sequentialEventReader3 = new SequentialEventReader3(simulationClient)
+        simulationClient = new MikeAndConquerSimulationClient(host,  useTimeouts)
+        sequentialEventReader = new SequentialEventReader(simulationClient)
 //        simulationClient.resetScenario()
 //        sleep(1000)
 
@@ -101,14 +99,14 @@ class UITests extends Specification {
         then:
 //        List<SimulationStateUpdateEvent> gameEventList = simulationClient.getSimulationStateUpdateEvents()
 //        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = gameEventList.get(2)
-        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = sequentialEventReader3.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
+        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
         TestUtil.assertUnitOrderedToMoveEvent(expectedUnitOrderedToMoveEvent, minigunnerId, destinationXInWorldCoordinates, destinationYInWorldCoordinates)
 
 
 
         and:
 //        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = gameEventList.get(expectedTotalEvents - 1)
-        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader3.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
+        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, minigunnerId)
 
     }
@@ -120,15 +118,12 @@ class UITests extends Specification {
     static int selectionBoxTopmostY = 350
     static int selectionBoxBottommostY = 400
 
-//    SequentialEventReader sequentialEventReader
-//    SequentialEventReader3 sequentialEventReader3
 
     @Unroll
     def "should be able to drag select multiple GDI minigunners" () {
 
         given:
         uiClient.startScenario()
-//        sequentialEventReader = new SequentialEventReader(simulationClient)
 
         when:
         int gdiMinigunner1Id = createGDIMinigunnerAtWorldCoordinates(82,369)
@@ -212,7 +207,7 @@ class UITests extends Specification {
                 .worldCoordinatesY(yInWorldCoordinates)
                 .build() )
 
-        SimulationStateUpdateEvent event = sequentialEventReader3.waitForEventOfType("MinigunnerCreated")
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType("MinigunnerCreated")
 
         def jsonSlurper = new JsonSlurper()
         def eventData = jsonSlurper.parseText(event.eventData)

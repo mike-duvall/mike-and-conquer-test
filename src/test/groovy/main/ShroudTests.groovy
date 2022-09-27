@@ -2,12 +2,10 @@ package main
 
 import client.MikeAndConquerSimulationClient
 import client.MikeAndConquerUIClient
-import client.SequentialEventReader3
+import client.SequentialEventReader
 import domain.MovementDirection
 
 
-//import domain.Minigunner
-//import domain.MovementDirection
 import domain.Point
 import domain.UIOptions
 import domain.WorldCoordinatesLocation
@@ -28,7 +26,7 @@ class ShroudTests extends Specification {
     MikeAndConquerSimulationClient simulationClient
     MikeAndConquerUIClient uiClient
 
-    SequentialEventReader3 sequentialEventReader3
+    SequentialEventReader sequentialEventReader
 
 
     def setup() {
@@ -41,10 +39,9 @@ class ShroudTests extends Specification {
 //        String host = localhost
         String host = remoteHost
 
-        int port = 5010
 //        boolean useTimeouts = true
         boolean useTimeouts = false
-        uiClient = new MikeAndConquerUIClient(host, port, useTimeouts )
+        uiClient = new MikeAndConquerUIClient(host, useTimeouts )
 
         UIOptions uiOptions = new UIOptions()
         uiOptions.drawShroud = true
@@ -53,22 +50,17 @@ class ShroudTests extends Specification {
         uiClient.startScenario()
         sleep(1000)
 
-
-        simulationClient = new MikeAndConquerSimulationClient(host, 5000, useTimeouts)
-        sequentialEventReader3 = new SequentialEventReader3(simulationClient)
+        simulationClient = new MikeAndConquerSimulationClient(host, useTimeouts)
+        sequentialEventReader = new SequentialEventReader(simulationClient)
 
 //        simulationClient.startScenario()
 //        sleep(1000)
-
 
         // Add bogus minigunner to not delete so game state stays in "Playing"
         WorldCoordinatesLocation unitStartLocation = new WorldCoordinatesLocationBuilder()
                 .worldMapTileCoordinatesX(4)
                 .worldMapTileCoordinatesY(5)
                 .build()
-
-//        simulationClient.addMinigunner(unitStartLocation)
-
 
     }
 
@@ -586,8 +578,7 @@ class ShroudTests extends Specification {
 //            int currentEventIndex = simulationClient.getSimulationStateUpdateEventsCurrentIndex()
             simulationClient.addMinigunner(minigunnerLocation)
 
-//            SequentialEventReader2 newSequentialEventReader = new SequentialEventReader2(simulationClient)
-            SimulationStateUpdateEvent simulationStateUpdateEvent = sequentialEventReader3.waitForEventOfType("MinigunnerCreated")
+            SimulationStateUpdateEvent simulationStateUpdateEvent = sequentialEventReader.waitForEventOfType("MinigunnerCreated")
 
             JsonSlurper jsonSlurper = new JsonSlurper()
             def minigunnerCreatedEventData = jsonSlurper.parseText(simulationStateUpdateEvent.eventData)
