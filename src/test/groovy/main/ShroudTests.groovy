@@ -10,6 +10,7 @@ import domain.Point
 import domain.UIOptions
 import domain.WorldCoordinatesLocation
 import domain.WorldCoordinatesLocationBuilder
+import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
 import groovy.json.JsonSlurper
 import spock.lang.Specification
@@ -39,13 +40,11 @@ class ShroudTests extends Specification {
 //        String host = localhost
         String host = remoteHost
 
-//        boolean useTimeouts = true
-        boolean useTimeouts = false
+        boolean useTimeouts = true
+//        boolean useTimeouts = false
         uiClient = new MikeAndConquerUIClient(host, useTimeouts )
 
-        UIOptions uiOptions = new UIOptions()
-        uiOptions.drawShroud = true
-        uiOptions.mapZoomLevel = 1.0
+        UIOptions uiOptions = new UIOptions(drawShroud: true, mapZoomLevel: 1.0)
         uiClient.setUIOptions(uiOptions)
         uiClient.startScenario()
         sleep(1000)
@@ -53,14 +52,11 @@ class ShroudTests extends Specification {
         simulationClient = new MikeAndConquerSimulationClient(host, useTimeouts)
         sequentialEventReader = new SequentialEventReader(simulationClient)
 
-//        simulationClient.startScenario()
-//        sleep(1000)
-
-        // Add bogus minigunner to not delete so game state stays in "Playing"
-        WorldCoordinatesLocation unitStartLocation = new WorldCoordinatesLocationBuilder()
-                .worldMapTileCoordinatesX(4)
-                .worldMapTileCoordinatesY(5)
-                .build()
+//        // Add bogus minigunner to not delete so game state stays in "Playing"
+//        WorldCoordinatesLocation unitStartLocation = new WorldCoordinatesLocationBuilder()
+//                .worldMapTileCoordinatesX(4)
+//                .worldMapTileCoordinatesY(5)
+//                .build()
 
     }
 
@@ -112,11 +108,6 @@ class ShroudTests extends Specification {
         then:
         assertScreenshotMatches(testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
     }
-
-
-
-
-
 
     def "Shroud screenshot scenario 3"() {
         given:
@@ -578,7 +569,7 @@ class ShroudTests extends Specification {
 //            int currentEventIndex = simulationClient.getSimulationStateUpdateEventsCurrentIndex()
             simulationClient.addMinigunner(minigunnerLocation)
 
-            SimulationStateUpdateEvent simulationStateUpdateEvent = sequentialEventReader.waitForEventOfType("MinigunnerCreated")
+            SimulationStateUpdateEvent simulationStateUpdateEvent = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
 
             JsonSlurper jsonSlurper = new JsonSlurper()
             def minigunnerCreatedEventData = jsonSlurper.parseText(simulationStateUpdateEvent.eventData)
@@ -586,6 +577,11 @@ class ShroudTests extends Specification {
             int minigunnerId = minigunnerCreatedEventData.UnitId
 
             simulationClient.removeUnit(minigunnerId)
+
+
+            SimulationStateUpdateEvent minigunnerDeletedEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_DELETED)
+            def unitDeletedEventData = jsonSlurper.parseText(minigunnerDeletedEvent.eventData)
+            assert unitDeletedEventData.UnitId == minigunnerId
         }
     }
 

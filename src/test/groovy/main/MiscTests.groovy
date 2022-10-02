@@ -24,21 +24,6 @@ class MiscTests extends Specification {
     SequentialEventReader sequentialEventReader
     JsonSlurper jsonSlurper
 
-    void assertExpectedEventList(List<SimulationStateUpdateEvent> simulationStateUpdateEvents, ArrayList<EventBlock> expectedEventList) {
-        boolean done = false
-        int actualEventIndex = 0
-
-        for(EventBlock eventBlock in expectedEventList) {
-            for(int i = 0; i < eventBlock.numberOfEvents; i++) {
-                SimulationStateUpdateEvent simulationStateUpdateEvent = simulationStateUpdateEvents.get(actualEventIndex)
-                assert simulationStateUpdateEvent.eventType == eventBlock.eventType
-                actualEventIndex++
-            }
-        }
-
-        assert actualEventIndex == simulationStateUpdateEvents.size()
-
-    }
 
 
     enum GameSpeed
@@ -55,23 +40,35 @@ class MiscTests extends Specification {
     }
 
 
-    protected void setAndAssertGameOptions(GameSpeed gameSpeed) {
-        SimulationOptions gameOptions = new SimulationOptions( gameSpeed.name())
-        simulationClient.setGameOptions(gameOptions)
-        assertGameOptionsAreSetTo(gameOptions)
+    void setAndAssertUIOptions(UIOptions uiOptions) {
+        uiClient.setUIOptions(uiOptions)
+        assertUIOptionsAreSetTo(uiOptions)
     }
 
-    def assertGameOptionsAreSetTo(SimulationOptions desiredGameOptions) {
-        def conditions = new PollingConditions(timeout: 70, initialDelay: 1.5, factor: 1.25)
+
+    def assertUIOptionsAreSetTo(UIOptions desiredUIOptions) {
+        def conditions = new PollingConditions(timeout: 10, initialDelay: 0.5, factor: 1.25)
         conditions.eventually {
-            SimulationOptions resetOptions1 = simulationClient.getGameOptions()
-            assert resetOptions1.gameSpeed == desiredGameOptions.gameSpeed
-            assert resetOptions1.initialMapZoom == desiredGameOptions.initialMapZoom
-            assert resetOptions1.drawShroud == desiredGameOptions.drawShroud
+            UIOptions uiOptions = uiClient.getUIOptions()
+            assert uiOptions.mapZoomLevel == desiredUIOptions.mapZoomLevel
+            assert uiOptions.drawShroud == desiredUIOptions.drawShroud
         }
         return true
     }
 
+    void setAndAssertSimulationOptions(SimulationOptions simulationOptions) {
+        simulationClient.setSimulationOptions(simulationOptions)
+        assertSimulationOptionsAreSetTo(simulationOptions)
+    }
+
+    def assertSimulationOptionsAreSetTo(SimulationOptions desiredOptions) {
+        def conditions = new PollingConditions(timeout: 10, initialDelay: 0.5, factor: 1.25)
+        conditions.eventually {
+            SimulationOptions retrievedOptions = simulationClient.getSimulationOptions()
+            assert retrievedOptions.gameSpeed == desiredOptions.gameSpeed
+        }
+        return true
+    }
 
 
 
@@ -89,13 +86,10 @@ class MiscTests extends Specification {
         jsonSlurper = new JsonSlurper()
 
         uiClient = new MikeAndConquerUIClient(host, useTimeouts )
-        UIOptions uiOptions = new UIOptions()
-        uiOptions.drawShroud = false
-        uiOptions.mapZoomLevel = 2.0
-        uiClient.setUIOptions(uiOptions)
-        uiClient.startScenario()
 
-//        gameClient.resetScenario()
+        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 2.0)
+        setAndAssertUIOptions(uiOptions)
+
         simulationClient.startScenario()
         sleep(1000)
 
@@ -115,16 +109,13 @@ class MiscTests extends Specification {
                 .worldMapTileCoordinatesY(unitStartLocation.YInWorldMapTileCoordinates())
                 .build()
 
-        List<SimulationStateUpdateEvent> gameEventList = null
-        List<EventBlock> expectedEventList = []
-
-//        def jsonSlurper = new JsonSlurper()
         long startingTick = -1
         long endingTick = -1
 
-        SimulationOptions simulationOptions = new SimulationOptions()
-        simulationOptions.gameSpeed = gameSpeed
-        simulationClient.setGameOptions(simulationOptions)
+
+        SimulationOptions simulationOptions = new SimulationOptions(gameSpeed: gameSpeed)
+        setAndAssertSimulationOptions(simulationOptions)
+
         int allowedDelta = 300
 
         when:
@@ -139,37 +130,13 @@ class MiscTests extends Specification {
         }
 
         then:
-        sequentialEventReader.waitForEventOfType("ScenarioInitialized")
+        sequentialEventReader.waitForEventOfType(EventType.SCENARIO_INITIALIZED)
 
         String expectedCreationEventType = unitType + "Created"
         SimulationStateUpdateEvent unitCreatedEvent = sequentialEventReader.waitForEventOfType(expectedCreationEventType)
 
-
-//        assertNumberOfSimulationStateUpdateEvents(2)
-
-
-
-//        when:
-//        String expectedCreationEventType = unitType + "Created"
-//        gameEventList = simulationClient.getSimulationStateUpdateEvents();
-//        expectedEventList.add(new EventBlock("ScenarioInitialized", 1))
-//        expectedEventList.add(new EventBlock(expectedCreationEventType, 1))
-//
-//        then:
-//        assertExpectedEventList(gameEventList, expectedEventList)
-//
-//        when:
-//        SimulationStateUpdateEvent unitCreatedEvent = gameEventList.get(1)
-//
-        and:
-        assert unitCreatedEvent.eventType == expectedCreationEventType
-
         when:
-        def unitDataObject = jsonSlurper.parseText(unitCreatedEvent.eventData)
-        Unit createdUnit = new Unit()
-        createdUnit.unitId = unitDataObject.UnitId
-        createdUnit.x = unitDataObject.X
-        createdUnit.y = unitDataObject.Y
+        Unit createdUnit = parseUnitFromEventData(unitCreatedEvent.eventData)
         int createdUnitId = createdUnit.unitId
 
         then:
@@ -181,33 +148,19 @@ class MiscTests extends Specification {
 
         sleep (expectedTimeInMillis - 10000)
 
-//        then:
-//        assertNumberOfSimulationStateUpdateEvents(expectedTotalEvents)
-//
-//        when:
-//        gameEventList = simulationClient.getSimulationStateUpdateEvents()
-//
-
         then:
-        SimulationStateUpdateEvent secondEvent = sequentialEventReader.waitForEventOfType("UnitOrderedToMove")
-//        then:
-//        SimulationStateUpdateEvent secondEvent = gameEventList.get(2)
-//        assert secondEvent.eventType == "UnitOrderedToMove"
-//
-        def secondEventDataAsObject = jsonSlurper.parseText(secondEvent.eventData)
+        SimulationStateUpdateEvent unitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
+        def secondEventDataAsObject = jsonSlurper.parseText(unitOrderedToMoveEvent.eventData)
         assert secondEventDataAsObject.DestinationXInWorldCoordinates == unitDestinationLocation.XInWorldCoordinates()
         assert secondEventDataAsObject.DestinationYInWorldCoordinates == unitDestinationLocation.YInWorldCoordinates()
-
         assert secondEventDataAsObject.UnitId == createdUnitId
 
         when:
         startingTick = secondEventDataAsObject.Timestamp
 
         then:
-//        SimulationStateUpdateEvent thirdEvent = gameEventList.get(expectedTotalEvents - 1)
-        SimulationStateUpdateEvent thirdEvent = sequentialEventReader.waitForEventOfType("UnitArrivedAtDestination")
-        assert thirdEvent.eventType == "UnitArrivedAtDestination"
-        def thirdEventDataAsObject = jsonSlurper.parseText(thirdEvent.eventData)
+        SimulationStateUpdateEvent unitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
+        def thirdEventDataAsObject = jsonSlurper.parseText(unitArrivedAtDestinationEvent.eventData)
         assert thirdEventDataAsObject.UnitId == createdUnitId
 
         when:
@@ -247,6 +200,9 @@ class MiscTests extends Specification {
         given:
         int minigunnerId = -1
 
+        SimulationOptions simulationOptions = new SimulationOptions(gameSpeed: GameSpeed.Fastest)
+//        simulationOptions.gameSpeed = GameSpeed.Fastest
+        setAndAssertSimulationOptions(simulationOptions)
 
 
         when:
@@ -258,19 +214,12 @@ class MiscTests extends Specification {
         simulationClient.addMinigunner(startLocation)
 
         then:
-//        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 2)
         String expectedCreationEventType = EventType.MINIGUNNER_CREATED
         SimulationStateUpdateEvent minigunnerCreatedEvent = sequentialEventReader.waitForEventOfType(expectedCreationEventType)
-
-
-//        when:
-//        minigunnerId = TestUtil.assertMinigunnerCreatedEventReceived(simulationClient)
-
 
         assert minigunnerCreatedEvent.eventType == expectedCreationEventType
 
         when:
-
         def unitDataObject = jsonSlurper.parseText(minigunnerCreatedEvent.eventData)
         Unit createdUnit = new Unit()
         createdUnit.unitId = unitDataObject.UnitId
@@ -294,11 +243,6 @@ class MiscTests extends Specification {
         then:
         SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
 
-//        and:
-//        int expectedTotalEvents = 231
-//
-//        and:
-//        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient,expectedTotalEvents)
         ArrayList<PathStep> expectedPathSteps = []
         expectedPathSteps.add( new PathStep(x: 14, y:13))
         expectedPathSteps.add( new PathStep(x:14, y:14 ))
@@ -312,9 +256,6 @@ class MiscTests extends Specification {
         expectedPathSteps.add( new PathStep(x: 7, y:16))
         expectedPathSteps.add( new PathStep(x: 7, y:15))
 
-//        then:
-//        List<SimulationStateUpdateEvent> gameEventList = simulationClient.getSimulationStateUpdateEvents()
-//        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = gameEventList.get(2)
         TestUtil.assertUnitOrderedToMoveEvent(
                 expectedUnitOrderedToMoveEvent,
                 minigunnerId,
@@ -322,7 +263,6 @@ class MiscTests extends Specification {
                 destinationLocation.YInWorldCoordinates())
 
         and: "Planned path is equal to expected path"
-//        SimulationStateUpdateEvent expectedUnitMovementPlanCreatedEvent = gameEventList.get(3)
         SimulationStateUpdateEvent expectedUnitMovementPlanCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_MOVEMENT_PLAN_CREATED)
 //        assert expectedUnitMovementPlanCreatedEvent.eventType == "UnitMovementPlanCreated"
 //
@@ -343,8 +283,6 @@ class MiscTests extends Specification {
         }
 
         and: "Actual traveled path is equal to expected path"
-//        int currentGameEventListIndex = 3
-
         for(expectedPathStepIndex = 0; expectedPathStepIndex < expectedNumPathSteps; expectedPathStepIndex++) {
             assertReceivedUnitArrivedAtPathStepEvent(
                     expectedPathSteps[expectedPathStepIndex].x,
@@ -353,10 +291,6 @@ class MiscTests extends Specification {
         }
 
         and: "Assert we are at the end of the event list, no more ArrivedAtPathStep events"
-//        assert currentGameEventListIndex == expectedTotalEvents - 1
-//
-//        then:
-//        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = gameEventList.get(expectedTotalEvents - 1)
         SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, minigunnerId)
 
@@ -528,6 +462,33 @@ class MiscTests extends Specification {
         return true
 
     }
+    void assertExpectedEventList(List<SimulationStateUpdateEvent> simulationStateUpdateEvents, ArrayList<EventBlock> expectedEventList) {
+        boolean done = false
+        int actualEventIndex = 0
+
+        for(EventBlock eventBlock in expectedEventList) {
+            for(int i = 0; i < eventBlock.numberOfEvents; i++) {
+                SimulationStateUpdateEvent simulationStateUpdateEvent = simulationStateUpdateEvents.get(actualEventIndex)
+                assert simulationStateUpdateEvent.eventType == eventBlock.eventType
+                actualEventIndex++
+            }
+        }
+
+        assert actualEventIndex == simulationStateUpdateEvents.size()
+
+    }
+
+    Unit parseUnitFromEventData(String unitCreatedEventData) {
+        def unitDataObject = jsonSlurper.parseText(unitCreatedEventData)
+        Unit createdUnit = new Unit()
+        createdUnit.unitId = unitDataObject.UnitId
+        createdUnit.x = unitDataObject.X
+        createdUnit.y = unitDataObject.Y
+
+        return createdUnit
+
+    }
+
 
 
 }

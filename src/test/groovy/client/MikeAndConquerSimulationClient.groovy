@@ -37,7 +37,7 @@ class MikeAndConquerSimulationClient {
 
 
 
-    void setGameOptions(SimulationOptions simulationOptions) {
+    void setSimulationOptions(SimulationOptions simulationOptions) {
 //        def resp = restClient.post(
 //                path: GAME_OPTIONS_URL,
 //                body: resetOptions,
@@ -64,36 +64,26 @@ class MikeAndConquerSimulationClient {
                 requestContentType: 'application/json')
 
         assert resp.status == 200
-
-
     }
 
 
-    SimulationOptions getGameOptions() {
-
+    SimulationOptions getSimulationOptions() {
         def resp
         try {
-            resp = restClient.get(path: GAME_OPTIONS_URL)
+            resp = restClient.get(
+                    path: '/simulation/query/options',
+                    requestContentType: 'application/json')
+            assert resp.status == 200
         }
         catch(HttpResponseException e) {
-            if(e.statusCode == 404) {
-                return null
-            }
-            else {
-                throw e
-            }
+            throw e
         }
-        if( resp.status == 404) {
-            return null
-        }
-        assert resp.status == 200  // HTTP response code; 404 means not found, etc.
 
-        SimulationOptions resetOptions = new SimulationOptions()
-        resetOptions.drawShroud = resp.responseData.drawShroud
-        resetOptions.initialMapZoom = resp.responseData.initialMapZoom
-        resetOptions.gameSpeed = resp.responseData.gameSpeed
-        return resetOptions
+        SimulationOptions simulationOptions = new SimulationOptions()
 
+        simulationOptions.gameSpeed = resp.responseData.gameSpeed
+
+        return simulationOptions
     }
 
 

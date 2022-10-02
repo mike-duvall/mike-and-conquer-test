@@ -17,8 +17,6 @@ import util.TestUtil
 
 
 
-
-
 class UITests extends Specification {
 
     MikeAndConquerSimulationClient simulationClient
@@ -35,16 +33,12 @@ class UITests extends Specification {
         boolean useTimeouts = true
 //        boolean useTimeouts = false
         uiClient = new MikeAndConquerUIClient(host, useTimeouts )
-        UIOptions uiOptions = new UIOptions()
-        uiOptions.drawShroud = false
-        uiOptions.mapZoomLevel = 2.0
+        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 2.0)
         uiClient.setUIOptions(uiOptions)
 
 
         simulationClient = new MikeAndConquerSimulationClient(host,  useTimeouts)
         sequentialEventReader = new SequentialEventReader(simulationClient)
-//        simulationClient.resetScenario()
-//        sleep(1000)
 
 
     }

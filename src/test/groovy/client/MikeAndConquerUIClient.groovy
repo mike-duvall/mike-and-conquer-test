@@ -70,6 +70,26 @@ class MikeAndConquerUIClient {
 
     }
 
+    UIOptions getUIOptions() {
+        def resp
+        try {
+            resp = restClient.get(
+                    path: '/ui/query/uioptions',
+                    requestContentType: 'application/json')
+            assert resp.status == 200
+        }
+        catch(HttpResponseException e) {
+            throw e
+        }
+
+        UIOptions uiOptions = new UIOptions()
+
+        uiOptions.mapZoomLevel = resp.responseData.mapZoomLevel
+        uiOptions.drawShroud = resp.responseData.drawShroud
+
+        return uiOptions
+    }
+
     void startScenario() {
 
         StartScenarioCommand command = new StartScenarioCommand()
