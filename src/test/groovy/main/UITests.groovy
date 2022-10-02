@@ -1,9 +1,6 @@
 package main
 
 
-import client.MikeAndConquerSimulationClient
-import client.MikeAndConquerUIClient
-import client.SequentialEventReader
 import domain.UIOptions
 import domain.Unit
 import domain.WorldCoordinatesLocation
@@ -11,36 +8,17 @@ import domain.WorldCoordinatesLocationBuilder
 import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
 import groovy.json.JsonSlurper
-import spock.lang.Specification
 import spock.lang.Unroll
 import util.TestUtil
 
 
 
-class UITests extends Specification {
+class UITests extends MikeAndConquerTestBase {
 
-    MikeAndConquerSimulationClient simulationClient
-    MikeAndConquerUIClient uiClient
-    SequentialEventReader sequentialEventReader
 
     def setup() {
-        String localhost = "localhost"
-        String remoteHost = "192.168.0.110"
-
-//        String host = localhost
-        String host = remoteHost
-
-        boolean useTimeouts = true
-//        boolean useTimeouts = false
-        uiClient = new MikeAndConquerUIClient(host, useTimeouts )
         UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 2.0)
-        uiClient.setUIOptions(uiOptions)
-
-
-        simulationClient = new MikeAndConquerSimulationClient(host,  useTimeouts)
-        sequentialEventReader = new SequentialEventReader(simulationClient)
-
-
+        setAndAssertUIOptions(uiOptions)
     }
 
     def "Select and move a minigunner with mouse clicks"() {

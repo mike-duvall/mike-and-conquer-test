@@ -1,30 +1,18 @@
 package main
 
-import client.MikeAndConquerSimulationClient
-import client.MikeAndConquerUIClient
-import client.SequentialEventReader
 import domain.*
 import domain.event.EventBlock
 import domain.event.EventType
 import domain.event.FindEventResult
 import domain.event.PathStep
 import domain.event.SimulationStateUpdateEvent
-import groovy.json.JsonSlurper
-import spock.lang.Specification
 import spock.lang.Unroll
 import spock.util.concurrent.PollingConditions
 import util.TestUtil
 
 
 
-class MiscTests extends Specification {
-
-    MikeAndConquerSimulationClient simulationClient
-    MikeAndConquerUIClient uiClient
-    SequentialEventReader sequentialEventReader
-    JsonSlurper jsonSlurper
-
-
+class MiscTests extends MikeAndConquerTestBase {
 
     enum GameSpeed
     {
@@ -40,59 +28,12 @@ class MiscTests extends Specification {
     }
 
 
-    void setAndAssertUIOptions(UIOptions uiOptions) {
-        uiClient.setUIOptions(uiOptions)
-        assertUIOptionsAreSetTo(uiOptions)
-    }
-
-
-    def assertUIOptionsAreSetTo(UIOptions desiredUIOptions) {
-        def conditions = new PollingConditions(timeout: 10, initialDelay: 0.5, factor: 1.25)
-        conditions.eventually {
-            UIOptions uiOptions = uiClient.getUIOptions()
-            assert uiOptions.mapZoomLevel == desiredUIOptions.mapZoomLevel
-            assert uiOptions.drawShroud == desiredUIOptions.drawShroud
-        }
-        return true
-    }
-
-    void setAndAssertSimulationOptions(SimulationOptions simulationOptions) {
-        simulationClient.setSimulationOptions(simulationOptions)
-        assertSimulationOptionsAreSetTo(simulationOptions)
-    }
-
-    def assertSimulationOptionsAreSetTo(SimulationOptions desiredOptions) {
-        def conditions = new PollingConditions(timeout: 10, initialDelay: 0.5, factor: 1.25)
-        conditions.eventually {
-            SimulationOptions retrievedOptions = simulationClient.getSimulationOptions()
-            assert retrievedOptions.gameSpeed == desiredOptions.gameSpeed
-        }
-        return true
-    }
-
-
 
     def setup() {
-        String localhost = "localhost"
-        String remoteHost = "192.168.0.110"
-
-//        String host = localhost
-        String host = remoteHost
-
-        boolean useTimeouts = true
-//        boolean useTimeouts = false
-        simulationClient = new MikeAndConquerSimulationClient(host,  useTimeouts )
-        sequentialEventReader = new SequentialEventReader(simulationClient)
-        jsonSlurper = new JsonSlurper()
-
-        uiClient = new MikeAndConquerUIClient(host, useTimeouts )
-
         UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 2.0)
         setAndAssertUIOptions(uiOptions)
-
         simulationClient.startScenario()
         sleep(1000)
-
     }
 
     @Unroll
@@ -111,7 +52,6 @@ class MiscTests extends Specification {
 
         long startingTick = -1
         long endingTick = -1
-
 
         SimulationOptions simulationOptions = new SimulationOptions(gameSpeed: gameSpeed)
         setAndAssertSimulationOptions(simulationOptions)
@@ -150,21 +90,21 @@ class MiscTests extends Specification {
 
         then:
         SimulationStateUpdateEvent unitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
-        def secondEventDataAsObject = jsonSlurper.parseText(unitOrderedToMoveEvent.eventData)
-        assert secondEventDataAsObject.DestinationXInWorldCoordinates == unitDestinationLocation.XInWorldCoordinates()
-        assert secondEventDataAsObject.DestinationYInWorldCoordinates == unitDestinationLocation.YInWorldCoordinates()
-        assert secondEventDataAsObject.UnitId == createdUnitId
+        def unitOrderedToMoveEventData = jsonSlurper.parseText(unitOrderedToMoveEvent.eventData)
+        assert unitOrderedToMoveEventData.DestinationXInWorldCoordinates == unitDestinationLocation.XInWorldCoordinates()
+        assert unitOrderedToMoveEventData.DestinationYInWorldCoordinates == unitDestinationLocation.YInWorldCoordinates()
+        assert unitOrderedToMoveEventData.UnitId == createdUnitId
 
         when:
-        startingTick = secondEventDataAsObject.Timestamp
+        startingTick = unitOrderedToMoveEventData.Timestamp
 
         then:
         SimulationStateUpdateEvent unitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
-        def thirdEventDataAsObject = jsonSlurper.parseText(unitArrivedAtDestinationEvent.eventData)
-        assert thirdEventDataAsObject.UnitId == createdUnitId
+        def unitArrivedAtDestinationEventData = jsonSlurper.parseText(unitArrivedAtDestinationEvent.eventData)
+        assert unitArrivedAtDestinationEventData.UnitId == createdUnitId
 
         when:
-        endingTick = thirdEventDataAsObject.Timestamp
+        endingTick = unitArrivedAtDestinationEventData.Timestamp
         int startingMilliseconds = startingTick / 10000
         int endingMilliseconds = endingTick / 10000
         int totalTime = endingMilliseconds - startingMilliseconds
@@ -176,21 +116,21 @@ class MiscTests extends Specification {
 
         where:
         unitType    | expectedTotalEvents   | expectedTimeInMillis  | gameSpeed
-        "Jeep"      |  140                  |  30236                | "Slowest"
-        "Jeep"      |  140                  |  15120                | "Slower"
-        "Jeep"      |  140                  |  10082                | "Slow"
-        "Jeep"      |  140                  |  7560                 | "Moderate"
-        "Jeep"      |  140                  |  5040                 | "Normal"
-        "Jeep"      |  140                  | 3697                  | "Fast"
-        "Jeep"      |  140                  | 3024                  | "Faster"
-        "Jeep"      |  140                  | 2855                  | "Fastest"
-        "MCV"       |  302                  | 75597                 | "Slowest"
-        "MCV"       |  302                  | 37801                 | "Slower"
-        "MCV"       |  302                  | 25201                 | "Slow"
-        "MCV"       |  302                  | 18900                 | "Moderate"
-        "MCV"       |  302                  | 12601                 | "Normal"
-        "MCV"       |  302                  | 9240                  | "Fast"
-        "MCV"       |  302                  | 7560                  | "Faster"
+//        "Jeep"      |  140                  |  30236                | "Slowest"
+//        "Jeep"      |  140                  |  15120                | "Slower"
+//        "Jeep"      |  140                  |  10082                | "Slow"
+//        "Jeep"      |  140                  |  7560                 | "Moderate"
+//        "Jeep"      |  140                  |  5040                 | "Normal"
+//        "Jeep"      |  140                  | 3697                  | "Fast"
+//        "Jeep"      |  140                  | 3024                  | "Faster"
+//        "Jeep"      |  140                  | 2855                  | "Fastest"
+//        "MCV"       |  302                  | 75597                 | "Slowest"
+//        "MCV"       |  302                  | 37801                 | "Slower"
+//        "MCV"       |  302                  | 25201                 | "Slow"
+//        "MCV"       |  302                  | 18900                 | "Moderate"
+//        "MCV"       |  302                  | 12601                 | "Normal"
+//        "MCV"       |  302                  | 9240                  | "Fast"
+//        "MCV"       |  302                  | 7560                  | "Faster"
         "MCV"       |  302                  | 7139                  | "Fastest"
     }
 
@@ -201,9 +141,7 @@ class MiscTests extends Specification {
         int minigunnerId = -1
 
         SimulationOptions simulationOptions = new SimulationOptions(gameSpeed: GameSpeed.Fastest)
-//        simulationOptions.gameSpeed = GameSpeed.Fastest
         setAndAssertSimulationOptions(simulationOptions)
-
 
         when:
         WorldCoordinatesLocation startLocation = new WorldCoordinatesLocationBuilder()
@@ -220,11 +158,12 @@ class MiscTests extends Specification {
         assert minigunnerCreatedEvent.eventType == expectedCreationEventType
 
         when:
-        def unitDataObject = jsonSlurper.parseText(minigunnerCreatedEvent.eventData)
-        Unit createdUnit = new Unit()
-        createdUnit.unitId = unitDataObject.UnitId
-        createdUnit.x = unitDataObject.X
-        createdUnit.y = unitDataObject.Y
+        Unit createdUnit = parseUnitFromEventData(minigunnerCreatedEvent.eventData)
+//        def unitDataObject = jsonSlurper.parseText(minigunnerCreatedEvent.eventData)
+//        Unit createdUnit = new Unit()
+//        createdUnit.unitId = unitDataObject.UnitId
+//        createdUnit.x = unitDataObject.X
+//        createdUnit.y = unitDataObject.Y
         minigunnerId = createdUnit.unitId
 
 
@@ -242,6 +181,20 @@ class MiscTests extends Specification {
 
         then:
         SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
+        TestUtil.assertUnitOrderedToMoveEvent(
+                expectedUnitOrderedToMoveEvent,
+                minigunnerId,
+                destinationLocation.XInWorldCoordinates(),
+                destinationLocation.YInWorldCoordinates())
+
+        and: "Planned path is equal to expected path"
+        SimulationStateUpdateEvent expectedUnitMovementPlanCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_MOVEMENT_PLAN_CREATED)
+        def expectedUnitMovementPlanCreatedEventDataAsObject = jsonSlurper.parseText(expectedUnitMovementPlanCreatedEvent.eventData)
+
+        int expectedNumPathSteps = 11
+        assert expectedUnitMovementPlanCreatedEventDataAsObject.UnitId == minigunnerId
+        assert expectedUnitMovementPlanCreatedEventDataAsObject.PathSteps.size() == expectedNumPathSteps
+        def pathStepList = expectedUnitMovementPlanCreatedEventDataAsObject.PathSteps
 
         ArrayList<PathStep> expectedPathSteps = []
         expectedPathSteps.add( new PathStep(x: 14, y:13))
@@ -256,24 +209,6 @@ class MiscTests extends Specification {
         expectedPathSteps.add( new PathStep(x: 7, y:16))
         expectedPathSteps.add( new PathStep(x: 7, y:15))
 
-        TestUtil.assertUnitOrderedToMoveEvent(
-                expectedUnitOrderedToMoveEvent,
-                minigunnerId,
-                destinationLocation.XInWorldCoordinates(),
-                destinationLocation.YInWorldCoordinates())
-
-        and: "Planned path is equal to expected path"
-        SimulationStateUpdateEvent expectedUnitMovementPlanCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_MOVEMENT_PLAN_CREATED)
-//        assert expectedUnitMovementPlanCreatedEvent.eventType == "UnitMovementPlanCreated"
-//
-//        def jsonSlurper = new JsonSlurper()
-        def expectedUnitMovementPlanCreatedEventDataAsObject = jsonSlurper.parseText(expectedUnitMovementPlanCreatedEvent.eventData)
-
-        int expectedNumPathSteps = 11
-        assert expectedUnitMovementPlanCreatedEventDataAsObject.UnitId == minigunnerId
-        assert expectedUnitMovementPlanCreatedEventDataAsObject.PathSteps.size() == expectedNumPathSteps
-
-        def pathStepList = expectedUnitMovementPlanCreatedEventDataAsObject.PathSteps
 
         int expectedPathStepIndex = 0
         for(def nextPathStep  : pathStepList) {
@@ -290,7 +225,7 @@ class MiscTests extends Specification {
             )
         }
 
-        and: "Assert we are at the end of the event list, no more ArrivedAtPathStep events"
+        and:
         SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, minigunnerId)
 
@@ -426,7 +361,6 @@ class MiscTests extends Specification {
 
         SimulationStateUpdateEvent unitArrivedAtPathStepEvent = findEventResult.event
         assert unitArrivedAtPathStepEvent.eventType == "UnitArrivedAtPathStep"
-        def jsonSlurper = new JsonSlurper()
         def unitArrivedAtPathStepEventData = jsonSlurper.parseText(unitArrivedAtPathStepEvent.eventData)
         assert unitArrivedAtPathStepEventData.PathStep.X == expectedXInMapTileSquareCoordinates * 24 + 12
         assert unitArrivedAtPathStepEventData.PathStep.Y == expectedYInMapTileSquareCoordinates * 24 + 12
@@ -436,12 +370,8 @@ class MiscTests extends Specification {
     }
 
     def assertReceivedUnitArrivedAtPathStepEvent( int expectedXInMapTileSquareCoordinates, int expectedYInMapTileSquareCoordinates) {
-//        FindEventResult findEventResult = findNextEventAfter(index, gameEventList, "UnitArrivedAtPathStep")
         SimulationStateUpdateEvent unitArrivedAtPathStepEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_PATH_STEP)
-
-//        SimulationStateUpdateEvent unitArrivedAtPathStepEvent = findEventResult.event
         assert unitArrivedAtPathStepEvent.eventType == "UnitArrivedAtPathStep"
-        def jsonSlurper = new JsonSlurper()
         def unitArrivedAtPathStepEventData = jsonSlurper.parseText(unitArrivedAtPathStepEvent.eventData)
         assert unitArrivedAtPathStepEventData.PathStep.X == expectedXInMapTileSquareCoordinates * 24 + 12
         assert unitArrivedAtPathStepEventData.PathStep.Y == expectedYInMapTileSquareCoordinates * 24 + 12
@@ -488,6 +418,7 @@ class MiscTests extends Specification {
         return createdUnit
 
     }
+
 
 
 

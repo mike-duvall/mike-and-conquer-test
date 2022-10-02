@@ -20,37 +20,18 @@ import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 
 
-//class ShroudTests extends MikeAndConquerTestBase {
-class ShroudTests extends Specification {
+class ShroudTests extends MikeAndConquerTestBase {
 
 
-    MikeAndConquerSimulationClient simulationClient
-    MikeAndConquerUIClient uiClient
-
-    SequentialEventReader sequentialEventReader
 
 
     def setup() {
-        boolean showShroud = true
-        float initialMapZoom = 1
-
-        String localhost = "localhost"
-        String remoteHost = "192.168.0.110"
-
-//        String host = localhost
-        String host = remoteHost
-
-        boolean useTimeouts = true
-//        boolean useTimeouts = false
-        uiClient = new MikeAndConquerUIClient(host, useTimeouts )
 
         UIOptions uiOptions = new UIOptions(drawShroud: true, mapZoomLevel: 1.0)
-        uiClient.setUIOptions(uiOptions)
+        setAndAssertUIOptions(uiOptions)
         uiClient.startScenario()
         sleep(1000)
 
-        simulationClient = new MikeAndConquerSimulationClient(host, useTimeouts)
-        sequentialEventReader = new SequentialEventReader(simulationClient)
 
 //        // Add bogus minigunner to not delete so game state stays in "Playing"
 //        WorldCoordinatesLocation unitStartLocation = new WorldCoordinatesLocationBuilder()
