@@ -35,12 +35,11 @@ class UITests extends MikeAndConquerTestBase {
         simulationClient.addMinigunner(minigunnerStartLocation)
 
         then:
-//        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 2)
-//        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 35)
-        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 31)
+        SimulationStateUpdateEvent minigunnerCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+        Unit createdMinigunner = parseUnitFromEventData(minigunnerCreatedEvent.eventData)
 
         when:
-        minigunnerId = TestUtil.assertMinigunnerCreatedEventReceived(simulationClient)
+        minigunnerId = createdMinigunner.unitId
 
         then:
         assert minigunnerId != -1
@@ -61,23 +60,12 @@ class UITests extends MikeAndConquerTestBase {
         int destinationXInWorldCoordinates = leftClickLocation.XInWorldCoordinates()
         int destinationYInWorldCoordinates =leftClickLocation.YInWorldCoordinates()
 
-        and:
-//        int expectedTotalEvents = 51
-        int expectedTotalEvents = 120
-
-        and:
-        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient,expectedTotalEvents)
 
         then:
-//        List<SimulationStateUpdateEvent> gameEventList = simulationClient.getSimulationStateUpdateEvents()
-//        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = gameEventList.get(2)
         SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
         TestUtil.assertUnitOrderedToMoveEvent(expectedUnitOrderedToMoveEvent, minigunnerId, destinationXInWorldCoordinates, destinationYInWorldCoordinates)
 
-
-
         and:
-//        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = gameEventList.get(expectedTotalEvents - 1)
         SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, minigunnerId)
 

@@ -5,6 +5,7 @@ import client.MikeAndConquerUIClient
 import client.SequentialEventReader
 import domain.SimulationOptions
 import domain.UIOptions
+import domain.Unit
 import groovy.json.JsonSlurper
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
@@ -71,5 +72,17 @@ class MikeAndConquerTestBase extends Specification {
         }
         return true
     }
+
+    Unit parseUnitFromEventData(String unitCreatedEventData) {
+        def unitDataObject = jsonSlurper.parseText(unitCreatedEventData)
+        Unit createdUnit = new Unit()
+        createdUnit.unitId = unitDataObject.UnitId
+        createdUnit.x = unitDataObject.X
+        createdUnit.y = unitDataObject.Y
+
+        return createdUnit
+
+    }
+
 
 }
