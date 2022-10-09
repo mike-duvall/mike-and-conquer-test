@@ -13,6 +13,7 @@ import domain.WorldCoordinatesLocationBuilder
 import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
 import groovy.json.JsonSlurper
+import spock.lang.Ignore
 import spock.lang.Specification
 import util.ImageUtil
 
@@ -88,6 +89,7 @@ class ShroudTests extends MikeAndConquerTestBase {
         assertScreenshotMatches(testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
     }
 
+    @Ignore
     def "Shroud screenshot scenario 3"() {
         given:
         WorldCoordinatesLocation mcvLocation = new WorldCoordinatesLocationBuilder()
@@ -111,6 +113,7 @@ class ShroudTests extends MikeAndConquerTestBase {
         assertScreenshotMatches(testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
     }
 
+    @Ignore
     def "Shroud screenshot scenario 4"() {
         given:
         WorldCoordinatesLocation mcvLocation = new WorldCoordinatesLocationBuilder()
@@ -134,6 +137,7 @@ class ShroudTests extends MikeAndConquerTestBase {
         assertScreenshotMatches(testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
     }
 
+    @Ignore
     def "Shroud screenshot scenario 5"() {
         given:
         WorldCoordinatesLocation mcvLocation = new WorldCoordinatesLocationBuilder()
@@ -294,6 +298,7 @@ class ShroudTests extends MikeAndConquerTestBase {
 
     }
 
+    @Ignore
     def "Shroud screenshot scenario 11"() {
         given:
         WorldCoordinatesLocation mcvLocation = new WorldCoordinatesLocationBuilder()
@@ -321,6 +326,7 @@ class ShroudTests extends MikeAndConquerTestBase {
         assertScreenshotMatches(testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
     }
 
+    @Ignore
     def "Shroud screenshot scenario 12"() {
         given:
         WorldCoordinatesLocation mcvLocation = new WorldCoordinatesLocationBuilder()
@@ -609,7 +615,7 @@ class ShroudTests extends MikeAndConquerTestBase {
 
 
 
-            boolean screenshot = true
+            boolean screenshot = false
 
             if(screenshot) {
                 BufferedImage fullScreenShot = uiClient.getScreenshot()
