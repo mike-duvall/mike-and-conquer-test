@@ -1,8 +1,5 @@
 package main
 
-import client.MikeAndConquerSimulationClient
-import client.MikeAndConquerUIClient
-import client.SequentialEventReader
 import domain.MovementDirection
 
 
@@ -14,7 +11,6 @@ import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
 import groovy.json.JsonSlurper
 import spock.lang.Ignore
-import spock.lang.Specification
 import util.ImageUtil
 
 import javax.imageio.ImageIO
@@ -49,6 +45,10 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
         simulationClient.addMCV(mcvLocation)
+
+
+        and:
+        sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
 
         when: "Test scenario 1"
         int testScenarioNumber = 1

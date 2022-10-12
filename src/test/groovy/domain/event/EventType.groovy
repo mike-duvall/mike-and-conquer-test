@@ -3,6 +3,7 @@ package domain.event
 class EventType {
 
     static String MINIGUNNER_CREATED = "MinigunnerCreated"
+    static String MCV_CREATED = "MCVCreated"
     static String UNIT_DELETED = "UnitDeleted"
     static String UNIT_ORDERED_TO_MOVE = "UnitOrderedToMove"
     static String UNIT_MOVEMENT_PLAN_CREATED = "UnitMovementPlanCreated"
