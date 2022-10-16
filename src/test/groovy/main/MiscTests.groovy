@@ -371,33 +371,4 @@ class MiscTests extends MikeAndConquerTestBase {
     }
 
 
-//    def assertNumberOfSimulationStateUpdateEvents(int numEventsToAssert) {
-//        int timeoutInSeconds = 30
-//        List<SimulationStateUpdateEvent>  gameEventList
-//        def conditions = new PollingConditions(timeout: timeoutInSeconds, initialDelay: 1.5, factor: 1.25)
-//        conditions.eventually {
-//            gameEventList = simulationClient.getSimulationStateUpdateEvents()
-//            assert gameEventList.size() == numEventsToAssert
-//        }
-//        return true
-//
-//    }
-//    void assertExpectedEventList(List<SimulationStateUpdateEvent> simulationStateUpdateEvents, ArrayList<EventBlock> expectedEventList) {
-//        boolean done = false
-//        int actualEventIndex = 0
-//
-//        for(EventBlock eventBlock in expectedEventList) {
-//            for(int i = 0; i < eventBlock.numberOfEvents; i++) {
-//                SimulationStateUpdateEvent simulationStateUpdateEvent = simulationStateUpdateEvents.get(actualEventIndex)
-//                assert simulationStateUpdateEvent.eventType == eventBlock.eventType
-//                actualEventIndex++
-//            }
-//        }
-//
-//        assert actualEventIndex == simulationStateUpdateEvents.size()
-//
-//    }
-
-
-
 }
