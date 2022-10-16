@@ -80,9 +80,6 @@ class ShroudTests extends MikeAndConquerTestBase {
 
         def movements = [MovementDirection.NORTH, MovementDirection.NORTH]
 
-//        Point mcvLocationWoldMapTileCoordaintesAsPoint = new Point(mcvLocation.XInWorldMapTileCoordinates(), mcvLocation.YInWorldMapTileCoordinates())
-
-
         doMinigunnerPlacements(mcvLocation, movements)
 
         then:
@@ -239,8 +236,6 @@ class ShroudTests extends MikeAndConquerTestBase {
         assertScreenshotMatches(testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
 
     }
-
-
 
     def "Shroud screenshot scenario 9"() {
         given:
@@ -540,7 +535,6 @@ class ShroudTests extends MikeAndConquerTestBase {
         writeImageToFileInBuildDirectory(realGameScreenshot, realGameCopiedFilename )
         writeImageToFileInBuildDirectory(screenshotSubImage, mikeAndConquerCopiedFilename )
 
-//        assert true
         assert ImageUtil.imagesAreEqual(screenshotSubImage, realGameScreenshot)
     }
 
@@ -562,7 +556,6 @@ class ShroudTests extends MikeAndConquerTestBase {
 
 
     private void doMinigunnerPlacements(WorldCoordinatesLocation mcvLocation, List<MovementDirection> movements) {
-//        Point currentLocation = mcvLocation
 
         int screenshotIndex = 0;
         Point currentLocation = new Point(mcvLocation.XInWorldMapTileCoordinates(), mcvLocation.YInWorldMapTileCoordinates())
@@ -615,9 +608,9 @@ class ShroudTests extends MikeAndConquerTestBase {
 
 
 
-            boolean screenshot = false
+            boolean debugScreenshot = false
 
-            if(screenshot) {
+            if(debugScreenshot) {
                 BufferedImage fullScreenShot = uiClient.getScreenshot()
 
                 String baseFileName = "test-full-screenshot-";
@@ -626,8 +619,8 @@ class ShroudTests extends MikeAndConquerTestBase {
                 screenshotIndex++
 
             }
-            simulationClient.removeUnit(minigunnerId)
 
+            simulationClient.removeUnit(minigunnerId)
 
             SimulationStateUpdateEvent minigunnerDeletedEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_DELETED)
             def unitDeletedEventData = jsonSlurper.parseText(minigunnerDeletedEvent.eventData)

@@ -34,12 +34,6 @@ class MikeAndConquerTestBase extends Specification {
 
         uiClient = new MikeAndConquerUIClient(host, useTimeouts )
 
-//        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 2.0)
-//        setAndAssertUIOptions(uiOptions)
-//
-//        simulationClient.startScenario()
-//        sleep(1000)
-
     }
 
 

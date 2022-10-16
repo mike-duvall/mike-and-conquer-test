@@ -1,13 +1,13 @@
 package main
 
 import domain.*
-import domain.event.EventBlock
+
 import domain.event.EventType
 import domain.event.FindEventResult
 import domain.event.PathStep
 import domain.event.SimulationStateUpdateEvent
 import spock.lang.Unroll
-import spock.util.concurrent.PollingConditions
+
 import util.TestUtil
 
 
@@ -157,11 +157,6 @@ class MiscTests extends MikeAndConquerTestBase {
 
         when:
         Unit createdUnit = parseUnitFromEventData(minigunnerCreatedEvent.eventData)
-//        def unitDataObject = jsonSlurper.parseText(minigunnerCreatedEvent.eventData)
-//        Unit createdUnit = new Unit()
-//        createdUnit.unitId = unitDataObject.UnitId
-//        createdUnit.x = unitDataObject.X
-//        createdUnit.y = unitDataObject.Y
         minigunnerId = createdUnit.unitId
 
 
@@ -373,50 +368,35 @@ class MiscTests extends MikeAndConquerTestBase {
         def unitArrivedAtPathStepEventData = jsonSlurper.parseText(unitArrivedAtPathStepEvent.eventData)
         assert unitArrivedAtPathStepEventData.PathStep.X == expectedXInMapTileSquareCoordinates * 24 + 12
         assert unitArrivedAtPathStepEventData.PathStep.Y == expectedYInMapTileSquareCoordinates * 24 + 12
-
-//        return findEventResult.index
-
     }
 
 
-    def assertNumberOfSimulationStateUpdateEvents(int numEventsToAssert) {
-        int timeoutInSeconds = 30
-        List<SimulationStateUpdateEvent>  gameEventList
-        def conditions = new PollingConditions(timeout: timeoutInSeconds, initialDelay: 1.5, factor: 1.25)
-        conditions.eventually {
-            gameEventList = simulationClient.getSimulationStateUpdateEvents()
-            assert gameEventList.size() == numEventsToAssert
-        }
-        return true
-
-    }
-    void assertExpectedEventList(List<SimulationStateUpdateEvent> simulationStateUpdateEvents, ArrayList<EventBlock> expectedEventList) {
-        boolean done = false
-        int actualEventIndex = 0
-
-        for(EventBlock eventBlock in expectedEventList) {
-            for(int i = 0; i < eventBlock.numberOfEvents; i++) {
-                SimulationStateUpdateEvent simulationStateUpdateEvent = simulationStateUpdateEvents.get(actualEventIndex)
-                assert simulationStateUpdateEvent.eventType == eventBlock.eventType
-                actualEventIndex++
-            }
-        }
-
-        assert actualEventIndex == simulationStateUpdateEvents.size()
-
-    }
-
-//    Unit parseUnitFromEventData(String unitCreatedEventData) {
-//        def unitDataObject = jsonSlurper.parseText(unitCreatedEventData)
-//        Unit createdUnit = new Unit()
-//        createdUnit.unitId = unitDataObject.UnitId
-//        createdUnit.x = unitDataObject.X
-//        createdUnit.y = unitDataObject.Y
-//
-//        return createdUnit
+//    def assertNumberOfSimulationStateUpdateEvents(int numEventsToAssert) {
+//        int timeoutInSeconds = 30
+//        List<SimulationStateUpdateEvent>  gameEventList
+//        def conditions = new PollingConditions(timeout: timeoutInSeconds, initialDelay: 1.5, factor: 1.25)
+//        conditions.eventually {
+//            gameEventList = simulationClient.getSimulationStateUpdateEvents()
+//            assert gameEventList.size() == numEventsToAssert
+//        }
+//        return true
 //
 //    }
-
+//    void assertExpectedEventList(List<SimulationStateUpdateEvent> simulationStateUpdateEvents, ArrayList<EventBlock> expectedEventList) {
+//        boolean done = false
+//        int actualEventIndex = 0
+//
+//        for(EventBlock eventBlock in expectedEventList) {
+//            for(int i = 0; i < eventBlock.numberOfEvents; i++) {
+//                SimulationStateUpdateEvent simulationStateUpdateEvent = simulationStateUpdateEvents.get(actualEventIndex)
+//                assert simulationStateUpdateEvent.eventType == eventBlock.eventType
+//                actualEventIndex++
+//            }
+//        }
+//
+//        assert actualEventIndex == simulationStateUpdateEvents.size()
+//
+//    }
 
 
 

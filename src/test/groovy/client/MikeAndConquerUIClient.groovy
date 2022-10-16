@@ -5,7 +5,7 @@ import groovy.json.JsonOutput
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient
 import org.apache.http.params.CoreConnectionPNames
-import util.Util
+
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
@@ -18,14 +18,14 @@ class MikeAndConquerUIClient {
     RESTClient  restClient
     int port = 5010
 
-    private static final String GDI_MINIGUNNERS_BASE_URL = '/mac/gdiMinigunners'
-    private static final String NOD_MINIGUNNERS_BASE_URL = '/mac/nodMinigunners'
-    private static final String MCV_BASE_URL = '/mac/MCV'
-    private static final String GDI_CONSTRUCTION_YARD = '/mac/GDIConstructionYard'
-    private static final String SIDEBAR_BASE_URL = '/mac/Sidebar'
-    private static final String NOD_TURRET_BASE_URL = '/mac/NodTurret'
-    private static final String GAME_OPTIONS_URL = '/mac/gameOptions'
-    private static final String GAME_HISTORY_EVENTS_URL = '/mac/gameHistoryEvents'
+//    private static final String GDI_MINIGUNNERS_BASE_URL = '/mac/gdiMinigunners'
+//    private static final String NOD_MINIGUNNERS_BASE_URL = '/mac/nodMinigunners'
+//    private static final String MCV_BASE_URL = '/mac/MCV'
+//    private static final String GDI_CONSTRUCTION_YARD = '/mac/GDIConstructionYard'
+//    private static final String SIDEBAR_BASE_URL = '/mac/Sidebar'
+//    private static final String NOD_TURRET_BASE_URL = '/mac/NodTurret'
+//    private static final String GAME_OPTIONS_URL = '/mac/gameOptions'
+//    private static final String GAME_HISTORY_EVENTS_URL = '/mac/gameHistoryEvents'
 
 
     MikeAndConquerUIClient(String host,  boolean useTimeouts = true) {
@@ -62,11 +62,9 @@ class MikeAndConquerUIClient {
             assert resp.status == 200
         }
         catch(HttpResponseException e) {
-            int x = 3
             throw e
         }
 
-        int y = 4
 
     }
 

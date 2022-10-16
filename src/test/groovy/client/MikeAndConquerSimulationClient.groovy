@@ -15,14 +15,14 @@ class MikeAndConquerSimulationClient {
     RESTClient  restClient
     int port = 5000
 
-    private static final String GDI_MINIGUNNERS_BASE_URL = '/mac/gdiMinigunners'
-    private static final String NOD_MINIGUNNERS_BASE_URL = '/mac/nodMinigunners'
-    private static final String MCV_BASE_URL = '/mac/MCV'
-    private static final String GDI_CONSTRUCTION_YARD = '/mac/GDIConstructionYard'
-    private static final String SIDEBAR_BASE_URL = '/mac/Sidebar'
-    private static final String NOD_TURRET_BASE_URL = '/mac/NodTurret'
-    private static final String GAME_OPTIONS_URL = '/mac/gameOptions'
-    private static final String GAME_HISTORY_EVENTS_URL = '/mac/gameHistoryEvents'
+//    private static final String GDI_MINIGUNNERS_BASE_URL = '/mac/gdiMinigunners'
+//    private static final String NOD_MINIGUNNERS_BASE_URL = '/mac/nodMinigunners'
+//    private static final String MCV_BASE_URL = '/mac/MCV'
+//    private static final String GDI_CONSTRUCTION_YARD = '/mac/GDIConstructionYard'
+//    private static final String SIDEBAR_BASE_URL = '/mac/Sidebar'
+//    private static final String NOD_TURRET_BASE_URL = '/mac/NodTurret'
+//    private static final String GAME_OPTIONS_URL = '/mac/gameOptions'
+//    private static final String GAME_HISTORY_EVENTS_URL = '/mac/gameHistoryEvents'
 
 
     MikeAndConquerSimulationClient(String host,  boolean useTimeouts = true) {
@@ -38,17 +38,8 @@ class MikeAndConquerSimulationClient {
 
 
     void setSimulationOptions(SimulationOptions simulationOptions) {
-//        def resp = restClient.post(
-//                path: GAME_OPTIONS_URL,
-//                body: resetOptions,
-//                requestContentType: 'application/json' )
-//
-//        assert resp.status == 204
-
-
         SetOptionsUserCommand command = new SetOptionsUserCommand()
         command.commandType = "SetOptions"
-//        command.unitId = unitId
 
         def commandParams =
                 [
@@ -227,9 +218,9 @@ class MikeAndConquerSimulationClient {
     }
 
 
-    List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents() {
-        getSimulationStateUpdateEvents(0)
-    }
+//    List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents() {
+//        getSimulationStateUpdateEvents(0)
+//    }
 
     List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents(int startIndex) {
         def resp = restClient.get(
