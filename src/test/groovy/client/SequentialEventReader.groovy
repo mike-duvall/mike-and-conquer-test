@@ -5,39 +5,50 @@ import spock.util.concurrent.PollingConditions
 
 class SequentialEventReader {
 
-    private int currentIndex = 0
+
     MikeAndConquerSimulationClient simulationClient
+
+    private int indexOfFurthestEvaluatedEvent = 0;
+    List<SimulationStateUpdateEvent> allReceivedEvents
 
     SequentialEventReader(MikeAndConquerSimulationClient client) {
         this.simulationClient = client
+        this.allReceivedEvents = []
     }
-
 
     SimulationStateUpdateEvent waitForEventOfType(String eventType) {
 
         int timeoutInSeconds = 30
         SimulationStateUpdateEvent foundEvent = null
-        List<SimulationStateUpdateEvent> gameEventList
+
         def conditions = new PollingConditions(timeout: timeoutInSeconds, initialDelay: 0.3, factor: 1.25)
         conditions.eventually {
-            gameEventList = simulationClient.getSimulationStateUpdateEvents()
-            int readToIndex = 0
-            if( gameEventList.size() > currentIndex) {
-                for(SimulationStateUpdateEvent event : gameEventList) {
 
-                    if(readToIndex < currentIndex) {
-                        readToIndex++
-                        continue
-                    }
-                    currentIndex++
-                    foundEvent = event
-                    assert event.eventType == eventType
+            List<SimulationStateUpdateEvent> latestEventList = simulationClient.getSimulationStateUpdateEvents(allReceivedEvents.size())
+            allReceivedEvents.addAll(latestEventList)
+
+            boolean done = indexOfFurthestEvaluatedEvent >= allReceivedEvents.size()
+            while(!done) {
+                SimulationStateUpdateEvent nextEventToEvaluate = allReceivedEvents.get(indexOfFurthestEvaluatedEvent)
+                indexOfFurthestEvaluatedEvent++
+
+                if(nextEventToEvaluate.eventType == eventType) {
+                    foundEvent = nextEventToEvaluate
+                    done = true
+                }
+                else {
+                    done = indexOfFurthestEvaluatedEvent >= allReceivedEvents.size()
                 }
             }
+
+            assert (foundEvent != null) && (eventType == foundEvent.eventType)
+
+
         }
 
         return foundEvent
 
-
     }
+
+
 }

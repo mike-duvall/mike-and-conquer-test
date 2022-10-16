@@ -13,18 +13,19 @@ class MikeAndConquerSimulationClient {
 
     String hostUrl
     RESTClient  restClient
+    int port = 5000
 
-    private static final String GDI_MINIGUNNERS_BASE_URL = '/mac/gdiMinigunners'
-    private static final String NOD_MINIGUNNERS_BASE_URL = '/mac/nodMinigunners'
-    private static final String MCV_BASE_URL = '/mac/MCV'
-    private static final String GDI_CONSTRUCTION_YARD = '/mac/GDIConstructionYard'
-    private static final String SIDEBAR_BASE_URL = '/mac/Sidebar'
-    private static final String NOD_TURRET_BASE_URL = '/mac/NodTurret'
-    private static final String GAME_OPTIONS_URL = '/mac/gameOptions'
-    private static final String GAME_HISTORY_EVENTS_URL = '/mac/gameHistoryEvents'
+//    private static final String GDI_MINIGUNNERS_BASE_URL = '/mac/gdiMinigunners'
+//    private static final String NOD_MINIGUNNERS_BASE_URL = '/mac/nodMinigunners'
+//    private static final String MCV_BASE_URL = '/mac/MCV'
+//    private static final String GDI_CONSTRUCTION_YARD = '/mac/GDIConstructionYard'
+//    private static final String SIDEBAR_BASE_URL = '/mac/Sidebar'
+//    private static final String NOD_TURRET_BASE_URL = '/mac/NodTurret'
+//    private static final String GAME_OPTIONS_URL = '/mac/gameOptions'
+//    private static final String GAME_HISTORY_EVENTS_URL = '/mac/gameHistoryEvents'
 
 
-    MikeAndConquerSimulationClient(String host, int port, boolean useTimeouts = true) {
+    MikeAndConquerSimulationClient(String host,  boolean useTimeouts = true) {
         hostUrl = "http://$host:$port"
         restClient = new RESTClient(hostUrl)
 
@@ -36,18 +37,9 @@ class MikeAndConquerSimulationClient {
 
 
 
-    void setGameOptions(SimulationOptions simulationOptions) {
-//        def resp = restClient.post(
-//                path: GAME_OPTIONS_URL,
-//                body: resetOptions,
-//                requestContentType: 'application/json' )
-//
-//        assert resp.status == 204
-
-
+    void setSimulationOptions(SimulationOptions simulationOptions) {
         SetOptionsUserCommand command = new SetOptionsUserCommand()
         command.commandType = "SetOptions"
-//        command.unitId = unitId
 
         def commandParams =
                 [
@@ -63,39 +55,51 @@ class MikeAndConquerSimulationClient {
                 requestContentType: 'application/json')
 
         assert resp.status == 200
-
-
     }
 
 
-    SimulationOptions getGameOptions() {
-
+    SimulationOptions getSimulationOptions() {
         def resp
         try {
-            resp = restClient.get(path: GAME_OPTIONS_URL)
+            resp = restClient.get(
+                    path: '/simulation/query/options',
+                    requestContentType: 'application/json')
+            assert resp.status == 200
         }
         catch(HttpResponseException e) {
-            if(e.statusCode == 404) {
-                return null
-            }
-            else {
-                throw e
-            }
+            throw e
         }
-        if( resp.status == 404) {
-            return null
-        }
-        assert resp.status == 200  // HTTP response code; 404 means not found, etc.
 
-        SimulationOptions resetOptions = new SimulationOptions()
-        resetOptions.drawShroud = resp.responseData.drawShroud
-        resetOptions.initialMapZoom = resp.responseData.initialMapZoom
-        resetOptions.gameSpeed = resp.responseData.gameSpeed
-        return resetOptions
+        SimulationOptions simulationOptions = new SimulationOptions()
 
+        simulationOptions.gameSpeed = resp.responseData.gameSpeed
+
+        return simulationOptions
     }
 
 
+    void removeUnit(int unitId) {
+
+        // TODO:  Do we need a generic Command class instead of CreateMinigunnerCOmmand?
+        CreateMinigunnerCommand createUnitCommand = new CreateMinigunnerCommand()
+        createUnitCommand.commandType = "RemoveUnit"
+
+        def commandParams =
+                [
+                        unitId: unitId
+                ]
+
+        createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
+
+        def resp = restClient.post(
+                path: '/simulation/command',
+                body: createUnitCommand,
+                requestContentType: 'application/json')
+
+        assert resp.status == 200
+
+
+    }
 
 
     void addMinigunner( WorldCoordinatesLocation location) {
@@ -214,9 +218,14 @@ class MikeAndConquerSimulationClient {
     }
 
 
-    def List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents() {
+//    List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents() {
+//        getSimulationStateUpdateEvents(0)
+//    }
+
+    List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents(int startIndex) {
         def resp = restClient.get(
                 path: '/simulation/query/events',
+                query: ['startIndex': startIndex],
                 requestContentType: 'application/json' )
 
         assert resp.status == 200
@@ -235,6 +244,21 @@ class MikeAndConquerSimulationClient {
         //int x = 3
 
     }
+
+    int getSimulationStateUpdateEventsCurrentIndex() {
+        def resp = restClient.get(
+                path: '/simulation/query/eventscount',
+                requestContentType: 'application/json' )
+
+        assert resp.status == 200
+
+        int numItems = resp.responseData
+
+        return numItems
+
+    }
+
+
 
     void moveUnit(int unitId, WorldCoordinatesLocation location) {
 

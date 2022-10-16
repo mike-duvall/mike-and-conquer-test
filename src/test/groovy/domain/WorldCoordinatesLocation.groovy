@@ -13,7 +13,7 @@ class WorldCoordinatesLocation {
         this.y = y
     }
 
-    public WorldCoordinatesLocation(WorldCoordinatesLocationBuilder builder) {
+    WorldCoordinatesLocation(WorldCoordinatesLocationBuilder builder) {
         this.x = builder.worldCoordinatesX
         this.y = builder.worldCoordinatesY
     }

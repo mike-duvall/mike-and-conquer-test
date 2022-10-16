@@ -10,50 +10,6 @@ import spock.util.concurrent.PollingConditions
 class TestUtil {
 
 
-    def static assertNumberOfSimulationStateUpdateEvents(MikeAndConquerSimulationClient simulationClient, int numEventsToAssert) {
-        int timeoutInSeconds = 30
-        List<SimulationStateUpdateEvent> gameEventList
-        def conditions = new PollingConditions(timeout: timeoutInSeconds, initialDelay: 1.5, factor: 1.25)
-        conditions.eventually {
-            gameEventList = simulationClient.getSimulationStateUpdateEvents()
-            assert gameEventList.size() == numEventsToAssert
-        }
-        return true
-
-    }
-
-    def static assertMinigunnerCreatedEventReceived(MikeAndConquerSimulationClient simulationClient) {
-        def jsonSlurper = new JsonSlurper()
-        int minigunnerId
-        List<SimulationStateUpdateEvent> events = simulationClient.getSimulationStateUpdateEvents()
-        for(event in events) {
-            if (event.eventType == "MinigunnerCreated") {
-                def eventData = jsonSlurper.parseText(event.eventData)
-
-                minigunnerId = eventData.UnitId
-            }
-        }
-
-        return minigunnerId
-    }
-
-    def static assertCreationOfUnitTypeReceived(MikeAndConquerSimulationClient simulationClient, String expectedEventType) {
-        def jsonSlurper = new JsonSlurper()
-        int unitId
-        List<SimulationStateUpdateEvent> events = simulationClient.getSimulationStateUpdateEvents()
-        for(event in events) {
-            if (event.eventType == expectedEventType) {
-                def eventData = jsonSlurper.parseText(event.eventData)
-
-                unitId = eventData.UnitId
-            }
-        }
-
-        return unitId
-    }
-
-
-
     static boolean  assertUnitIsSelected(MikeAndConquerUIClient uiClient, int unitId) {
 
         int timeoutInSeconds = 10

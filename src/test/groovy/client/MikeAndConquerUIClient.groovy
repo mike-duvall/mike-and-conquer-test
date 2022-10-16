@@ -5,7 +5,10 @@ import groovy.json.JsonOutput
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient
 import org.apache.http.params.CoreConnectionPNames
-import util.Util
+
+
+import javax.imageio.ImageIO
+import java.awt.image.BufferedImage
 
 
 class MikeAndConquerUIClient {
@@ -13,18 +16,19 @@ class MikeAndConquerUIClient {
 
     String hostUrl
     RESTClient  restClient
+    int port = 5010
 
-    private static final String GDI_MINIGUNNERS_BASE_URL = '/mac/gdiMinigunners'
-    private static final String NOD_MINIGUNNERS_BASE_URL = '/mac/nodMinigunners'
-    private static final String MCV_BASE_URL = '/mac/MCV'
-    private static final String GDI_CONSTRUCTION_YARD = '/mac/GDIConstructionYard'
-    private static final String SIDEBAR_BASE_URL = '/mac/Sidebar'
-    private static final String NOD_TURRET_BASE_URL = '/mac/NodTurret'
-    private static final String GAME_OPTIONS_URL = '/mac/gameOptions'
-    private static final String GAME_HISTORY_EVENTS_URL = '/mac/gameHistoryEvents'
+//    private static final String GDI_MINIGUNNERS_BASE_URL = '/mac/gdiMinigunners'
+//    private static final String NOD_MINIGUNNERS_BASE_URL = '/mac/nodMinigunners'
+//    private static final String MCV_BASE_URL = '/mac/MCV'
+//    private static final String GDI_CONSTRUCTION_YARD = '/mac/GDIConstructionYard'
+//    private static final String SIDEBAR_BASE_URL = '/mac/Sidebar'
+//    private static final String NOD_TURRET_BASE_URL = '/mac/NodTurret'
+//    private static final String GAME_OPTIONS_URL = '/mac/gameOptions'
+//    private static final String GAME_HISTORY_EVENTS_URL = '/mac/gameHistoryEvents'
 
 
-    MikeAndConquerUIClient(String host, int port, boolean useTimeouts = true) {
+    MikeAndConquerUIClient(String host,  boolean useTimeouts = true) {
         hostUrl = "http://$host:$port"
         restClient = new RESTClient(hostUrl)
 
@@ -32,6 +36,56 @@ class MikeAndConquerUIClient {
             restClient.client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, new Integer(5000))
             restClient.client.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, new Integer(5000))
         }
+    }
+
+
+    void setUIOptions(UIOptions uiOptions) {
+        StartScenarioCommand command = new StartScenarioCommand()
+        command.commandType = "SetUIOptions"
+
+        def commandParams =
+                [
+                        DrawShroud: uiOptions.drawShroud,
+                        MapZoomLevel: uiOptions.mapZoomLevel
+                ]
+
+        command.commandData =  JsonOutput.toJson(commandParams)
+
+
+        try {
+            def resp = restClient.post(
+                    path: '/ui/command',
+                    body: command,
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch(HttpResponseException e) {
+            throw e
+        }
+
+
+    }
+
+    UIOptions getUIOptions() {
+        def resp
+        try {
+            resp = restClient.get(
+                    path: '/ui/query/uioptions',
+                    requestContentType: 'application/json')
+            assert resp.status == 200
+        }
+        catch(HttpResponseException e) {
+            throw e
+        }
+
+        UIOptions uiOptions = new UIOptions()
+
+        uiOptions.mapZoomLevel = resp.responseData.mapZoomLevel
+        uiOptions.drawShroud = resp.responseData.drawShroud
+
+        return uiOptions
     }
 
     void startScenario() {
@@ -282,6 +336,14 @@ class MikeAndConquerUIClient {
             throw e
         }
     }
+
+    BufferedImage  getScreenshot() {
+        def resp = restClient.get( path : '/ui/screenshot' )
+        ByteArrayInputStream byteArrayInputStream = resp.responseData
+        BufferedImage screenShotImage = ImageIO.read(byteArrayInputStream)
+        return screenShotImage
+    }
+
 
 
 }

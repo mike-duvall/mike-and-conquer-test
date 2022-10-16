@@ -1,44 +1,24 @@
 package main
 
 
-import client.MikeAndConquerSimulationClient
-import client.MikeAndConquerUIClient
-import client.SequentialEventReader
+import domain.UIOptions
 import domain.Unit
 import domain.WorldCoordinatesLocation
 import domain.WorldCoordinatesLocationBuilder
+import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
 import groovy.json.JsonSlurper
-import spock.lang.Specification
 import spock.lang.Unroll
 import util.TestUtil
 
 
 
+class UITests extends MikeAndConquerTestBase {
 
-
-class UITests extends Specification {
-
-    MikeAndConquerSimulationClient simulationClient
-    MikeAndConquerUIClient uiClient
 
     def setup() {
-        String localhost = "localhost"
-        String remoteHost = "192.168.0.110"
-
-//        String host = localhost
-        String host = remoteHost
-
-        int port = 5010
-        boolean useTimeouts = true
-//        boolean useTimeouts = false
-        uiClient = new MikeAndConquerUIClient(host, port, useTimeouts )
-
-        simulationClient = new MikeAndConquerSimulationClient(host, 5000, useTimeouts)
-//        simulationClient.resetScenario()
-//        sleep(1000)
-
-
+        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 2.0)
+        setAndAssertUIOptions(uiOptions)
     }
 
     def "Select and move a minigunner with mouse clicks"() {
@@ -55,10 +35,11 @@ class UITests extends Specification {
         simulationClient.addMinigunner(minigunnerStartLocation)
 
         then:
-        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient, 2)
+        SimulationStateUpdateEvent minigunnerCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+        Unit createdMinigunner = parseUnitFromEventData(minigunnerCreatedEvent.eventData)
 
         when:
-        minigunnerId = TestUtil.assertMinigunnerCreatedEventReceived(simulationClient)
+        minigunnerId = createdMinigunner.unitId
 
         then:
         assert minigunnerId != -1
@@ -79,19 +60,13 @@ class UITests extends Specification {
         int destinationXInWorldCoordinates = leftClickLocation.XInWorldCoordinates()
         int destinationYInWorldCoordinates =leftClickLocation.YInWorldCoordinates()
 
-        and:
-        int expectedTotalEvents = 51
-
-        and:
-        TestUtil.assertNumberOfSimulationStateUpdateEvents(simulationClient,expectedTotalEvents)
 
         then:
-        List<SimulationStateUpdateEvent> gameEventList = simulationClient.getSimulationStateUpdateEvents()
-        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = gameEventList.get(2)
+        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
         TestUtil.assertUnitOrderedToMoveEvent(expectedUnitOrderedToMoveEvent, minigunnerId, destinationXInWorldCoordinates, destinationYInWorldCoordinates)
 
         and:
-        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = gameEventList.get(expectedTotalEvents - 1)
+        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, minigunnerId)
 
     }
@@ -103,14 +78,12 @@ class UITests extends Specification {
     static int selectionBoxTopmostY = 350
     static int selectionBoxBottommostY = 400
 
-    SequentialEventReader sequentialEventReader
 
     @Unroll
     def "should be able to drag select multiple GDI minigunners" () {
 
         given:
         uiClient.startScenario()
-        sequentialEventReader = new SequentialEventReader(simulationClient)
 
         when:
         int gdiMinigunner1Id = createGDIMinigunnerAtWorldCoordinates(82,369)
