@@ -40,7 +40,7 @@ class MikeAndConquerUIClient {
 
 
     void setUIOptions(UIOptions uiOptions) {
-        StartScenarioCommand command = new StartScenarioCommand()
+        Command command = new Command()
         command.commandType = "SetUIOptions"
 
         def commandParams =
@@ -90,7 +90,7 @@ class MikeAndConquerUIClient {
 
     void startScenario() {
 
-        StartScenarioCommand command = new StartScenarioCommand()
+        Command command = new Command()
         command.commandType = "StartScenario"
 
 
@@ -114,7 +114,7 @@ class MikeAndConquerUIClient {
 
 
     void selectUnit(int unitId) {
-        SelectUnitCommand command = new SelectUnitCommand()
+        Command command = new Command()
         command.commandType = "SelectUnit"
 
         def commandParams =
@@ -147,7 +147,7 @@ class MikeAndConquerUIClient {
     void leftClick(WorldCoordinatesLocation location) {
 
         // Todo, decided if commands have commandType hard coded, or if we just need Command instead of specific subclasses
-        SelectUnitCommand command = new SelectUnitCommand()
+        Command command = new Command()
         command.commandType = "LeftClick"
 
         def commandParams =
@@ -181,7 +181,7 @@ class MikeAndConquerUIClient {
     void rightClick(WorldCoordinatesLocation location) {
 
         // Todo, decided if commands have commandType hard coded, or if we just need Command instead of specific subclasses
-        SelectUnitCommand command = new SelectUnitCommand()
+        Command command = new Command()
         command.commandType = "RightClick"
 
         def commandParams =
@@ -256,7 +256,7 @@ class MikeAndConquerUIClient {
     }
 
     private void DoLeftClickAndHold(Point point1) {
-        SelectUnitCommand command = new SelectUnitCommand()
+        Command command = new Command()
         command.commandType = "LeftClickAndHold"
 
         def commandParams =
@@ -283,7 +283,7 @@ class MikeAndConquerUIClient {
     }
 
     private void DoMoveMouse(Point point1) {
-        SelectUnitCommand command = new SelectUnitCommand()
+        Command command = new Command()
         command.commandType = "MoveMouse"
 
         def commandParams =
@@ -310,7 +310,7 @@ class MikeAndConquerUIClient {
     }
 
     private void DoReleaseLeftMouseButton(Point point1) {
-        SelectUnitCommand command = new SelectUnitCommand()
+        Command command = new Command()
         command.commandType = "ReleaseLeftMouseButton"
 
         def commandParams =
