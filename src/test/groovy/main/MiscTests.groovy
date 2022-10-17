@@ -362,8 +362,6 @@ class MiscTests extends MikeAndConquerTestBase {
 
     }
 
-    Test of push to main branch
-
     def assertReceivedUnitArrivedAtPathStepEvent( int expectedXInMapTileSquareCoordinates, int expectedYInMapTileSquareCoordinates) {
         SimulationStateUpdateEvent unitArrivedAtPathStepEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_PATH_STEP)
         assert unitArrivedAtPathStepEvent.eventType == "UnitArrivedAtPathStep"
