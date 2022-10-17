@@ -10,7 +10,6 @@ import spock.lang.Unroll
 
 import util.TestUtil
 
-Test of push to main branch
 
 class MiscTests extends MikeAndConquerTestBase {
 
