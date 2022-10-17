@@ -1,6 +1,6 @@
 package domain
 
-class SelectUnitCommand {
+class Command {
 
     String commandType
     String commandData

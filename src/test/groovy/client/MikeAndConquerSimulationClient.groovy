@@ -38,7 +38,7 @@ class MikeAndConquerSimulationClient {
 
 
     void setSimulationOptions(SimulationOptions simulationOptions) {
-        SetOptionsUserCommand command = new SetOptionsUserCommand()
+        Command command = new Command()
         command.commandType = "SetOptions"
 
         def commandParams =
@@ -81,7 +81,7 @@ class MikeAndConquerSimulationClient {
     void removeUnit(int unitId) {
 
         // TODO:  Do we need a generic Command class instead of CreateMinigunnerCOmmand?
-        CreateMinigunnerCommand createUnitCommand = new CreateMinigunnerCommand()
+        Command createUnitCommand = new Command()
         createUnitCommand.commandType = "RemoveUnit"
 
         def commandParams =
@@ -104,7 +104,7 @@ class MikeAndConquerSimulationClient {
 
     void addMinigunner( WorldCoordinatesLocation location) {
 
-        CreateMinigunnerCommand createUnitCommand = new CreateMinigunnerCommand()
+        Command createUnitCommand = new Command()
         createUnitCommand.commandType = "CreateMinigunner"
 
         def commandParams =
@@ -126,7 +126,7 @@ class MikeAndConquerSimulationClient {
 
     void addJeep(WorldCoordinatesLocation location) {
 
-        CreateJeepCommand command = new CreateJeepCommand()
+        Command command = new Command()
         command.commandType = "CreateJeep"
 
         def commandParams =
@@ -160,7 +160,7 @@ class MikeAndConquerSimulationClient {
 
     void addMCV( WorldCoordinatesLocation location) {
 
-        CreateMCVCommand command = new CreateMCVCommand()
+        Command command = new Command()
         command.commandType = "CreateMCV"
 
         def commandParams =
@@ -196,7 +196,7 @@ class MikeAndConquerSimulationClient {
 
     void startScenario() {
 
-        StartScenarioCommand command = new StartScenarioCommand()
+        Command command = new Command()
         command.commandType = "StartScenario"
 
         try {
@@ -262,7 +262,7 @@ class MikeAndConquerSimulationClient {
 
     void moveUnit(int unitId, WorldCoordinatesLocation location) {
 
-        MoveUnitCommand command = new MoveUnitCommand()
+        Command command = new Command()
         command.commandType = "OrderUnitMove"
 
         def commandParams =
