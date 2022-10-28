@@ -491,66 +491,6 @@ class ShroudTests extends MikeAndConquerTestBase {
 
 
 
-    void assertScreenshotMatches(int testScenarioNumber, int startX, int startY, int screenshotCompareWidth, int screenshotCompareHeight) {
-        assertScreenshotMatches('shroud', testScenarioNumber,startX,startY,screenshotCompareWidth, screenshotCompareHeight)
-    }
-
-    void assertScreenshotMatches(String scenarioPrefix, int testScenarioNumber, int startX, int startY, int screenshotCompareWidth, int screenshotCompareHeight) {
-
-        // Move cursor so it's not in the screenshot
-//        gameClient.moveMouseToWorldCoordinates(new Point(startX + screenshotCompareWidth + 50,startY + screenshotCompareHeight + 50))
-        WorldCoordinatesLocation minigunnerStartLocation = new WorldCoordinatesLocationBuilder()
-                .worldCoordinatesX(startX + screenshotCompareWidth + 50)
-                .worldCoordinatesY(startY + screenshotCompareHeight + 50)
-                .build()
-
-//        uiClient.leftClick(minigunnerStartLocation)
-
-
-        assertScreenshotMatchesWithoutMovingCursor(scenarioPrefix, testScenarioNumber, startX, startY, screenshotCompareWidth, screenshotCompareHeight)
-    }
-
-    void assertScreenshotMatchesWithoutMovingCursor(String scenarioPrefix, int testScenarioNumber, int startX, int startY, int screenshotCompareWidth, int screenshotCompareHeight) {
-
-        String realGameFilename = "real-game-" + scenarioPrefix + "-" + testScenarioNumber + "-start-x" + startX + "-y" + startY + "-" + screenshotCompareWidth + "x" + screenshotCompareHeight + ".png"
-
-        File imageFile
-
-        try {
-            imageFile = new File(
-                    getClass().getClassLoader().getResource(realGameFilename).getFile()
-            )
-        }
-        catch(Exception e) {
-            throw new RuntimeException("Unable to read file ${realGameFilename}")
-        }
-
-        BufferedImage realGameScreenshot = ImageIO.read(imageFile)
-        BufferedImage fullScreenShot = uiClient.getScreenshot()
-        BufferedImage screenshotSubImage = fullScreenShot.getSubimage(startX,startY,screenshotCompareWidth,screenshotCompareHeight)
-
-        String realGameCopiedFilename = realGameFilename.replaceAll("real-game", "copied-real-game")
-        String mikeAndConquerCopiedFilename = realGameFilename.replaceAll("real-game", "actual-mike-and-conquer")
-
-        writeImageToFileInBuildDirectory(realGameScreenshot, realGameCopiedFilename )
-        writeImageToFileInBuildDirectory(screenshotSubImage, mikeAndConquerCopiedFilename )
-
-        assert ImageUtil.imagesAreEqual(screenshotSubImage, realGameScreenshot)
-    }
-
-    void writeImageToFileInBuildDirectory(BufferedImage bufferedImage, String fileName) {
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath+"../../../../build/screenshot")
-        // TODO:  come up with more reliable way to find this path
-        // Seems to work differently between IntelliJ versions
-//        File targetDir = new File(relPath+"../../../build/screenshot")
-        if(!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        String absPath = targetDir.getAbsolutePath()
-        File outputfile = new File(absPath + "\\" + fileName);
-        ImageIO.write(bufferedImage, "png", outputfile);
-    }
 
 
 

@@ -43,11 +43,6 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
 
     def "should be able to build construction yard, then barracks, then minigunner"() {
         given:
-        int mcvDestinationX = 350
-        int mcvDestinationY = 150
-
-//        Point mcvStartLocation = new Point(16,8)
-//        gameClient.addMCVAtMapSquare(mcvStartLocation.x, mcvStartLocation.y)
         WorldCoordinatesLocation mcvStartLocation = new WorldCoordinatesLocationBuilder()
                 .worldMapTileCoordinatesX(16)
                 .worldMapTileCoordinatesY(8)
@@ -70,40 +65,51 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         then:
         TestUtil.assertUnitIsSelected(uiClient, mcvId)
 
+        when:
+        WorldCoordinatesLocation mcvDestinationLocation = new WorldCoordinatesLocationBuilder()
+                .worldCoordinatesX(350)
+                .worldCoordinatesY(160)
+                .build()
 
+        uiClient.leftClick(mcvDestinationLocation)
+        sleep(2000)
 
+        and:
+        WorldCoordinatesLocation rightClickLocation = new WorldCoordinatesLocationBuilder()
+                .worldCoordinatesX(200)
+                .worldCoordinatesY(200)
+                .build()
+
+        uiClient.rightClick(rightClickLocation)
+
+        then:
+        SimulationStateUpdateEvent unitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
+        def unitArrivedEventData = jsonSlurper.parseText(unitArrivedAtDestinationEvent.eventData)
+
+        when: "Test scenario 1"
+        int testScenarioNumber = 1
+        String scenarioPrefix = 'mcv'
+        int startX = 306
+        int startY = 124
+        int screenshotCompareWidth = 73
+        int screenshotCompareHeight = 57
+
+        then:
+        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
 
 //        when:
 //        gameClient.leftClickMCV(666)
-//
-//        and:
-//        gameClient.leftClickInWorldCoordinates(mcvDestinationX, mcvDestinationY )
-//
-//        and:
-//        gameClient.rightClick(200,200)
-//
-//        then:
-//        assertMCVArrivesAtDestination(mcvDestinationX, mcvDestinationY)
-
-
-
-
-//        when: "Test scenario 1"
-//        int testScenarioNumber = 1
-//        String scenarioPrefix = 'mcv'
-//        int startX = 306
-//        int startY = 124
-//        int screenshotCompareWidth = 73
-//        int screenshotCompareHeight = 57
-//
-//        then:
-//        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
-//
-//        when:
 //        gameClient.leftClickMCV(666)
-//        gameClient.leftClickMCV(666)
+//        WorldCoordinatesLocation mcvCurrentLocation = new WorldCoordinatesLocationBuilder()
+//                .worldCoordinatesX(unitArrivedEventData.XInWorldCoordinates)
+//                .worldCoordinatesY(unitArrivedEventData.YInWorldCoordinates)
+//                .build()
+//        uiClient.leftClick(mcvCurrentLocation)
+//        uiClient.leftClick(mcvCurrentLocation)
+//
 //
 //        then:
+//        true
 //        GDIConstructionYard constructionYard = gameClient.getGDIConstructionYard()
 //        assert constructionYard != null
 //
