@@ -1,6 +1,5 @@
 package main
 
-
 import domain.UIOptions
 import domain.Unit
 import domain.WorldCoordinatesLocation
@@ -10,7 +9,6 @@ import domain.event.SimulationStateUpdateEvent
 import groovy.json.JsonSlurper
 import spock.lang.Unroll
 import util.TestUtil
-
 
 
 class UITests extends MikeAndConquerTestBase {
@@ -86,10 +84,10 @@ class UITests extends MikeAndConquerTestBase {
         uiClient.startScenario()
 
         when:
-        int gdiMinigunner1Id = createGDIMinigunnerAtWorldCoordinates(82,369)
-        int gdiMinigunner2Id = createGDIMinigunnerAtWorldCoordinates(92,380)
-        int gdiMinigunner3Id = createGDIMinigunnerAtWorldCoordinates(230,300)
-        int gdiMinigunner4Id = createGDIMinigunnerAtWorldCoordinates(82,300)
+        int gdiMinigunner1Id = addGDIMinigunnerAtWorldCoordinates(82,369)
+        int gdiMinigunner2Id = addGDIMinigunnerAtWorldCoordinates(92,380)
+        int gdiMinigunner3Id = addGDIMinigunnerAtWorldCoordinates(230,300)
+        int gdiMinigunner4Id = addGDIMinigunnerAtWorldCoordinates(82,300)
 
         Set<Integer> uniqueMinigunnerIds = []
         uniqueMinigunnerIds.add(gdiMinigunner1Id)
@@ -131,8 +129,6 @@ class UITests extends MikeAndConquerTestBase {
                 .build()
 
         uiClient.rightClick(rightClickLocation)
-        sleep(1000)
-
 
         and:
         gdiMinigunner1 = uiClient.getUnit(gdiMinigunner1Id)
@@ -159,7 +155,104 @@ class UITests extends MikeAndConquerTestBase {
     }
 
 
-    int createGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
+//    def "should set mouse cursor correctly when MCV is selected" () {
+//
+//        given:
+//        Point mcvLocation = new Point(21,12)
+//        MCV anMCV = gameClient.addMCVAtMapSquare(mcvLocation.x, mcvLocation.y)
+//
+//        Point mountainSquareLocation = new Point(79,20)
+//        Point clearSquare = new Point(10,10)
+//
+//        when:
+//        gameClient.leftClickMCV(666)
+//
+//        and:
+//        gameClient.moveMouseToWorldCoordinates(mountainSquareLocation)
+//
+//        then:
+//        String mouseCursorState = gameClient.getMouseCursorState()
+//        assert mouseCursorState == "MovementNoteAllowedCursor"
+//
+//        when:
+//        gameClient.moveMouseToWorldCoordinates(clearSquare)
+//        mouseCursorState = gameClient.getMouseCursorState()
+//
+//        then:
+//        assert mouseCursorState == "MoveToLocationCursor"
+//
+//        when:
+//        Point mcvInWorldCoordinates = Util.convertMapSquareCoordinatesToWorldCoordinates(mcvLocation.x, mcvLocation.y)
+//        gameClient.moveMouseToWorldCoordinates(mcvInWorldCoordinates)
+//        mouseCursorState = gameClient.getMouseCursorState()
+//
+//        then:
+//        assert mouseCursorState == "BuildConstructionYardCursor"
+//
+//        when:
+//        gameClient.rightClick(20,20)
+//        mouseCursorState = gameClient.getMouseCursorState()
+//
+//        then:
+//        assert mouseCursorState == "DefaultArrowCursor"
+//
+//    }
+
+
+    def "should set mouse cursor correctly when MCV is selected" () {
+
+        given:
+        uiClient.startScenario()
+
+        and:
+        int mcvId = addMCVAtWorldMapTileCoordinates(21,12)
+
+//        Point mountainSquareLocation = new Point(79,20)
+        WorldCoordinatesLocation mountainSquareLocation = createLocationFromWorldMapTileCoordinates(3,0)
+//        Point clearSquare = new Point(10,10)
+        WorldCoordinatesLocation clearSquareLocation = createLocationFromWorldMapTileCoordinates(10, 10)
+
+        when:
+        uiClient.selectUnit(mcvId)
+
+        and:
+//        gameClient.moveMouseToWorldCoordinates(mountainSquareLocation)
+        //moveMouseToWorldCoordinates(79,20)
+//        moveMouseToWorldMapTileCoordinates(3,0)
+        uiClient.moveMouseToLocation(mountainSquareLocation)
+
+
+
+        then:
+        String mouseCursorState = uiClient.getMouseCursorState()
+        assert mouseCursorState == "MovementNotAllowedCursor"
+
+        when:
+        uiClient.moveMouseToLocation(clearSquareLocation)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == "MoveToLocationCursor"
+
+//        when:
+//        Point mcvInWorldCoordinates = Util.convertMapSquareCoordinatesToWorldCoordinates(mcvLocation.x, mcvLocation.y)
+//        gameClient.moveMouseToWorldCoordinates(mcvInWorldCoordinates)
+//        mouseCursorState = gameClient.getMouseCursorState()
+//
+//        then:
+//        assert mouseCursorState == "BuildConstructionYardCursor"
+//
+//        when:
+//        gameClient.rightClick(20,20)
+//        mouseCursorState = gameClient.getMouseCursorState()
+//
+//        then:
+//        assert mouseCursorState == "DefaultArrowCursor"
+
+    }
+
+
+    int addGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
         WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
 
         simulationClient.addMinigunner(minigunnerLocationBuilder
@@ -167,7 +260,7 @@ class UITests extends MikeAndConquerTestBase {
                 .worldCoordinatesY(yInWorldCoordinates)
                 .build() )
 
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType("MinigunnerCreated")
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
 
         def jsonSlurper = new JsonSlurper()
         def eventData = jsonSlurper.parseText(event.eventData)
@@ -175,6 +268,48 @@ class UITests extends MikeAndConquerTestBase {
 
     }
 
+    WorldCoordinatesLocation createLocationFromWorldMapTileCoordinates(int x, int y) {
+        return new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(x)
+                .worldMapTileCoordinatesY(y)
+                .build()
+    }
+
+    int addMCVAtWorldMapTileCoordinates(int x, int y) {
+        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(x)
+                .worldMapTileCoordinatesY(y)
+                .build()
+
+        simulationClient.addMCV(worldCoordinatesLocation)
+
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
+
+        def jsonSlurper = new JsonSlurper()
+        def eventData = jsonSlurper.parseText(event.eventData)
+        return eventData.UnitId
+
+    }
+
+    void moveMouseToWorldMapTileCoordinates(int x, int y) {
+        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(x)
+                .worldMapTileCoordinatesY(y)
+                .build()
+
+        uiClient.moveMouseToLocation(worldCoordinatesLocation)
+    }
+
+
+    void moveMouseToWorldCoordinates(int x, int y) {
+        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
+                .worldCoordinatesX(x)
+                .worldCoordinatesY(y)
+                .build()
+
+        uiClient.moveMouseToLocation(worldCoordinatesLocation)
+
+    }
 
 
 }
