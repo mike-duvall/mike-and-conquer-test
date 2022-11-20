@@ -72,7 +72,6 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
                 .build()
 
         uiClient.leftClick(mcvDestinationLocation)
-        sleep(2000)
 
         and:
         WorldCoordinatesLocation rightClickLocation = new WorldCoordinatesLocationBuilder()

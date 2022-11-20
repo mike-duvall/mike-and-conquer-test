@@ -146,7 +146,6 @@ class MikeAndConquerUIClient {
 
     void leftClick(WorldCoordinatesLocation location) {
 
-        // Todo, decided if commands have commandType hard coded, or if we just need Command instead of specific subclasses
         Command command = new Command()
         command.commandType = "LeftClick"
 
@@ -180,7 +179,6 @@ class MikeAndConquerUIClient {
 
     void rightClick(WorldCoordinatesLocation location) {
 
-        // Todo, decided if commands have commandType hard coded, or if we just need Command instead of specific subclasses
         Command command = new Command()
         command.commandType = "RightClick"
 
@@ -240,6 +238,30 @@ class MikeAndConquerUIClient {
         return unit
     }
 
+    String getMouseCursorState() {
+
+        def resp
+        try {
+            resp = restClient.get(
+                    path: '/ui/query/mouseCursor',
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch(HttpResponseException e) {
+            int x = 3
+            throw e
+        }
+
+        String cursorState =  resp.responseData.str
+        return cursorState
+    }
+
+
+
+
+
 
     void dragSelect(int x1, int y1, int x2, int y2) {
 
@@ -248,11 +270,15 @@ class MikeAndConquerUIClient {
 
 
         DoLeftClickAndHold(point1)
-        sleep(1000)
-        DoMoveMouse(point2)
-        sleep(2000)
+
+        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
+                .worldCoordinatesX(x2)
+                .worldCoordinatesY(y2)
+                .build()
+
+        moveMouseToLocation(worldCoordinatesLocation)
+
         DoReleaseLeftMouseButton(point2)
-        sleep(1000)
     }
 
     private void DoLeftClickAndHold(Point point1) {
@@ -282,14 +308,14 @@ class MikeAndConquerUIClient {
         }
     }
 
-    private void DoMoveMouse(Point point1) {
+    void moveMouseToLocation(WorldCoordinatesLocation location) {
         Command command = new Command()
         command.commandType = "MoveMouse"
 
         def commandParams =
                 [
-                        XInWorldCoordinates: point1.x,
-                        YInWorldCoordinates: point1.y
+                        XInWorldCoordinates: location.x,
+                        YInWorldCoordinates: location.y
                 ]
 
         command.commandData = JsonOutput.toJson(commandParams)
