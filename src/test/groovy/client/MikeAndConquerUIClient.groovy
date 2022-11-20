@@ -146,7 +146,6 @@ class MikeAndConquerUIClient {
 
     void leftClick(WorldCoordinatesLocation location) {
 
-        // Todo, decided if commands have commandType hard coded, or if we just need Command instead of specific subclasses
         Command command = new Command()
         command.commandType = "LeftClick"
 
@@ -180,7 +179,6 @@ class MikeAndConquerUIClient {
 
     void rightClick(WorldCoordinatesLocation location) {
 
-        // Todo, decided if commands have commandType hard coded, or if we just need Command instead of specific subclasses
         Command command = new Command()
         command.commandType = "RightClick"
 
