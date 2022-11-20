@@ -272,7 +272,6 @@ class MikeAndConquerUIClient {
 
 
         DoLeftClickAndHold(point1)
-        sleep(1000)
 
         WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
                 .worldCoordinatesX(x2)
@@ -281,9 +280,7 @@ class MikeAndConquerUIClient {
 
         moveMouseToLocation(worldCoordinatesLocation)
 
-        sleep(2000)
         DoReleaseLeftMouseButton(point2)
-        sleep(1000)
     }
 
     private void DoLeftClickAndHold(Point point1) {
