@@ -38,10 +38,63 @@ class MikeAndConquerUIClient {
         }
     }
 
+    def doGetRestCall(String path) {
+
+        def resp
+        try {
+            resp = restClient.get(
+                    path: path,
+                    requestContentType: 'application/json')
+            assert resp.status == 200
+        }
+        catch(HttpResponseException e) {
+            throw e
+        }
+
+        return resp
+    }
+
+    def doGetRestCall(String path, Object query) {
+
+        def resp
+        try {
+            resp = restClient.get(
+                    path: path,
+                    query: query,
+                    requestContentType: 'application/json')
+            assert resp.status == 200
+        }
+        catch(HttpResponseException e) {
+            throw e
+        }
+
+        return resp
+    }
+
+
+
+    def doPostRestCall(String path, Object body) {
+        def resp
+        try {
+            resp = restClient.post(
+                    path: path,
+                    body: body,
+                    requestContentType: 'application/json')
+
+
+            assert resp.status == 200
+        }
+        catch(HttpResponseException e) {
+            throw e
+        }
+
+        return resp
+
+    }
 
     void setUIOptions(UIOptions uiOptions) {
         Command command = new Command()
-        command.commandType = "SetUIOptions"
+        command.commandType = Command.SET_UI_OPTIONS
 
         def commandParams =
                 [
@@ -50,36 +103,11 @@ class MikeAndConquerUIClient {
                 ]
 
         command.commandData =  JsonOutput.toJson(commandParams)
-
-
-        try {
-            def resp = restClient.post(
-                    path: '/ui/command',
-                    body: command,
-                    requestContentType: 'application/json')
-
-
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-            throw e
-        }
-
-
+        doPostRestCall('/ui/command', command)
     }
 
     UIOptions getUIOptions() {
-        def resp
-        try {
-            resp = restClient.get(
-                    path: '/ui/query/uioptions',
-                    requestContentType: 'application/json')
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-            throw e
-        }
-
+        def resp = doGetRestCall('/ui/query/uioptions')
         UIOptions uiOptions = new UIOptions()
 
         uiOptions.mapZoomLevel = resp.responseData.mapZoomLevel
@@ -91,31 +119,14 @@ class MikeAndConquerUIClient {
     void startScenario() {
 
         Command command = new Command()
-        command.commandType = "StartScenario"
-
-
-        try {
-            def resp = restClient.post(
-                    path: '/ui/command',
-                    body: command,
-                    requestContentType: 'application/json')
-
-
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-            int x = 3
-            throw e
-        }
-
-        int y = 4
-
+        command.commandType = Command.START_SCENARIO
+        doPostRestCall('/ui/command', command)
     }
 
 
     void selectUnit(int unitId) {
         Command command = new Command()
-        command.commandType = "SelectUnit"
+        command.commandType = Command.SELECT_UNIT
 
         def commandParams =
                 [
@@ -124,30 +135,14 @@ class MikeAndConquerUIClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-
-        try {
-            def resp = restClient.post(
-                    path: '/ui/command',
-                    body: command,
-                    requestContentType: 'application/json')
-
-
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-            int x = 3
-            throw e
-        }
-
-        int y = 4
-
+        doPostRestCall('/ui/command', command)
     }
 
 
     void leftClick(WorldCoordinatesLocation location) {
 
         Command command = new Command()
-        command.commandType = "LeftClick"
+        command.commandType = Command.LEFT_CLICK
 
         def commandParams =
                 [
@@ -157,30 +152,13 @@ class MikeAndConquerUIClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-
-        try {
-            def resp = restClient.post(
-                    path: '/ui/command',
-                    body: command,
-                    requestContentType: 'application/json')
-
-
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-            int x = 3
-            throw e
-        }
-
-        int y = 4
-
-
+        doPostRestCall('/ui/command', command)
     }
 
     void rightClick(WorldCoordinatesLocation location) {
 
         Command command = new Command()
-        command.commandType = "RightClick"
+        command.commandType = Command.RIGHT_CLICK
 
         def commandParams =
                 [
@@ -190,46 +168,14 @@ class MikeAndConquerUIClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-
-        try {
-            def resp = restClient.post(
-                    path: '/ui/command',
-                    body: command,
-                    requestContentType: 'application/json')
-
-
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-            int x = 3
-            throw e
-        }
-
-        int y = 4
-
-
+        doPostRestCall('/ui/command', command)
     }
 
 
 
     Unit getUnit(int unitId) {
 
-        def resp
-        try {
-            resp = restClient.get(
-                    path: '/ui/query/unit',
-                    query:['unitId': unitId],
-                    requestContentType: 'application/json')
-
-
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-            int x = 3
-            throw e
-        }
-
-        int y = 4
+        def resp = doGetRestCall('/ui/query/unit',['unitId': unitId] )
 
         Unit unit = new Unit()
         unit.unitId = resp.responseData.unitId
@@ -239,29 +185,10 @@ class MikeAndConquerUIClient {
     }
 
     String getMouseCursorState() {
-
-        def resp
-        try {
-            resp = restClient.get(
-                    path: '/ui/query/mouseCursor',
-                    requestContentType: 'application/json')
-
-
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-            int x = 3
-            throw e
-        }
-
+        def resp = doGetRestCall('/ui/query/mouseCursor')
         String cursorState =  resp.responseData.str
         return cursorState
     }
-
-
-
-
-
 
     void dragSelect(int x1, int y1, int x2, int y2) {
 
@@ -283,7 +210,7 @@ class MikeAndConquerUIClient {
 
     private void DoLeftClickAndHold(Point point1) {
         Command command = new Command()
-        command.commandType = "LeftClickAndHold"
+        command.commandType = Command.LEFT_CLICK_AND_HOLD
 
         def commandParams =
                 [
@@ -293,24 +220,12 @@ class MikeAndConquerUIClient {
 
         command.commandData = JsonOutput.toJson(commandParams)
 
-
-        try {
-            def resp = restClient.post(
-                    path: '/ui/command',
-                    body: command,
-                    requestContentType: 'application/json')
-
-
-            assert resp.status == 200
-        }
-        catch (HttpResponseException e) {
-            throw e
-        }
+        doPostRestCall('/ui/command', command)
     }
 
     void moveMouseToLocation(WorldCoordinatesLocation location) {
         Command command = new Command()
-        command.commandType = "MoveMouse"
+        command.commandType = Command.MOVE_MOUSE
 
         def commandParams =
                 [
@@ -319,25 +234,12 @@ class MikeAndConquerUIClient {
                 ]
 
         command.commandData = JsonOutput.toJson(commandParams)
-
-
-        try {
-            def resp = restClient.post(
-                    path: '/ui/command',
-                    body: command,
-                    requestContentType: 'application/json')
-
-
-            assert resp.status == 200
-        }
-        catch (HttpResponseException e) {
-            throw e
-        }
+        doPostRestCall('/ui/command', command)
     }
 
     private void DoReleaseLeftMouseButton(Point point1) {
         Command command = new Command()
-        command.commandType = "ReleaseLeftMouseButton"
+        command.commandType = Command.RELEASE_LEFT_MOUSE_BUTTON
 
         def commandParams =
                 [
@@ -348,19 +250,7 @@ class MikeAndConquerUIClient {
 
         command.commandData = JsonOutput.toJson(commandParams)
 
-
-        try {
-            def resp = restClient.post(
-                    path: '/ui/command',
-                    body: command,
-                    requestContentType: 'application/json')
-
-
-            assert resp.status == 200
-        }
-        catch (HttpResponseException e) {
-            throw e
-        }
+        doPostRestCall('/ui/command', command)
     }
 
     BufferedImage  getScreenshot() {
@@ -369,7 +259,6 @@ class MikeAndConquerUIClient {
         BufferedImage screenShotImage = ImageIO.read(byteArrayInputStream)
         return screenShotImage
     }
-
 
 
 }
