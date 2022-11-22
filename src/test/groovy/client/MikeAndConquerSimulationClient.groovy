@@ -3,12 +3,10 @@ package client
 import domain.*
 import domain.event.SimulationStateUpdateEvent
 import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient
 import org.apache.http.params.CoreConnectionPNames
 
-class MikeAndConquerSimulationClient {
+class MikeAndConquerSimulationClient extends BaseClient {
 
 
     String hostUrl
@@ -35,8 +33,6 @@ class MikeAndConquerSimulationClient {
         }
     }
 
-
-
     void setSimulationOptions(SimulationOptions simulationOptions) {
         Command command = new Command()
         command.commandType = "SetOptions"
@@ -48,27 +44,13 @@ class MikeAndConquerSimulationClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-
-        def resp = restClient.post(
-                path: '/simulation/command',
-                body: command,
-                requestContentType: 'application/json')
-
-        assert resp.status == 200
+        doPostRestCall('/simulation/command', command)
     }
 
 
     SimulationOptions getSimulationOptions() {
-        def resp
-        try {
-            resp = restClient.get(
-                    path: '/simulation/query/options',
-                    requestContentType: 'application/json')
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-            throw e
-        }
+
+        def resp = doGetRestCall('/simulation/query/options')
 
         SimulationOptions simulationOptions = new SimulationOptions()
 
@@ -90,15 +72,7 @@ class MikeAndConquerSimulationClient {
                 ]
 
         createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
-
-        def resp = restClient.post(
-                path: '/simulation/command',
-                body: createUnitCommand,
-                requestContentType: 'application/json')
-
-        assert resp.status == 200
-
-
+        doPostRestCall('/simulation/command', createUnitCommand)
     }
 
 
@@ -115,13 +89,7 @@ class MikeAndConquerSimulationClient {
 
         createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
 
-        def resp = restClient.post(
-                path: '/simulation/command',
-                body: createUnitCommand,
-                requestContentType: 'application/json')
-
-        assert resp.status == 200
-
+        doPostRestCall('/simulation/command', createUnitCommand)
     }
 
     void addJeep(WorldCoordinatesLocation location) {
@@ -137,25 +105,7 @@ class MikeAndConquerSimulationClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-        try {
-            def resp = restClient.post(
-                    path: '/simulation/command',
-                    body: command,
-                    requestContentType: 'application/json')
-
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-            ByteArrayInputStream byteArrayInputStream = e.response.responseData
-            int n = byteArrayInputStream.available()
-            byte[] bytes = new byte[n]
-            byteArrayInputStream.read(bytes, 0, n)
-            String s = new String(bytes )
-            println("exception details:" + s)
-            Map json = new JsonSlurper().parseText(s)
-        }
-
-
+        doPostRestCall('/simulation/command', command)
     }
 
     void addMCV( WorldCoordinatesLocation location) {
@@ -171,26 +121,7 @@ class MikeAndConquerSimulationClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-        try {
-            def resp = restClient.post(
-                    path: '/simulation/command',
-                    body: command,
-                    requestContentType: 'application/json')
-
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-//            int x = 3
-            ByteArrayInputStream byteArrayInputStream = e.response.responseData
-            int n = byteArrayInputStream.available()
-            byte[] bytes = new byte[n]
-            byteArrayInputStream.read(bytes, 0, n)
-            String s = new String(bytes )
-            println("exception details:" + s)
-            Map json = new JsonSlurper().parseText(s)
-        }
-
-
+        doPostRestCall('/simulation/command', command)
     }
 
 
@@ -199,36 +130,12 @@ class MikeAndConquerSimulationClient {
         Command command = new Command()
         command.commandType = "StartScenario"
 
-        try {
-            def resp = restClient.post(
-                    path: '/simulation/command',
-                    body: command,
-                    requestContentType: 'application/json')
-
-
-            assert resp.status == 200
-        }
-        catch(HttpResponseException e) {
-            int x = 3
-            throw e
-        }
-
-        int y = 4
-
+        doPostRestCall('/simulation/command', command)
     }
 
 
-//    List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents() {
-//        getSimulationStateUpdateEvents(0)
-//    }
-
     List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents(int startIndex) {
-        def resp = restClient.get(
-                path: '/simulation/query/events',
-                query: ['startIndex': startIndex],
-                requestContentType: 'application/json' )
-
-        assert resp.status == 200
+        def resp = doGetRestCall('/simulation/query/events', ['startIndex': startIndex])
 
         int numItems = resp.responseData.size
 
@@ -246,11 +153,8 @@ class MikeAndConquerSimulationClient {
     }
 
     int getSimulationStateUpdateEventsCurrentIndex() {
-        def resp = restClient.get(
-                path: '/simulation/query/eventscount',
-                requestContentType: 'application/json' )
 
-        assert resp.status == 200
+        def resp = doGetRestCall('/simulation/query/eventscount')
 
         int numItems = resp.responseData
 
@@ -274,14 +178,7 @@ class MikeAndConquerSimulationClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-
-        def resp = restClient.post(
-                path: '/simulation/command',
-                body: command,
-                requestContentType: 'application/json')
-
-        assert resp.status == 200
-
+        doPostRestCall('/simulation/command', command)
     }
 
 
