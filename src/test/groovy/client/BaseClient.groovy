@@ -14,6 +14,7 @@ class BaseClient {
             assert resp.status == 200
         }
         catch(HttpResponseException e) {
+            println "HttpResponseException:" + e.response.responseData.text
             throw e
         }
 
@@ -31,6 +32,7 @@ class BaseClient {
             assert resp.status == 200
         }
         catch(HttpResponseException e) {
+            println "HttpResponseException:" + e.response.responseData.text
             throw e
         }
 
@@ -51,6 +53,7 @@ class BaseClient {
             assert resp.status == 200
         }
         catch(HttpResponseException e) {
+            println "HttpResponseException:" + e.response.responseData.text
             throw e
         }
 

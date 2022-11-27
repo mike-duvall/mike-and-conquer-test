@@ -33,6 +33,11 @@ class MikeAndConquerSimulationClient extends BaseClient {
         }
     }
 
+
+    void doPostSimulationCommand(Object command) {
+        doPostRestCall('/simulation/command', command)
+    }
+
     void setSimulationOptions(SimulationOptions simulationOptions) {
         Command command = new Command()
         command.commandType = "SetOptions"
@@ -44,7 +49,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-        doPostRestCall('/simulation/command', command)
+        doPostSimulationCommand(command)
     }
 
 
@@ -72,7 +77,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
                 ]
 
         createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
-        doPostRestCall('/simulation/command', createUnitCommand)
+        doPostSimulationCommand( createUnitCommand)
     }
 
 
@@ -89,7 +94,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
         createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
 
-        doPostRestCall('/simulation/command', createUnitCommand)
+        doPostSimulationCommand( createUnitCommand)
     }
 
     void addJeep(WorldCoordinatesLocation location) {
@@ -105,7 +110,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-        doPostRestCall('/simulation/command', command)
+        doPostSimulationCommand( command)
     }
 
     void addMCV( WorldCoordinatesLocation location) {
@@ -121,7 +126,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-        doPostRestCall('/simulation/command', command)
+        doPostSimulationCommand( command)
     }
 
 
@@ -130,7 +135,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
         Command command = new Command()
         command.commandType = "StartScenario"
 
-        doPostRestCall('/simulation/command', command)
+        doPostSimulationCommand( command)
     }
 
 
@@ -178,7 +183,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-        doPostRestCall('/simulation/command', command)
+        doPostSimulationCommand( command)
     }
 
 

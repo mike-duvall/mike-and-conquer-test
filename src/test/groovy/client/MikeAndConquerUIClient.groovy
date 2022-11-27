@@ -38,6 +38,11 @@ class MikeAndConquerUIClient extends BaseClient {
     }
 
 
+    void doPostUICommand(Object command) {
+        doPostRestCall('/ui/command', command)
+    }
+
+
     void setUIOptions(UIOptions uiOptions) {
         Command command = new Command()
         command.commandType = Command.SET_UI_OPTIONS
@@ -49,7 +54,7 @@ class MikeAndConquerUIClient extends BaseClient {
                 ]
 
         command.commandData =  JsonOutput.toJson(commandParams)
-        doPostRestCall('/ui/command', command)
+        doPostUICommand( command)
     }
 
     UIOptions getUIOptions() {
@@ -63,10 +68,9 @@ class MikeAndConquerUIClient extends BaseClient {
     }
 
     void startScenario() {
-
         Command command = new Command()
         command.commandType = Command.START_SCENARIO
-        doPostRestCall('/ui/command', command)
+        doPostUICommand( command)
     }
 
 
@@ -81,7 +85,7 @@ class MikeAndConquerUIClient extends BaseClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-        doPostRestCall('/ui/command', command)
+        doPostUICommand( command)
     }
 
 
@@ -98,7 +102,7 @@ class MikeAndConquerUIClient extends BaseClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-        doPostRestCall('/ui/command', command)
+        doPostUICommand( command)
     }
 
     void rightClick(WorldCoordinatesLocation location) {
@@ -114,7 +118,7 @@ class MikeAndConquerUIClient extends BaseClient {
 
         command.commandData =  JsonOutput.toJson(commandParams)
 
-        doPostRestCall('/ui/command', command)
+        doPostUICommand( command)
     }
 
 
@@ -166,7 +170,7 @@ class MikeAndConquerUIClient extends BaseClient {
 
         command.commandData = JsonOutput.toJson(commandParams)
 
-        doPostRestCall('/ui/command', command)
+        doPostUICommand( command)
     }
 
     void moveMouseToLocation(WorldCoordinatesLocation location) {
@@ -180,7 +184,7 @@ class MikeAndConquerUIClient extends BaseClient {
                 ]
 
         command.commandData = JsonOutput.toJson(commandParams)
-        doPostRestCall('/ui/command', command)
+        doPostUICommand( command)
     }
 
     private void DoReleaseLeftMouseButton(Point point1) {
@@ -196,7 +200,7 @@ class MikeAndConquerUIClient extends BaseClient {
 
         command.commandData = JsonOutput.toJson(commandParams)
 
-        doPostRestCall('/ui/command', command)
+        doPostUICommand( command)
     }
 
     BufferedImage  getScreenshot() {
