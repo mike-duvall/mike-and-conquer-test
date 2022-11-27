@@ -1,8 +1,12 @@
 package client
 
 import groovyx.net.http.HttpResponseException
+import groovyx.net.http.RESTClient
 
 class BaseClient {
+
+
+    RESTClient restClient
 
     def doGetRestCall(String path) {
 

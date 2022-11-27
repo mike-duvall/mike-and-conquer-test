@@ -11,9 +11,6 @@ import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
 import groovy.json.JsonSlurper
 import spock.lang.Ignore
-import util.ImageUtil
-
-import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 
 
