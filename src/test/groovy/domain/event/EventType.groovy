@@ -10,4 +10,5 @@ class EventType {
     static String UNIT_ARRIVED_AT_PATH_STEP = "UnitArrivedAtPathStep"
     static String UNIT_ARRIVED_AT_DESTINATION = "UnitArrivedAtDestination"
     static String SCENARIO_INITIALIZED =  "ScenarioInitialized"
+    static String GDI_CONSTRUCTION_YARD_CREATED = "GDIConstructionYardCreated"
 }

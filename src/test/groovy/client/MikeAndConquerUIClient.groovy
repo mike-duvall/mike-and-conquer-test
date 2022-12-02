@@ -1,5 +1,6 @@
 package client
 
+import domain.Building
 import domain.Command
 import domain.Point
 import domain.UIOptions
@@ -129,6 +130,18 @@ class MikeAndConquerUIClient extends BaseClient {
         unit.selected = resp.responseData.selected
 
         return unit
+    }
+
+    Building getGDIConstructionYard() {
+
+        def resp = doGetRestCall('/ui/query/gdiConstructionYard' )
+
+        Building building = new Building()
+        building.x = resp.responseData.x
+        building.y = resp.responseData.y
+
+        return building
+
     }
 
     String getMouseCursorState() {

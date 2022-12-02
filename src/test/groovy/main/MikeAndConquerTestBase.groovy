@@ -3,6 +3,7 @@ package main
 import client.MikeAndConquerSimulationClient
 import client.MikeAndConquerUIClient
 import client.SequentialEventReader
+import domain.Building
 import domain.SimulationOptions
 import domain.UIOptions
 import domain.Unit
@@ -79,8 +80,21 @@ class MikeAndConquerTestBase extends Specification {
         createdUnit.unitId = unitDataObject.UnitId
         createdUnit.x = unitDataObject.X
         createdUnit.y = unitDataObject.Y
-
         return createdUnit
+    }
+
+    int parseUnitIdFromEventData(String eventData) {
+        def unitDataObject = jsonSlurper.parseText(eventData)
+        return unitDataObject.UnitId
+    }
+
+    Building parseBuildingFromEventData(String unitCreatedEventData) {
+        def buildingDataObject = jsonSlurper.parseText(unitCreatedEventData)
+        Building createdBuilding = new Building()
+
+        createdBuilding.x = buildingDataObject.X
+        createdBuilding.y = buildingDataObject.Y
+        return createdBuilding
 
     }
 
