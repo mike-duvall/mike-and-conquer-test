@@ -105,15 +105,12 @@ class MikeAndConquerTestBase extends Specification {
     void assertScreenshotMatches(String scenarioPrefix, int testScenarioNumber, int startX, int startY, int screenshotCompareWidth, int screenshotCompareHeight) {
 
         // Move cursor so it's not in the screenshot
-//        gameClient.moveMouseToWorldCoordinates(new Point(startX + screenshotCompareWidth + 50,startY + screenshotCompareHeight + 50))
-        WorldCoordinatesLocation minigunnerStartLocation = new WorldCoordinatesLocationBuilder()
+        WorldCoordinatesLocation cursorLocation = new WorldCoordinatesLocationBuilder()
                 .worldCoordinatesX(startX + screenshotCompareWidth + 50)
                 .worldCoordinatesY(startY + screenshotCompareHeight + 50)
                 .build()
 
-//        uiClient.leftClick(minigunnerStartLocation)
-
-
+        uiClient.moveMouseToLocation(cursorLocation)
         assertScreenshotMatchesWithoutMovingCursor(scenarioPrefix, testScenarioNumber, startX, startY, screenshotCompareWidth, screenshotCompareHeight)
     }
 
