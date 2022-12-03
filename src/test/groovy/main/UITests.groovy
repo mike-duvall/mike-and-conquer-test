@@ -154,74 +154,24 @@ class UITests extends MikeAndConquerTestBase {
 
     }
 
-
-//    def "should set mouse cursor correctly when MCV is selected" () {
-//
-//        given:
-//        Point mcvLocation = new Point(21,12)
-//        MCV anMCV = gameClient.addMCVAtMapSquare(mcvLocation.x, mcvLocation.y)
-//
-//        Point mountainSquareLocation = new Point(79,20)
-//        Point clearSquare = new Point(10,10)
-//
-//        when:
-//        gameClient.leftClickMCV(666)
-//
-//        and:
-//        gameClient.moveMouseToWorldCoordinates(mountainSquareLocation)
-//
-//        then:
-//        String mouseCursorState = gameClient.getMouseCursorState()
-//        assert mouseCursorState == "MovementNoteAllowedCursor"
-//
-//        when:
-//        gameClient.moveMouseToWorldCoordinates(clearSquare)
-//        mouseCursorState = gameClient.getMouseCursorState()
-//
-//        then:
-//        assert mouseCursorState == "MoveToLocationCursor"
-//
-//        when:
-//        Point mcvInWorldCoordinates = Util.convertMapSquareCoordinatesToWorldCoordinates(mcvLocation.x, mcvLocation.y)
-//        gameClient.moveMouseToWorldCoordinates(mcvInWorldCoordinates)
-//        mouseCursorState = gameClient.getMouseCursorState()
-//
-//        then:
-//        assert mouseCursorState == "BuildConstructionYardCursor"
-//
-//        when:
-//        gameClient.rightClick(20,20)
-//        mouseCursorState = gameClient.getMouseCursorState()
-//
-//        then:
-//        assert mouseCursorState == "DefaultArrowCursor"
-//
-//    }
-
-
     def "should set mouse cursor correctly when MCV is selected" () {
 
         given:
         uiClient.startScenario()
+        int mcvWorldMapTileX = 21
+        int mcvWorldMapTileY = 12
 
         and:
-        int mcvId = addMCVAtWorldMapTileCoordinates(21,12)
+        int mcvId = addMCVAtWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
 
-//        Point mountainSquareLocation = new Point(79,20)
         WorldCoordinatesLocation mountainSquareLocation = createLocationFromWorldMapTileCoordinates(3,0)
-//        Point clearSquare = new Point(10,10)
         WorldCoordinatesLocation clearSquareLocation = createLocationFromWorldMapTileCoordinates(10, 10)
 
         when:
         uiClient.selectUnit(mcvId)
 
         and:
-//        gameClient.moveMouseToWorldCoordinates(mountainSquareLocation)
-        //moveMouseToWorldCoordinates(79,20)
-//        moveMouseToWorldMapTileCoordinates(3,0)
         uiClient.moveMouseToLocation(mountainSquareLocation)
-
-
 
         then:
         String mouseCursorState = uiClient.getMouseCursorState()
@@ -234,20 +184,20 @@ class UITests extends MikeAndConquerTestBase {
         then:
         assert mouseCursorState == "MoveToLocationCursor"
 
-//        when:
-//        Point mcvInWorldCoordinates = Util.convertMapSquareCoordinatesToWorldCoordinates(mcvLocation.x, mcvLocation.y)
-//        gameClient.moveMouseToWorldCoordinates(mcvInWorldCoordinates)
-//        mouseCursorState = gameClient.getMouseCursorState()
-//
-//        then:
-//        assert mouseCursorState == "BuildConstructionYardCursor"
-//
-//        when:
-//        gameClient.rightClick(20,20)
-//        mouseCursorState = gameClient.getMouseCursorState()
-//
-//        then:
-//        assert mouseCursorState == "DefaultArrowCursor"
+        when:
+        WorldCoordinatesLocation mcvLocation = createLocationFromWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
+        uiClient.moveMouseToLocation(mcvLocation)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == "BuildConstructionYardCursor"
+
+        when:
+        uiClient.rightClick(clearSquareLocation)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == "DefaultArrowCursor"
 
     }
 
