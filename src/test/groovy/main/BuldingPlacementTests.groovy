@@ -1,6 +1,7 @@
 package main
 
 import domain.Building
+import domain.Sidebar
 import domain.SimulationOptions
 import domain.UIOptions
 import domain.Unit
@@ -8,6 +9,7 @@ import domain.WorldCoordinatesLocation
 import domain.WorldCoordinatesLocationBuilder
 import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
+import spock.util.concurrent.PollingConditions
 import util.TestUtil
 
 
@@ -132,14 +134,6 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
 //        then:
 //        assert anMCV == null
 //
-//        when:
-//        Sidebar sidebar = gameClient.getSidebar()
-//
-//        then:
-//        assert sidebar != null
-//        assert sidebar.buildBarracksEnabled == true
-//        assert sidebar.buildMinigunnerEnabled == false
-//
         when:
         testScenarioNumber = 1
         scenarioPrefix = 'construction-yard-placed'
@@ -151,12 +145,24 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         then:
         assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
 
-//        when:
-//        gameClient.leftClickSidebar("Barracks")
-//
-//        then:
-//        assertBarracksIsBuilding()
-//
+
+        when:
+        Sidebar sidebar = uiClient.getSidebar()
+
+        then:
+        assert sidebar != null
+        assert sidebar.buildBarracksEnabled == true
+        assert sidebar.buildMinigunnerEnabled == false
+
+
+
+        when:
+        uiClient.leftClickSidebar("Barracks")
+
+        then:
+        sequentialEventReader.waitForEventOfType(EventType.STARTED_BUILDING_BARRACKS)
+        assertBarracksIsBuilding()
+
 //        and:
 //        assertBarracksIsReadyToPlace()
 //
@@ -210,6 +216,15 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
 //        assertOneMinigunnerExists()
     }
 
+
+    def assertBarracksIsBuilding() {
+        def conditions = new PollingConditions(timeout: 30, initialDelay: 1.5, factor: 1.25)
+        conditions.eventually {
+            Sidebar sidebar = uiClient.getSidebar()
+            assert sidebar.barracksIsBuilding == true
+        }
+        return true
+    }
 
 
 //    def "should be able to build barracks when a minigunner is selected"() {

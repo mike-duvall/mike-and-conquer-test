@@ -3,6 +3,7 @@ package client
 import domain.Building
 import domain.Command
 import domain.Point
+import domain.Sidebar
 import domain.UIOptions
 import domain.Unit
 import domain.WorldCoordinatesLocation
@@ -104,6 +105,24 @@ class MikeAndConquerUIClient extends BaseClient {
         doPostUICommand( command)
     }
 
+    void leftClickSidebar(String sidebarIconName) {
+
+        def commandParams =
+                [
+                        SidebarIconName: sidebarIconName
+                ]
+
+        Command command = new Command(
+            Command.LEFT_CLICK_SIDEBAR,
+            JsonOutput.toJson(commandParams)
+        )
+
+        doPostUICommand(command)
+
+
+    }
+
+
     void rightClick(WorldCoordinatesLocation location) {
 
         Command command = new Command()
@@ -143,6 +162,20 @@ class MikeAndConquerUIClient extends BaseClient {
         return building
 
     }
+
+    Sidebar getSidebar() {
+        def resp = doGetRestCall('/ui/query/sidebar' )
+
+        Sidebar sidebar = new Sidebar()
+        sidebar.buildBarracksEnabled = resp.responseData.buildBarracksEnabled
+        sidebar.barracksIsBuilding = resp.responseData.barracksIsBuilding
+//        sidebar.y = resp.responseData.y
+
+        return sidebar
+
+
+    }
+
 
     String getMouseCursorState() {
         def resp = doGetRestCall('/ui/query/mouseCursor')
