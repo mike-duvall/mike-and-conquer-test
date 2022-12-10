@@ -18,8 +18,6 @@ import util.TestUtil
 //import domain.Minigunner
 //import domain.Point
 //import domain.Sidebar
-import util.Util
-
 
 class BuldingPlacementTests extends MikeAndConquerTestBase {
 
@@ -161,8 +159,16 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
 
         then:
         sequentialEventReader.waitForEventOfType(EventType.STARTED_BUILDING_BARRACKS)
-        assertBarracksIsBuilding()
+        assertSidebarStatusBarracksIsBuilding()
 
+        and:
+        sequentialEventReader.waitForEventOfType(EventType.BUILDING_BARRACKS_PERCENT_COMPLETED)
+
+        and:
+        sequentialEventReader.waitForEventOfType(EventType.COMPLETED_BUILDING_BARRACKS)
+
+        and:
+        true
 //        and:
 //        assertBarracksIsReadyToPlace()
 //
@@ -217,7 +223,7 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
     }
 
 
-    def assertBarracksIsBuilding() {
+    def assertSidebarStatusBarracksIsBuilding() {
         def conditions = new PollingConditions(timeout: 30, initialDelay: 1.5, factor: 1.25)
         conditions.eventually {
             Sidebar sidebar = uiClient.getSidebar()
