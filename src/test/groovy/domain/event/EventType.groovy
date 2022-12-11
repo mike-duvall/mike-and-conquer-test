@@ -11,4 +11,7 @@ class EventType {
     static String UNIT_ARRIVED_AT_DESTINATION = "UnitArrivedAtDestination"
     static String SCENARIO_INITIALIZED =  "ScenarioInitialized"
     static String GDI_CONSTRUCTION_YARD_CREATED = "GDIConstructionYardCreated"
+    static String STARTED_BUILDING_BARRACKS = "StartedBuildingBarracks"
+    static String BUILDING_BARRACKS_PERCENT_COMPLETED =  "BuildingBarracksPercentCompleted"
+    static String COMPLETED_BUILDING_BARRACKS = "CompletedBuildingBarracks"
 }
