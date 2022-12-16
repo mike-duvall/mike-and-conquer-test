@@ -169,6 +169,7 @@ class MikeAndConquerUIClient extends BaseClient {
         Sidebar sidebar = new Sidebar()
         sidebar.buildBarracksEnabled = resp.responseData.buildBarracksEnabled
         sidebar.barracksIsBuilding = resp.responseData.barracksIsBuilding
+        sidebar.barracksReadyToPlace = resp.responseData.barracksReadyToPlace
 //        sidebar.y = resp.responseData.y
 
         return sidebar

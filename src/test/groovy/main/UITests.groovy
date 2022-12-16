@@ -202,64 +202,6 @@ class UITests extends MikeAndConquerTestBase {
     }
 
 
-    int addGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
-        WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
-
-        simulationClient.addMinigunner(minigunnerLocationBuilder
-                .worldCoordinatesX(xInWorldCoordinates)
-                .worldCoordinatesY(yInWorldCoordinates)
-                .build() )
-
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
-
-        def jsonSlurper = new JsonSlurper()
-        def eventData = jsonSlurper.parseText(event.eventData)
-        return eventData.UnitId
-
-    }
-
-    WorldCoordinatesLocation createLocationFromWorldMapTileCoordinates(int x, int y) {
-        return new WorldCoordinatesLocationBuilder()
-                .worldMapTileCoordinatesX(x)
-                .worldMapTileCoordinatesY(y)
-                .build()
-    }
-
-    int addMCVAtWorldMapTileCoordinates(int x, int y) {
-        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
-                .worldMapTileCoordinatesX(x)
-                .worldMapTileCoordinatesY(y)
-                .build()
-
-        simulationClient.addMCV(worldCoordinatesLocation)
-
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
-
-        def jsonSlurper = new JsonSlurper()
-        def eventData = jsonSlurper.parseText(event.eventData)
-        return eventData.UnitId
-
-    }
-
-    void moveMouseToWorldMapTileCoordinates(int x, int y) {
-        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
-                .worldMapTileCoordinatesX(x)
-                .worldMapTileCoordinatesY(y)
-                .build()
-
-        uiClient.moveMouseToLocation(worldCoordinatesLocation)
-    }
-
-
-    void moveMouseToWorldCoordinates(int x, int y) {
-        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
-                .worldCoordinatesX(x)
-                .worldCoordinatesY(y)
-                .build()
-
-        uiClient.moveMouseToLocation(worldCoordinatesLocation)
-
-    }
 
 
 }

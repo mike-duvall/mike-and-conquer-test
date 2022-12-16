@@ -141,8 +141,7 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         screenshotCompareHeight = 22
 
         then:
-        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
-
+         assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
 
         when:
         Sidebar sidebar = uiClient.getSidebar()
@@ -151,8 +150,6 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         assert sidebar != null
         assert sidebar.buildBarracksEnabled == true
         assert sidebar.buildMinigunnerEnabled == false
-
-
 
         when:
         uiClient.leftClickSidebar("Barracks")
@@ -168,26 +165,25 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         sequentialEventReader.waitForEventOfType(EventType.COMPLETED_BUILDING_BARRACKS)
 
         and:
-        true
-//        and:
-//        assertBarracksIsReadyToPlace()
-//
-//        when:
-//        gameClient.leftClickSidebar("Barracks")
-//
-//        and:
-//        gameClient.moveMouseToMapSquareCoordinates( new Point(15,3))
-//
-//        and:
-//        testScenarioNumber = 1
-//        scenarioPrefix = 'barracks-placement-indicator'
-//        startX = 344
-//        startY = 105
-//        screenshotCompareWidth = 70
-//        screenshotCompareHeight = 46
-//
-//        then:
-//        assertScreenshotMatchesWithoutMovingCursor(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
+        asserSidebarStatusBarracksIsReadyToPlace()
+
+        when:
+        uiClient.leftClickSidebar("Barracks")
+
+        and:
+        moveMouseToWorldMapTileCoordinates(15,3)
+
+
+        and:
+        testScenarioNumber = 1
+        scenarioPrefix = 'barracks-placement-indicator'
+        startX = 344
+        startY = 105
+        screenshotCompareWidth = 70
+        screenshotCompareHeight = 46
+
+        then:
+        assertScreenshotMatchesWithoutMovingCursor(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
 //
 //
 //        when:
@@ -231,6 +227,17 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         }
         return true
     }
+
+    def asserSidebarStatusBarracksIsReadyToPlace() {
+        def conditions = new PollingConditions(timeout: 80, initialDelay: 1.5, factor: 1.25)
+        conditions.eventually {
+            Sidebar sidebar = uiClient.getSidebar()
+            assert sidebar.barracksReadyToPlace == true
+        }
+        return true
+
+    }
+
 
 
 //    def "should be able to build barracks when a minigunner is selected"() {
