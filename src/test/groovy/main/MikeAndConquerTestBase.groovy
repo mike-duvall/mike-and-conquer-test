@@ -157,6 +157,7 @@ class MikeAndConquerTestBase extends Specification {
         File outputfile = new File(absPath + "\\" + fileName);
         ImageIO.write(bufferedImage, "png", outputfile);
     }
+
     int addGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
         WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
 
@@ -193,6 +194,16 @@ class MikeAndConquerTestBase extends Specification {
         def jsonSlurper = new JsonSlurper()
         def eventData = jsonSlurper.parseText(event.eventData)
         return eventData.UnitId
+
+    }
+
+    void leftClickAtWorldMapTileCoordinates(int x, int y) {
+        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(x)
+                .worldMapTileCoordinatesY(y)
+                .build()
+
+        uiClient.leftClick(worldCoordinatesLocation)
 
     }
 

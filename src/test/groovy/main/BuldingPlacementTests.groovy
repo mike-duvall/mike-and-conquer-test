@@ -184,25 +184,27 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
 
         then:
         assertScreenshotMatchesWithoutMovingCursor(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
-//
-//
-//        when:
+
+
+        when:
 //        gameClient.leftClickInMapSquareCoordinates(16,5)
-//
-//        and:
+        leftClickAtWorldMapTileCoordinates(16,5)
+
+        and:
 //        assertGDIBarracksExists()
-//
-//        and:
-//        testScenarioNumber = 1
-//        scenarioPrefix = 'barracks-placed'
-//        startX = 387
-//        startY = 118
-//        screenshotCompareWidth = 47
-//        screenshotCompareHeight = 6
-//
-//        then:
-//        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
-//
+        sequentialEventReader.waitForEventOfType(EventType.GDI_BARRACKS_PLACED)
+
+        and:
+        testScenarioNumber = 1
+        scenarioPrefix = 'barracks-placed'
+        startX = 387
+        startY = 118
+        screenshotCompareWidth = 47
+        screenshotCompareHeight = 6
+
+        then:
+        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
+
 //        when:
 //        sidebar = gameClient.getSidebar()
 //

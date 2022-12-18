@@ -14,4 +14,5 @@ class EventType {
     static String STARTED_BUILDING_BARRACKS = "StartedBuildingBarracks"
     static String BUILDING_BARRACKS_PERCENT_COMPLETED =  "BuildingBarracksPercentCompleted"
     static String COMPLETED_BUILDING_BARRACKS = "CompletedBuildingBarracks"
+    static String GDI_BARRACKS_PLACED = "GDIBarracksPlaced"
 }
