@@ -205,14 +205,14 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         then:
         assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
 
-//        when:
-//        sidebar = gameClient.getSidebar()
-//
-//        then:
-//        assert sidebar != null
-//        assert sidebar.buildBarracksEnabled == true
-//        assert sidebar.buildMinigunnerEnabled == true
-//
+        when:
+        sidebar = uiClient.getSidebar()
+
+        then:
+        assert sidebar != null
+        assert sidebar.buildBarracksEnabled == true
+        assert sidebar.buildMinigunnerEnabled == true
+
 //        when:
 //        gameClient.leftClickSidebar("Minigunner")
 //
