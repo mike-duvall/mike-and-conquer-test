@@ -6,5 +6,6 @@ class Sidebar {
     boolean buildMinigunnerEnabled
     boolean barracksIsBuilding
     boolean barracksReadyToPlace
+    boolean minigunnerIsBuilding
 
 }

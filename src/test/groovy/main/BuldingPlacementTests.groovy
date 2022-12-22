@@ -213,9 +213,25 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         assert sidebar.buildBarracksEnabled == true
         assert sidebar.buildMinigunnerEnabled == true
 
-//        when:
-//        gameClient.leftClickSidebar("Minigunner")
+        when:
+        uiClient.leftClickSidebar("Minigunner")
+
+        then:
+
+        then:
+        sequentialEventReader.waitForEventOfType(EventType.STARTED_BUILDING_MINIGUNNER)
+//        assertSidebarStatusBarracksIsBuilding()
 //
+//        and:
+//        sequentialEventReader.waitForEventOfType(EventType.BUILDING_MINIGUNNER_PERCENT_COMPLETED)
+//
+//        and:
+//        sequentialEventReader.waitForEventOfType(EventType.COMPLETED_BUILDING_MINIGUNNER)
+//
+//        and:
+//        sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+
+
 //        then:
 //        assertOneMinigunnerExists()
     }
@@ -229,6 +245,16 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         }
         return true
     }
+
+    def assertSidebarStatusMinigunnerIsBuilding() {
+        def conditions = new PollingConditions(timeout: 30, initialDelay: 1.5, factor: 1.25)
+        conditions.eventually {
+            Sidebar sidebar = uiClient.getSidebar()
+            assert sidebar.minigunnerIsBuilding == true
+        }
+        return true
+    }
+
 
     def asserSidebarStatusBarracksIsReadyToPlace() {
         def conditions = new PollingConditions(timeout: 80, initialDelay: 1.5, factor: 1.25)
