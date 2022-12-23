@@ -220,11 +220,11 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
 
         then:
         sequentialEventReader.waitForEventOfType(EventType.STARTED_BUILDING_MINIGUNNER)
-//        assertSidebarStatusBarracksIsBuilding()
-//
+        assertSidebarStatusMinigunnerIsBuilding()
+
 //        and:
 //        sequentialEventReader.waitForEventOfType(EventType.BUILDING_MINIGUNNER_PERCENT_COMPLETED)
-//
+
 //        and:
 //        sequentialEventReader.waitForEventOfType(EventType.COMPLETED_BUILDING_MINIGUNNER)
 //
