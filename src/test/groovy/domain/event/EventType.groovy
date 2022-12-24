@@ -12,6 +12,11 @@ class EventType {
     static String SCENARIO_INITIALIZED =  "ScenarioInitialized"
     static String GDI_CONSTRUCTION_YARD_CREATED = "GDIConstructionYardCreated"
     static String STARTED_BUILDING_BARRACKS = "StartedBuildingBarracks"
+    static String STARTED_BUILDING_MINIGUNNER = "StartedBuildingMinigunner"
+
     static String BUILDING_BARRACKS_PERCENT_COMPLETED =  "BuildingBarracksPercentCompleted"
+    static String BUILDING_MINIGUNNER_PERCENT_COMPLETED = "BuildingMinigunnerPercentCompleted"
     static String COMPLETED_BUILDING_BARRACKS = "CompletedBuildingBarracks"
+    static String COMPLETED_BUILDING_MINIGUNNER = "CompletedBuildingMinigunner"
+    static String GDI_BARRACKS_PLACED = "GDIBarracksPlaced"
 }
