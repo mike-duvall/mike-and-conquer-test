@@ -228,8 +228,8 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         and:
         sequentialEventReader.waitForEventOfType(EventType.COMPLETED_BUILDING_MINIGUNNER)
 
-//        and:
-//        sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+        and:
+        sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
 
 
 //        then:
