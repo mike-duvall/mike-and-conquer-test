@@ -15,7 +15,7 @@ class EventType {
     static String STARTED_BUILDING_MINIGUNNER = "StartedBuildingMinigunner"
 
     static String BUILDING_BARRACKS_PERCENT_COMPLETED =  "BuildingBarracksPercentCompleted"
-    static String BUILDING_MINIGUNNER_PERCENT_COMPLETED = "BuldingMinigunnerPercentCompleted"
+    static String BUILDING_MINIGUNNER_PERCENT_COMPLETED = "BuildingMinigunnerPercentCompleted"
     static String COMPLETED_BUILDING_BARRACKS = "CompletedBuildingBarracks"
     static String COMPLETED_BUILDING_MINIGUNNER = "CompletedBuildingMinigunner"
     static String GDI_BARRACKS_PLACED = "GDIBarracksPlaced"
