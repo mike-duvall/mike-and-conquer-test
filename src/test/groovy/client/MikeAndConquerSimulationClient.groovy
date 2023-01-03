@@ -92,6 +92,14 @@ class MikeAndConquerSimulationClient extends BaseClient {
         doPostSimulationCommand( createUnitCommand)
     }
 
+    void addMinigunnerAtRandomLocation() {
+        Command createUnitCommand = new Command()
+        createUnitCommand.commandType = Command.CREATE_MINIGUNNER_AT_RANDOM_LOCATION
+
+        doPostSimulationCommand( createUnitCommand)
+
+    }
+
     void addJeep(WorldCoordinatesLocation location) {
 
         Command command = new Command()

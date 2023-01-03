@@ -6,6 +6,7 @@ import domain.event.EventType
 import domain.event.FindEventResult
 import domain.event.PathStep
 import domain.event.SimulationStateUpdateEvent
+import groovyx.net.http.HttpResponseException
 import spock.lang.Unroll
 
 import util.TestUtil
@@ -223,6 +224,89 @@ class MiscTests extends MikeAndConquerTestBase {
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, minigunnerId)
 
     }
+
+
+    def "should set mouse cursor correctly when minigunner is selected" () {
+
+        given:
+        uiClient.startScenario()
+        Unit gdiMinigunner = addGDIMinigunnerAtRandomLocation()
+        Point mountainSquareLocation = new Point(79,20)
+        Point clearSquare = new Point(10,10)
+        Point overMapButNotOverTerrain = new Point(675,20)
+
+
+        when:
+        uiClient.selectUnit(gdiMinigunner.unitId)
+        then:
+        TestUtil.assertUnitIsSelected(uiClient, gdiMinigunner.unitId)
+
+
+        and:
+        moveMouseToWorldCoordinates(overMapButNotOverTerrain.x, overMapButNotOverTerrain.y)
+        then:
+        String mouseCursorState = uiClient.getMouseCursorState()
+        assert mouseCursorState == "MovementNotAllowedCursor"
+
+        when:
+        moveMouseToWorldCoordinates(mountainSquareLocation.x, mountainSquareLocation.y)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == "MovementNotAllowedCursor"
+
+        when:
+//        gameClient.moveMouseToWorldCoordinates(clearSquare)
+        moveMouseToWorldCoordinates(clearSquare.x, clearSquare.y)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == "MoveToLocationCursor"
+
+
+//        when:
+////        Minigunner nodMinigunner = createRandomNodMinigunnerWithAiTurnedOff()
+//        Unit nodMinigunner = createRandomNodMinigunnerWithAiTurnedOff()
+////        gameClient.moveMouseToWorldCoordinates(new Point(nodMinigunner.x, nodMinigunner.y))
+//        moveMouseToWorldCoordinates(nodMinigunner.x, nodMinigunner.y)
+//        mouseCursorState = uiClient.getMouseCursorState()
+//
+//        then:
+//        assert mouseCursorState == "AttackEnemyCursor"
+
+//        when:
+//        gameClient.rightClick(20,20)
+//        mouseCursorState = gameClient.getMouseCursorState()
+//
+//        then:
+//        assert mouseCursorState == "DefaultArrowCursor"
+
+    }
+
+
+    Point createRandomMinigunnerPosition()
+    {
+        Random rand = new Random()
+
+        int minX = 10
+        int minY = 10
+
+
+        // Capping max so it will fit on screen
+        int maxX = 600
+        int maxY = 400
+
+        int randomX = rand.nextInt(maxX) + minX
+        int randomY = rand.nextInt(maxY) + minY
+
+        Point point = new Point()
+        point.x = randomX
+        point.y = randomY
+        return point
+
+    }
+
+
 
 //    def "Move a jeep and assert correct path is followed"() {
 //        given:

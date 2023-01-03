@@ -158,6 +158,23 @@ class MikeAndConquerTestBase extends Specification {
         ImageIO.write(bufferedImage, "png", outputfile);
     }
 
+
+    Unit addGDIMinigunnerAtRandomLocation() {
+        simulationClient.addMinigunnerAtRandomLocation()
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+
+        def jsonSlurper = new JsonSlurper()
+        def eventData = jsonSlurper.parseText(event.eventData)
+        Unit unit = new Unit()
+        unit.unitId = eventData.UnitId
+        unit.x = eventData.X
+        unit.y = eventData.Y
+
+        return unit
+
+
+    }
+
     int addGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
         WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
 

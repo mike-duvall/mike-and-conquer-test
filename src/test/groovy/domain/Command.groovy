@@ -14,6 +14,7 @@ class Command {
     static final String RIGHT_CLICK = 'RightClick'
     static final String MOVE_MOUSE = 'MoveMouse'
     static final String RELEASE_LEFT_MOUSE_BUTTON = 'ReleaseLeftMouseButton'
+    static final String CREATE_MINIGUNNER_AT_RANDOM_LOCATION = "CreateMinigunnerAtRandomLocation"
 
     Command() {
 
