@@ -94,11 +94,26 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
     void addMinigunnerAtRandomLocation() {
         Command createUnitCommand = new Command()
-        createUnitCommand.commandType = Command.CREATE_MINIGUNNER_AT_RANDOM_LOCATION
+        createUnitCommand.commandType = Command.CREATE_GDI_MINIGUNNER_AT_RANDOM_LOCATION
+        doPostSimulationCommand( createUnitCommand)
+    }
+
+    void createDeactivatedNodMinigunnerAtRandomLocation() {
+
+        Command createUnitCommand = new Command()
+        createUnitCommand.commandType = Command.CREATE_NOD_MINIGUNNER_AT_RANDOM_LOCATION
+
+        def commandParams =
+                [
+                        deactivated: true
+                ]
+
+        createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
 
         doPostSimulationCommand( createUnitCommand)
-
     }
+
+
 
     void addJeep(WorldCoordinatesLocation location) {
 

@@ -264,15 +264,15 @@ class MiscTests extends MikeAndConquerTestBase {
         assert mouseCursorState == "MoveToLocationCursor"
 
 
-//        when:
-////        Minigunner nodMinigunner = createRandomNodMinigunnerWithAiTurnedOff()
-//        Unit nodMinigunner = createRandomNodMinigunnerWithAiTurnedOff()
-////        gameClient.moveMouseToWorldCoordinates(new Point(nodMinigunner.x, nodMinigunner.y))
-//        moveMouseToWorldCoordinates(nodMinigunner.x, nodMinigunner.y)
-//        mouseCursorState = uiClient.getMouseCursorState()
-//
-//        then:
-//        assert mouseCursorState == "AttackEnemyCursor"
+        when:
+//        Minigunner nodMinigunner = createRandomNodMinigunnerWithAiTurnedOff()
+        Unit nodMinigunner = creatNodMinigunnerAtRandomLocationWithAITurnedOff()
+//        gameClient.moveMouseToWorldCoordinates(new Point(nodMinigunner.x, nodMinigunner.y))
+        moveMouseToWorldCoordinates(nodMinigunner.x, nodMinigunner.y)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == "AttackEnemyCursor"
 
 //        when:
 //        gameClient.rightClick(20,20)
