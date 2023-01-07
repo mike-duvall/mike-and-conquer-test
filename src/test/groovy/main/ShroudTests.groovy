@@ -486,6 +486,43 @@ class ShroudTests extends MikeAndConquerTestBase {
         assertScreenshotMatches(testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
     }
 
+    def "Test shroud processing when minigunner near edge of screen"() {
+        given:
+        WorldCoordinatesLocation topEdgeOfMap = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(20)
+                .worldMapTileCoordinatesY(0)
+                .build()
+        WorldCoordinatesLocation leftEdgeOfMap = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(0)
+                .worldMapTileCoordinatesY(3)
+                .build()
+
+        WorldCoordinatesLocation rightEdgeOfMap = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(26)
+                .worldMapTileCoordinatesY(3)
+                .build()
+
+        // Can't do bottom of map because it's not valid terrain for a minigunner
+
+        when:
+        simulationClient.createGDIMinigunner(topEdgeOfMap)
+
+        then:
+        sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+
+        when:
+        simulationClient.createGDIMinigunner(leftEdgeOfMap)
+
+        then:
+        sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+
+        when:
+        simulationClient.createGDIMinigunner(rightEdgeOfMap)
+
+        then:
+        sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+
+    }
 
 
 
@@ -534,7 +571,7 @@ class ShroudTests extends MikeAndConquerTestBase {
 
 
 //            int currentEventIndex = simulationClient.getSimulationStateUpdateEventsCurrentIndex()
-            simulationClient.addMinigunner(minigunnerLocation)
+            simulationClient.createGDIMinigunner(minigunnerLocation)
 
             SimulationStateUpdateEvent simulationStateUpdateEvent = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
 

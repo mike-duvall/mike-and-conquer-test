@@ -6,7 +6,6 @@ import domain.WorldCoordinatesLocation
 import domain.WorldCoordinatesLocationBuilder
 import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
-import groovy.json.JsonSlurper
 import spock.lang.Unroll
 import util.TestUtil
 
@@ -30,7 +29,7 @@ class UITests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(14)
                 .build()
 
-        simulationClient.addMinigunner(minigunnerStartLocation)
+        simulationClient.createGDIMinigunner(minigunnerStartLocation)
 
         then:
         SimulationStateUpdateEvent minigunnerCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)

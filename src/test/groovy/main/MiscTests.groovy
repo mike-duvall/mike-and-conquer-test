@@ -6,7 +6,6 @@ import domain.event.EventType
 import domain.event.FindEventResult
 import domain.event.PathStep
 import domain.event.SimulationStateUpdateEvent
-import groovyx.net.http.HttpResponseException
 import spock.lang.Unroll
 
 import util.TestUtil
@@ -148,7 +147,7 @@ class MiscTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(13)
                 .build()
 
-        simulationClient.addMinigunner(startLocation)
+        simulationClient.createGDIMinigunner(startLocation)
 
         then:
         String expectedCreationEventType = EventType.MINIGUNNER_CREATED
@@ -274,12 +273,17 @@ class MiscTests extends MikeAndConquerTestBase {
         then:
         assert mouseCursorState == "AttackEnemyCursor"
 
-//        when:
-//        gameClient.rightClick(20,20)
-//        mouseCursorState = gameClient.getMouseCursorState()
-//
-//        then:
-//        assert mouseCursorState == "DefaultArrowCursor"
+        when:
+        WorldCoordinatesLocation rightClickLocation = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(20)
+                .worldMapTileCoordinatesY(20)
+                .build()
+
+        uiClient.rightClick(rightClickLocation)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == "DefaultArrowCursor"
 
     }
 

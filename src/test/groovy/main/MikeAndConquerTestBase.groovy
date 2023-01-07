@@ -160,7 +160,7 @@ class MikeAndConquerTestBase extends Specification {
 
 
     Unit addGDIMinigunnerAtRandomLocation() {
-        simulationClient.addMinigunnerAtRandomLocation()
+        simulationClient.createGDIMinigunnerAtRandomLocation()
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
 
         def jsonSlurper = new JsonSlurper()
@@ -190,7 +190,7 @@ class MikeAndConquerTestBase extends Specification {
     int addGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
         WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
 
-        simulationClient.addMinigunner(minigunnerLocationBuilder
+        simulationClient.createGDIMinigunner(minigunnerLocationBuilder
                                                .worldCoordinatesX(xInWorldCoordinates)
                                                .worldCoordinatesY(yInWorldCoordinates)
                                                .build() )
