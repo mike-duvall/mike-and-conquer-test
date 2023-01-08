@@ -12,23 +12,10 @@ import domain.event.SimulationStateUpdateEvent
 import spock.util.concurrent.PollingConditions
 import util.TestUtil
 
-
-//import domain.GDIConstructionYard
-//import domain.MCV
-//import domain.Minigunner
-//import domain.Point
-//import domain.Sidebar
-
 class BuldingPlacementTests extends MikeAndConquerTestBase {
 
 
     def setup() {
-
-//        boolean showShroud = false
-//        float initialMapZoom = 1
-//        int gameSpeedDelayDivisor = 50
-//        setAndAssertGameOptions(showShroud, initialMapZoom, gameSpeedDelayDivisor)
-
         UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
         setAndAssertUIOptions(uiOptions)
 
@@ -49,7 +36,7 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(8)
                 .build()
 
-        simulationClient.addMCV(mcvStartLocation)
+        simulationClient.createMCV(mcvStartLocation)
 
         SimulationStateUpdateEvent mcvCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
         Unit createdMCV = parseUnitFromEventData(mcvCreatedEvent.eventData)
@@ -84,7 +71,7 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
 
         then:
         SimulationStateUpdateEvent unitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
-        def unitArrivedEventData = jsonSlurper.parseText(unitArrivedAtDestinationEvent.eventData)
+//        def unitArrivedEventData = jsonSlurper.parseText(unitArrivedAtDestinationEvent.eventData)
 
         when: "Test scenario 1"
         int testScenarioNumber = 1
@@ -187,11 +174,17 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
 
 
         when:
-//        gameClient.leftClickInMapSquareCoordinates(16,5)
+        moveMouseToWorldMapTileCoordinates(16, 5)
+
+        and:
+        // Give a moment for building placement indicator to get updated
+        // before attempting to click and place the barracks
+        sleep(100)
+
+        and:
         leftClickAtWorldMapTileCoordinates(16,5)
 
         and:
-//        assertGDIBarracksExists()
         sequentialEventReader.waitForEventOfType(EventType.GDI_BARRACKS_PLACED)
 
         and:
@@ -232,10 +225,7 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
 
 
-//        then:
-//        assertOneMinigunnerExists()
     }
-
 
     def assertSidebarStatusBarracksIsBuilding() {
         def conditions = new PollingConditions(timeout: 30, initialDelay: 1.5, factor: 1.25)
@@ -265,8 +255,6 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         return true
 
     }
-
-
 
 //    def "should be able to build barracks when a minigunner is selected"() {
 //        given:

@@ -1,12 +1,12 @@
 package main
 
+import domain.Point
 import domain.UIOptions
 import domain.Unit
 import domain.WorldCoordinatesLocation
 import domain.WorldCoordinatesLocationBuilder
 import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
-import groovy.json.JsonSlurper
 import spock.lang.Unroll
 import util.TestUtil
 
@@ -30,7 +30,7 @@ class UITests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(14)
                 .build()
 
-        simulationClient.addMinigunner(minigunnerStartLocation)
+        simulationClient.createGDIMinigunner(minigunnerStartLocation)
 
         then:
         SimulationStateUpdateEvent minigunnerCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
@@ -84,10 +84,10 @@ class UITests extends MikeAndConquerTestBase {
         uiClient.startScenario()
 
         when:
-        int gdiMinigunner1Id = addGDIMinigunnerAtWorldCoordinates(82,369)
-        int gdiMinigunner2Id = addGDIMinigunnerAtWorldCoordinates(92,380)
-        int gdiMinigunner3Id = addGDIMinigunnerAtWorldCoordinates(230,300)
-        int gdiMinigunner4Id = addGDIMinigunnerAtWorldCoordinates(82,300)
+        int gdiMinigunner1Id = createGDIMinigunnerAtWorldCoordinates(82, 369)
+        int gdiMinigunner2Id = createGDIMinigunnerAtWorldCoordinates(92, 380)
+        int gdiMinigunner3Id = createGDIMinigunnerAtWorldCoordinates(230, 300)
+        int gdiMinigunner4Id = createGDIMinigunnerAtWorldCoordinates(82, 300)
 
         Set<Integer> uniqueMinigunnerIds = []
         uniqueMinigunnerIds.add(gdiMinigunner1Id)
@@ -162,7 +162,7 @@ class UITests extends MikeAndConquerTestBase {
         int mcvWorldMapTileY = 12
 
         and:
-        int mcvId = addMCVAtWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
+        int mcvId = createMCVAtWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
 
         WorldCoordinatesLocation mountainSquareLocation = createLocationFromWorldMapTileCoordinates(3,0)
         WorldCoordinatesLocation clearSquareLocation = createLocationFromWorldMapTileCoordinates(10, 10)
@@ -194,6 +194,64 @@ class UITests extends MikeAndConquerTestBase {
 
         when:
         uiClient.rightClick(clearSquareLocation)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == "DefaultArrowCursor"
+
+    }
+
+    def "should set mouse cursor correctly when minigunner is selected" () {
+
+        given:
+        uiClient.startScenario()
+        Unit gdiMinigunner = createGDIMinigunnerAtRandomLocation()
+        Point mountainSquareLocation = new Point(79, 20)
+        Point clearSquare = new Point(10,10)
+        Point overMapButNotOverTerrain = new Point(675,20)
+
+
+        when:
+        uiClient.selectUnit(gdiMinigunner.unitId)
+        then:
+        TestUtil.assertUnitIsSelected(uiClient, gdiMinigunner.unitId)
+
+
+        and:
+        moveMouseToWorldCoordinates(overMapButNotOverTerrain.x, overMapButNotOverTerrain.y)
+        then:
+        String mouseCursorState = uiClient.getMouseCursorState()
+        assert mouseCursorState == "MovementNotAllowedCursor"
+
+        when:
+        moveMouseToWorldCoordinates(mountainSquareLocation.x, mountainSquareLocation.y)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == "MovementNotAllowedCursor"
+
+        when:
+        moveMouseToWorldCoordinates(clearSquare.x, clearSquare.y)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == "MoveToLocationCursor"
+
+        when:
+        Unit nodMinigunner = creatNodMinigunnerAtRandomLocationWithAITurnedOff()
+        moveMouseToWorldCoordinates(nodMinigunner.x, nodMinigunner.y)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == "AttackEnemyCursor"
+
+        when:
+        WorldCoordinatesLocation rightClickLocation = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(20)
+                .worldMapTileCoordinatesY(20)
+                .build()
+
+        uiClient.rightClick(rightClickLocation)
         mouseCursorState = uiClient.getMouseCursorState()
 
         then:

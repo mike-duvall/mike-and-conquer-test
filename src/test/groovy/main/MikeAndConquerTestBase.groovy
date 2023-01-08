@@ -158,10 +158,39 @@ class MikeAndConquerTestBase extends Specification {
         ImageIO.write(bufferedImage, "png", outputfile);
     }
 
-    int addGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
+
+    Unit createGDIMinigunnerAtRandomLocation() {
+        simulationClient.createGDIMinigunnerAtRandomLocation()
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+
+        def jsonSlurper = new JsonSlurper()
+        def eventData = jsonSlurper.parseText(event.eventData)
+        Unit unit = new Unit()
+        unit.unitId = eventData.UnitId
+        unit.x = eventData.X
+        unit.y = eventData.Y
+        return unit
+    }
+
+    Unit creatNodMinigunnerAtRandomLocationWithAITurnedOff() {
+        simulationClient.createDeactivatedNodMinigunnerAtRandomLocation()
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+
+        def jsonSlurper = new JsonSlurper()
+        def eventData = jsonSlurper.parseText(event.eventData)
+        Unit unit = new Unit()
+        unit.unitId = eventData.UnitId
+        unit.x = eventData.X
+        unit.y = eventData.Y
+        unit.player = eventData.Player
+        return unit
+    }
+
+
+    int createGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
         WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
 
-        simulationClient.addMinigunner(minigunnerLocationBuilder
+        simulationClient.createGDIMinigunner(minigunnerLocationBuilder
                                                .worldCoordinatesX(xInWorldCoordinates)
                                                .worldCoordinatesY(yInWorldCoordinates)
                                                .build() )
@@ -181,13 +210,13 @@ class MikeAndConquerTestBase extends Specification {
                 .build()
     }
 
-    int addMCVAtWorldMapTileCoordinates(int x, int y) {
+    int createMCVAtWorldMapTileCoordinates(int x, int y) {
         WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
                 .worldMapTileCoordinatesX(x)
                 .worldMapTileCoordinatesY(y)
                 .build()
 
-        simulationClient.addMCV(worldCoordinatesLocation)
+        simulationClient.createMCV(worldCoordinatesLocation)
 
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
 

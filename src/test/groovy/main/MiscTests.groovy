@@ -61,7 +61,7 @@ class MiscTests extends MikeAndConquerTestBase {
             simulationClient.addJeep(unitStartLocation)
         }
         else if (unitType == "MCV") {
-            simulationClient.addMCV(unitStartLocation)
+            simulationClient.createMCV(unitStartLocation)
         }
         else {
             throw new Exception ("Unexpected unit type": + unitType)
@@ -147,7 +147,7 @@ class MiscTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(13)
                 .build()
 
-        simulationClient.addMinigunner(startLocation)
+        simulationClient.createGDIMinigunner(startLocation)
 
         then:
         String expectedCreationEventType = EventType.MINIGUNNER_CREATED
@@ -223,6 +223,30 @@ class MiscTests extends MikeAndConquerTestBase {
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, minigunnerId)
 
     }
+
+    Point createRandomMinigunnerPosition()
+    {
+        Random rand = new Random()
+
+        int minX = 10
+        int minY = 10
+
+
+        // Capping max so it will fit on screen
+        // In future, make this use actual map size to cap
+        int maxX = 600
+        int maxY = 400
+
+        int randomX = rand.nextInt(maxX) + minX
+        int randomY = rand.nextInt(maxY) + minY
+
+        Point point = new Point()
+        point.x = randomX
+        point.y = randomY
+        return point
+
+    }
+
 
 //    def "Move a jeep and assert correct path is followed"() {
 //        given:

@@ -18,7 +18,6 @@ class TestUtil {
             Unit retrievedUnit = uiClient.getUnit(unitId)
             assert retrievedUnit.selected == true
 
-
         }
         return true
     }

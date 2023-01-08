@@ -76,10 +76,10 @@ class MikeAndConquerSimulationClient extends BaseClient {
     }
 
 
-    void addMinigunner(WorldCoordinatesLocation location) {
+    void createGDIMinigunner(WorldCoordinatesLocation location) {
 
         Command createUnitCommand = new Command()
-        createUnitCommand.commandType = "CreateMinigunner"
+        createUnitCommand.commandType = "CreateGDIMinigunner"
 
         def commandParams =
             [
@@ -91,6 +91,29 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
         doPostSimulationCommand( createUnitCommand)
     }
+
+    void createGDIMinigunnerAtRandomLocation() {
+        Command createUnitCommand = new Command()
+        createUnitCommand.commandType = Command.CREATE_GDI_MINIGUNNER_AT_RANDOM_LOCATION
+        doPostSimulationCommand( createUnitCommand)
+    }
+
+    void createDeactivatedNodMinigunnerAtRandomLocation() {
+
+        Command createUnitCommand = new Command()
+        createUnitCommand.commandType = Command.CREATE_NOD_MINIGUNNER_AT_RANDOM_LOCATION
+
+        def commandParams =
+                [
+                        deactivated: true
+                ]
+
+        createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
+
+        doPostSimulationCommand( createUnitCommand)
+    }
+
+
 
     void addJeep(WorldCoordinatesLocation location) {
 
@@ -108,7 +131,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
         doPostSimulationCommand( command)
     }
 
-    void addMCV( WorldCoordinatesLocation location) {
+    void createMCV(WorldCoordinatesLocation location) {
 
         Command command = new Command()
         command.commandType = "CreateMCV"
