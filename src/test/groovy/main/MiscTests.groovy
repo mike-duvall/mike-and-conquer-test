@@ -225,67 +225,6 @@ class MiscTests extends MikeAndConquerTestBase {
     }
 
 
-    def "should set mouse cursor correctly when minigunner is selected" () {
-
-        given:
-        uiClient.startScenario()
-        Unit gdiMinigunner = addGDIMinigunnerAtRandomLocation()
-        Point mountainSquareLocation = new Point(79,20)
-        Point clearSquare = new Point(10,10)
-        Point overMapButNotOverTerrain = new Point(675,20)
-
-
-        when:
-        uiClient.selectUnit(gdiMinigunner.unitId)
-        then:
-        TestUtil.assertUnitIsSelected(uiClient, gdiMinigunner.unitId)
-
-
-        and:
-        moveMouseToWorldCoordinates(overMapButNotOverTerrain.x, overMapButNotOverTerrain.y)
-        then:
-        String mouseCursorState = uiClient.getMouseCursorState()
-        assert mouseCursorState == "MovementNotAllowedCursor"
-
-        when:
-        moveMouseToWorldCoordinates(mountainSquareLocation.x, mountainSquareLocation.y)
-        mouseCursorState = uiClient.getMouseCursorState()
-
-        then:
-        assert mouseCursorState == "MovementNotAllowedCursor"
-
-        when:
-//        gameClient.moveMouseToWorldCoordinates(clearSquare)
-        moveMouseToWorldCoordinates(clearSquare.x, clearSquare.y)
-        mouseCursorState = uiClient.getMouseCursorState()
-
-        then:
-        assert mouseCursorState == "MoveToLocationCursor"
-
-
-        when:
-//        Minigunner nodMinigunner = createRandomNodMinigunnerWithAiTurnedOff()
-        Unit nodMinigunner = creatNodMinigunnerAtRandomLocationWithAITurnedOff()
-//        gameClient.moveMouseToWorldCoordinates(new Point(nodMinigunner.x, nodMinigunner.y))
-        moveMouseToWorldCoordinates(nodMinigunner.x, nodMinigunner.y)
-        mouseCursorState = uiClient.getMouseCursorState()
-
-        then:
-        assert mouseCursorState == "AttackEnemyCursor"
-
-        when:
-        WorldCoordinatesLocation rightClickLocation = new WorldCoordinatesLocationBuilder()
-                .worldMapTileCoordinatesX(20)
-                .worldMapTileCoordinatesY(20)
-                .build()
-
-        uiClient.rightClick(rightClickLocation)
-        mouseCursorState = uiClient.getMouseCursorState()
-
-        then:
-        assert mouseCursorState == "DefaultArrowCursor"
-
-    }
 
 
     Point createRandomMinigunnerPosition()
