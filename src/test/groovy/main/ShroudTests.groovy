@@ -41,7 +41,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesX(21)
                 .worldMapTileCoordinatesY(12)
                 .build()
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
 
         and:
@@ -65,7 +65,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
 
         when: "Test scenario 2"
@@ -91,7 +91,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:  "Test scenario 3"
         int testScenarioNumber = 3
@@ -115,7 +115,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:  "Test scenario 4"
         int testScenarioNumber = 4
@@ -139,7 +139,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:  "Test scenario 5"
         int testScenarioNumber = 5
@@ -164,7 +164,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:  "Test scenario 6"
         int testScenarioNumber = 6
@@ -189,7 +189,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:  "Test scenario 7"
         int testScenarioNumber = 7
@@ -215,7 +215,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:  "Test scenario 8"
         int testScenarioNumber = 8
@@ -241,7 +241,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:
         int testScenarioNumber = 9
@@ -269,7 +269,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:
         int testScenarioNumber = 10
@@ -298,7 +298,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:
         int testScenarioNumber = 11
@@ -326,7 +326,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:
         int testScenarioNumber = 12
@@ -353,7 +353,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:
         int testScenarioNumber = 13
@@ -382,7 +382,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:
         int testScenarioNumber = 14
@@ -410,7 +410,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:
         int testScenarioNumber = 15
@@ -437,7 +437,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:
         int testScenarioNumber = 16
@@ -464,7 +464,7 @@ class ShroudTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(12)
                 .build()
 
-        simulationClient.addMCV(mcvLocation)
+        simulationClient.createMCV(mcvLocation)
 
         when:
         int testScenarioNumber = 17

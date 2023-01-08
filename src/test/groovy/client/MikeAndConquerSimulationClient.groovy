@@ -131,7 +131,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
         doPostSimulationCommand( command)
     }
 
-    void addMCV( WorldCoordinatesLocation location) {
+    void createMCV(WorldCoordinatesLocation location) {
 
         Command command = new Command()
         command.commandType = "CreateMCV"

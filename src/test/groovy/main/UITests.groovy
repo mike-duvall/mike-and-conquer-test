@@ -84,10 +84,10 @@ class UITests extends MikeAndConquerTestBase {
         uiClient.startScenario()
 
         when:
-        int gdiMinigunner1Id = addGDIMinigunnerAtWorldCoordinates(82,369)
-        int gdiMinigunner2Id = addGDIMinigunnerAtWorldCoordinates(92,380)
-        int gdiMinigunner3Id = addGDIMinigunnerAtWorldCoordinates(230,300)
-        int gdiMinigunner4Id = addGDIMinigunnerAtWorldCoordinates(82,300)
+        int gdiMinigunner1Id = createGDIMinigunnerAtWorldCoordinates(82, 369)
+        int gdiMinigunner2Id = createGDIMinigunnerAtWorldCoordinates(92, 380)
+        int gdiMinigunner3Id = createGDIMinigunnerAtWorldCoordinates(230, 300)
+        int gdiMinigunner4Id = createGDIMinigunnerAtWorldCoordinates(82, 300)
 
         Set<Integer> uniqueMinigunnerIds = []
         uniqueMinigunnerIds.add(gdiMinigunner1Id)
@@ -162,7 +162,7 @@ class UITests extends MikeAndConquerTestBase {
         int mcvWorldMapTileY = 12
 
         and:
-        int mcvId = addMCVAtWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
+        int mcvId = createMCVAtWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
 
         WorldCoordinatesLocation mountainSquareLocation = createLocationFromWorldMapTileCoordinates(3,0)
         WorldCoordinatesLocation clearSquareLocation = createLocationFromWorldMapTileCoordinates(10, 10)
@@ -205,7 +205,7 @@ class UITests extends MikeAndConquerTestBase {
 
         given:
         uiClient.startScenario()
-        Unit gdiMinigunner = addGDIMinigunnerAtRandomLocation()
+        Unit gdiMinigunner = createGDIMinigunnerAtRandomLocation()
         Point mountainSquareLocation = new Point(79, 20)
         Point clearSquare = new Point(10,10)
         Point overMapButNotOverTerrain = new Point(675,20)
@@ -231,18 +231,14 @@ class UITests extends MikeAndConquerTestBase {
         assert mouseCursorState == "MovementNotAllowedCursor"
 
         when:
-//        gameClient.moveMouseToWorldCoordinates(clearSquare)
         moveMouseToWorldCoordinates(clearSquare.x, clearSquare.y)
         mouseCursorState = uiClient.getMouseCursorState()
 
         then:
         assert mouseCursorState == "MoveToLocationCursor"
 
-
         when:
-//        Minigunner nodMinigunner = createRandomNodMinigunnerWithAiTurnedOff()
         Unit nodMinigunner = creatNodMinigunnerAtRandomLocationWithAITurnedOff()
-//        gameClient.moveMouseToWorldCoordinates(new Point(nodMinigunner.x, nodMinigunner.y))
         moveMouseToWorldCoordinates(nodMinigunner.x, nodMinigunner.y)
         mouseCursorState = uiClient.getMouseCursorState()
 

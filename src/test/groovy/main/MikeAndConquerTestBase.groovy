@@ -159,7 +159,7 @@ class MikeAndConquerTestBase extends Specification {
     }
 
 
-    Unit addGDIMinigunnerAtRandomLocation() {
+    Unit createGDIMinigunnerAtRandomLocation() {
         simulationClient.createGDIMinigunnerAtRandomLocation()
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
 
@@ -187,7 +187,7 @@ class MikeAndConquerTestBase extends Specification {
     }
 
 
-    int addGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
+    int createGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
         WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
 
         simulationClient.createGDIMinigunner(minigunnerLocationBuilder
@@ -210,13 +210,13 @@ class MikeAndConquerTestBase extends Specification {
                 .build()
     }
 
-    int addMCVAtWorldMapTileCoordinates(int x, int y) {
+    int createMCVAtWorldMapTileCoordinates(int x, int y) {
         WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
                 .worldMapTileCoordinatesX(x)
                 .worldMapTileCoordinatesY(y)
                 .build()
 
-        simulationClient.addMCV(worldCoordinatesLocation)
+        simulationClient.createMCV(worldCoordinatesLocation)
 
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
 

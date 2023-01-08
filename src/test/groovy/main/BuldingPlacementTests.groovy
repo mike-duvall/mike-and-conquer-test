@@ -12,23 +12,10 @@ import domain.event.SimulationStateUpdateEvent
 import spock.util.concurrent.PollingConditions
 import util.TestUtil
 
-
-//import domain.GDIConstructionYard
-//import domain.MCV
-//import domain.Minigunner
-//import domain.Point
-//import domain.Sidebar
-
 class BuldingPlacementTests extends MikeAndConquerTestBase {
 
 
     def setup() {
-
-//        boolean showShroud = false
-//        float initialMapZoom = 1
-//        int gameSpeedDelayDivisor = 50
-//        setAndAssertGameOptions(showShroud, initialMapZoom, gameSpeedDelayDivisor)
-
         UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
         setAndAssertUIOptions(uiOptions)
 
@@ -49,7 +36,7 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(8)
                 .build()
 
-        simulationClient.addMCV(mcvStartLocation)
+        simulationClient.createMCV(mcvStartLocation)
 
         SimulationStateUpdateEvent mcvCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
         Unit createdMCV = parseUnitFromEventData(mcvCreatedEvent.eventData)
@@ -84,7 +71,7 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
 
         then:
         SimulationStateUpdateEvent unitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
-        def unitArrivedEventData = jsonSlurper.parseText(unitArrivedAtDestinationEvent.eventData)
+//        def unitArrivedEventData = jsonSlurper.parseText(unitArrivedAtDestinationEvent.eventData)
 
         when: "Test scenario 1"
         int testScenarioNumber = 1
@@ -239,157 +226,6 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
 
 
     }
-//    def "repeat should be able to build construction yard, then barracks, then minigunner"() {
-//        given:
-//        WorldCoordinatesLocation mcvStartLocation = new WorldCoordinatesLocationBuilder()
-//                .worldMapTileCoordinatesX(16)
-//                .worldMapTileCoordinatesY(8)
-//                .build()
-//
-//        simulationClient.addMCV(mcvStartLocation)
-//
-//        SimulationStateUpdateEvent mcvCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
-//        Unit createdMCV = parseUnitFromEventData(mcvCreatedEvent.eventData)
-//
-////        when:
-//        int mcvId = createdMCV.unitId
-//
-////        then:
-////        assert mcvId != -1
-//
-////        when:
-//        uiClient.selectUnit(mcvId)
-//
-////        then:
-////        TestUtil.assertUnitIsSelected(uiClient, mcvId)
-//
-////        when:
-//        WorldCoordinatesLocation mcvDestinationLocation = new WorldCoordinatesLocationBuilder()
-//                .worldCoordinatesX(350)
-//                .worldCoordinatesY(160)
-//                .build()
-//
-//        uiClient.leftClick(mcvDestinationLocation)
-//
-////        and:
-//        WorldCoordinatesLocation rightClickLocation = new WorldCoordinatesLocationBuilder()
-//                .worldCoordinatesX(200)
-//                .worldCoordinatesY(200)
-//                .build()
-//
-//        uiClient.rightClick(rightClickLocation)
-//
-////        then:
-//        SimulationStateUpdateEvent unitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
-//        def unitArrivedEventData = jsonSlurper.parseText(unitArrivedAtDestinationEvent.eventData)
-//
-////        when: "Test scenario 1"
-////        int testScenarioNumber = 1
-////        String scenarioPrefix = 'mcv'
-////        int startX = 306
-////        int startY = 124
-////        int screenshotCompareWidth = 73
-////        int screenshotCompareHeight = 57
-////
-////        then:
-////        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX, startY, screenshotCompareWidth, screenshotCompareHeight)
-//
-////        when:
-//        uiClient.leftClick(mcvDestinationLocation)   // First select it
-//        uiClient.leftClick(mcvDestinationLocation)   // Then click to create construction yard
-//
-////        then:
-//        SimulationStateUpdateEvent mcvRemovedEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_DELETED)
-//        int removedUnitId = parseUnitIdFromEventData(mcvRemovedEvent.eventData)
-//        assert removedUnitId == mcvId
-//
-////        and:
-//        SimulationStateUpdateEvent gdiConstructionYardCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.GDI_CONSTRUCTION_YARD_CREATED)
-//        Building createdConstructionYard = parseBuildingFromEventData(gdiConstructionYardCreatedEvent.eventData)
-//
-//        // TODO Determine why I have to fudge these values
-//        assert createdConstructionYard.x == mcvDestinationLocation.XInWorldCoordinates() - 2
-//        assert createdConstructionYard.y == mcvDestinationLocation.YInWorldCoordinates() - 4
-//
-//
-////        when:
-////        testScenarioNumber = 1
-////        scenarioPrefix = 'construction-yard-placed'
-////        startX = 340
-////        startY = 117
-////        screenshotCompareWidth = 43
-////        screenshotCompareHeight = 22
-////
-////        then:
-////        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX, startY, screenshotCompareWidth, screenshotCompareHeight)
-//
-////        when:
-//        Sidebar sidebar = uiClient.getSidebar()
-//
-////        then:
-//        assert sidebar != null
-//        assert sidebar.buildBarracksEnabled == true
-//        assert sidebar.buildMinigunnerEnabled == false
-//
-////        when:
-//        uiClient.leftClickSidebar("Barracks")
-//
-////        then:
-//        sequentialEventReader.waitForEventOfType(EventType.STARTED_BUILDING_BARRACKS)
-//        assertSidebarStatusBarracksIsBuilding()
-//
-////        and:
-//        sequentialEventReader.waitForEventOfType(EventType.BUILDING_BARRACKS_PERCENT_COMPLETED)
-//
-////        and:
-//        sequentialEventReader.waitForEventOfType(EventType.COMPLETED_BUILDING_BARRACKS)
-//
-////        and:
-//        asserSidebarStatusBarracksIsReadyToPlace()
-//
-////        when:
-//        uiClient.leftClickSidebar("Barracks")
-//
-////        and:
-//        moveMouseToWorldMapTileCoordinates(15, 3)
-//
-//
-////        and:
-////        testScenarioNumber = 1
-////        scenarioPrefix = 'barracks-placement-indicator'
-////        startX = 344
-////        startY = 105
-////        screenshotCompareWidth = 70
-////        screenshotCompareHeight = 46
-////
-////        then:
-////        assertScreenshotMatchesWithoutMovingCursor(scenarioPrefix, testScenarioNumber, startX, startY, screenshotCompareWidth, screenshotCompareHeight)
-//
-//
-////        when:
-//        leftClickAtWorldMapTileCoordinates(16, 5)
-//
-////        and:
-//        sequentialEventReader.waitForEventOfType(EventType.GDI_BARRACKS_PLACED)
-//
-//        //        and:
-//        def testScenarioNumber = 1
-//        def scenarioPrefix = 'barracks-placed'
-//        def startX = 387
-//        def startY = 118
-//        def screenshotCompareWidth = 47
-//        def screenshotCompareHeight = 6
-//
-////        then:
-//        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
-//
-//
-//        expect:
-//        true
-//
-//        where:
-//        i << (1..23)
-//    }
 
     def assertSidebarStatusBarracksIsBuilding() {
         def conditions = new PollingConditions(timeout: 30, initialDelay: 1.5, factor: 1.25)
@@ -419,8 +255,6 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         return true
 
     }
-
-
 
 //    def "should be able to build barracks when a minigunner is selected"() {
 //        given:
