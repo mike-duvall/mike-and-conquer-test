@@ -1,5 +1,6 @@
 package main
 
+import domain.Cursor
 import domain.Point
 import domain.UIOptions
 import domain.Unit
@@ -50,9 +51,9 @@ class UITests extends MikeAndConquerTestBase {
 
         when:
         WorldCoordinatesLocation leftClickLocation = new WorldCoordinatesLocationBuilder()
-            .worldMapTileCoordinatesX(18)
-            .worldMapTileCoordinatesY(12)
-            .build()
+                .worldMapTileCoordinatesX(18)
+                .worldMapTileCoordinatesY(12)
+                .build()
 
         uiClient.leftClick(leftClickLocation)
         int destinationXInWorldCoordinates = leftClickLocation.XInWorldCoordinates()
@@ -175,14 +176,14 @@ class UITests extends MikeAndConquerTestBase {
 
         then:
         String mouseCursorState = uiClient.getMouseCursorState()
-        assert mouseCursorState == "MovementNotAllowedCursor"
+        assert mouseCursorState == Cursor.MOVEMENT_NOT_ALLOWED_CURSOR
 
         when:
         uiClient.moveMouseToLocation(clearSquareLocation)
         mouseCursorState = uiClient.getMouseCursorState()
 
         then:
-        assert mouseCursorState == "MoveToLocationCursor"
+        assert mouseCursorState == Cursor.MOVE_TO_LOCATION_CURSOR
 
         when:
         WorldCoordinatesLocation mcvLocation = createLocationFromWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
@@ -190,14 +191,14 @@ class UITests extends MikeAndConquerTestBase {
         mouseCursorState = uiClient.getMouseCursorState()
 
         then:
-        assert mouseCursorState == "BuildConstructionYardCursor"
+        assert mouseCursorState == Cursor.BUILD_CONSTRUCTION_YARD_CURSOR
 
         when:
         uiClient.rightClick(clearSquareLocation)
         mouseCursorState = uiClient.getMouseCursorState()
 
         then:
-        assert mouseCursorState == "DefaultArrowCursor"
+        assert mouseCursorState == Cursor.DEFAULT_ARROW_CURSOR
 
     }
 
@@ -221,21 +222,21 @@ class UITests extends MikeAndConquerTestBase {
         moveMouseToWorldCoordinates(overMapButNotOverTerrain.x, overMapButNotOverTerrain.y)
         then:
         String mouseCursorState = uiClient.getMouseCursorState()
-        assert mouseCursorState == "MovementNotAllowedCursor"
+        assert mouseCursorState == Cursor.MOVEMENT_NOT_ALLOWED_CURSOR
 
         when:
         moveMouseToWorldCoordinates(mountainSquareLocation.x, mountainSquareLocation.y)
         mouseCursorState = uiClient.getMouseCursorState()
 
         then:
-        assert mouseCursorState == "MovementNotAllowedCursor"
+        assert mouseCursorState == Cursor.MOVEMENT_NOT_ALLOWED_CURSOR
 
         when:
         moveMouseToWorldCoordinates(clearSquare.x, clearSquare.y)
         mouseCursorState = uiClient.getMouseCursorState()
 
         then:
-        assert mouseCursorState == "MoveToLocationCursor"
+        assert mouseCursorState == Cursor.MOVE_TO_LOCATION_CURSOR
 
         when:
         Unit nodMinigunner = creatNodMinigunnerAtRandomLocationWithAITurnedOff()
@@ -243,7 +244,7 @@ class UITests extends MikeAndConquerTestBase {
         mouseCursorState = uiClient.getMouseCursorState()
 
         then:
-        assert mouseCursorState == "AttackEnemyCursor"
+        assert mouseCursorState == Cursor.ATTACK_ENEMY_CURSOR
 
         when:
         WorldCoordinatesLocation rightClickLocation = new WorldCoordinatesLocationBuilder()
@@ -255,11 +256,62 @@ class UITests extends MikeAndConquerTestBase {
         mouseCursorState = uiClient.getMouseCursorState()
 
         then:
-        assert mouseCursorState == "DefaultArrowCursor"
+        assert mouseCursorState == Cursor.DEFAULT_ARROW_CURSOR
 
     }
 
+    def "should set mouse cursor correctly when no unit is selected" () {
 
+        given:
+        uiClient.startScenario()
 
+        when:
+
+        Point mountainSquareLocation = new Point(79, 20)
+        Point clearSquare = new Point(10,10)
+        Point overMapButNotOverTerrain = new Point(675,20)
+
+        and:
+        moveMouseToWorldCoordinates(overMapButNotOverTerrain.x, overMapButNotOverTerrain.y)
+
+        then:
+        String mouseCursorState = uiClient.getMouseCursorState()
+        assert mouseCursorState == Cursor.DEFAULT_ARROW_CURSOR
+
+        when:
+        moveMouseToWorldCoordinates(mountainSquareLocation.x, mountainSquareLocation.y)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == Cursor.DEFAULT_ARROW_CURSOR
+
+        when:
+        moveMouseToWorldCoordinates(clearSquare.x, clearSquare.y)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == Cursor.DEFAULT_ARROW_CURSOR
+
+        when:
+        Unit nodMinigunner = creatNodMinigunnerAtRandomLocationWithAITurnedOff()
+        moveMouseToWorldCoordinates(nodMinigunner.x, nodMinigunner.y)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == Cursor.DEFAULT_ARROW_CURSOR
+
+        when:
+        WorldCoordinatesLocation rightClickLocation = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(20)
+                .worldMapTileCoordinatesY(20)
+                .build()
+
+        uiClient.rightClick(rightClickLocation)
+        mouseCursorState = uiClient.getMouseCursorState()
+
+        then:
+        assert mouseCursorState == Cursor.DEFAULT_ARROW_CURSOR
+
+    }
 
 }
