@@ -79,7 +79,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
     void createGDIMinigunner(WorldCoordinatesLocation location) {
 
         Command createUnitCommand = new Command()
-        createUnitCommand.commandType = "CreateGDIMinigunner"
+        createUnitCommand.commandType = Command.CREATE_GDI_MINIGUNNER
 
         def commandParams =
             [
@@ -91,6 +91,24 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
         doPostSimulationCommand( createUnitCommand)
     }
+
+    void createNodMinigunner(WorldCoordinatesLocation location) {
+
+        Command createUnitCommand = new Command()
+        createUnitCommand.commandType = Command.CREATE_NOD_MINIGUNNER
+
+        def commandParams =
+                [
+                        startLocationXInWorldCoordinates: location.XInWorldCoordinates(),
+                        startLocationYInWorldCoordinates: location.YInWorldCoordinates()
+                ]
+
+        createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
+
+        doPostSimulationCommand( createUnitCommand)
+    }
+
+
 
     void createGDIMinigunnerAtRandomLocation() {
         Command createUnitCommand = new Command()

@@ -224,6 +224,55 @@ class MiscTests extends MikeAndConquerTestBase {
 
     }
 
+    def "two gdi minigunners attack two nod minigunners" () {
+        given:
+        uiClient.startScenario()
+//        Minigunner gdiMinigunner1 = createRandomGDIMinigunner()
+//        Minigunner gdiMinigunner2 = createRandomGDIMinigunner()
+
+//        Unit gdiMinigunner1 = createGDIMinigunnerAtRandomLocation()
+//        Unit gdiMinigunner1 = createGDIMinigunnerAtWorldCoordinates(20,20)
+        Unit gdiMinigunner1 = createGDIMinigunnerAtWorldMapTileCoordinates(2,2)
+
+//        Unit gdiMinigunner2 = createGDIMinigunnerAtRandomLocation()
+
+//        Minigunner nodMinigunner1 = createRandomNodMinigunnerWithAiTurnedOff()
+//        Minigunner nodMinigunner2 = createRandomNodMinigunnerWithAiTurnedOff()
+
+//        Unit nodMinigunner1 = createNodMinigunnerAtRandomLocation()
+//        Unit nodMinigunner1 = createNodMinigunnerAtWorldCoordinates(20,80)
+//        Unit nodMinigunner1 = createNodMinigunnerAtWorldCoordinates(20,80)
+        Unit nodMinigunner1 = createNodMinigunnerAtWorldMapTileCoordinates(1,6)
+
+        when:
+        uiClient.selectUnit(gdiMinigunner1.unitId)
+        uiClient.selectUnit(nodMinigunner1.unitId)
+//        uiClient.leftClickMinigunner(gdiMinigunner1.id)
+//        gameClient.leftClickMinigunner(nodMinigunner1.id)
+
+        then:
+        true
+
+//        and:
+////        gameClient.leftClickMinigunner(gdiMinigunner2.id)
+////        gameClient.leftClickMinigunner(nodMinigunner2.id)
+//
+//
+//
+//        then:
+//        assertMinigunnerMovesToFiringPosition(1,4)
+//
+//        and:
+//        assertNodMinigunnerTakesDamageAndDies(nodMinigunner1.id)
+////        then:
+////        assertNodMinigunnerDies(nodMinigunner1.id)
+////
+////        and:
+////        assertNodMinigunnerDies(nodMinigunner2.id)
+
+    }
+
+
     Point createRandomMinigunnerPosition()
     {
         Random rand = new Random()
