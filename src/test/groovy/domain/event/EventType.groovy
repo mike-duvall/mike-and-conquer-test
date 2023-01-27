@@ -19,4 +19,5 @@ class EventType {
     static String COMPLETED_BUILDING_BARRACKS = "CompletedBuildingBarracks"
     static String COMPLETED_BUILDING_MINIGUNNER = "CompletedBuildingMinigunner"
     static String GDI_BARRACKS_PLACED = "GDIBarracksPlaced"
+    static final String ATTACK_COMMAND_BEGAN = "AttackCommandBegan"
 }
