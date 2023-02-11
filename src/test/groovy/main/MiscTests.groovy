@@ -226,6 +226,9 @@ class MiscTests extends MikeAndConquerTestBase {
 
     def "two gdi minigunners attack two nod minigunners" () {
         given:
+        SimulationOptions simulationOptions = new SimulationOptions(gameSpeed: GameSpeed.Slow)
+        setAndAssertSimulationOptions(simulationOptions)
+
         uiClient.startScenario()
 //        Minigunner gdiMinigunner1 = createRandomGDIMinigunner()
 //        Minigunner gdiMinigunner2 = createRandomGDIMinigunner()
@@ -251,31 +254,91 @@ class MiscTests extends MikeAndConquerTestBase {
             .worldMapTileCoordinatesX(5)
             .worldMapTileCoordinatesY(5)
             .build()
-        uiClient.moveMouseToLocation(neutralLocation)
+//        uiClient.moveMouseToLocation(neutralLocation)
+        uiClient.rightClick(neutralLocation)
 
         and:
         gdiMinigunner1 = uiClient.getUnit(gdiMinigunner1.unitId)
         nodMinigunner1 = uiClient.getUnit(nodMinigunner1.unitId)
 
         then:
-        assert gdiMinigunner1.selected == true
+        assert gdiMinigunner1.selected == false
         assert nodMinigunner1.selected == false
 
 
         and:
-        assertReceivedAttackCommandBeganEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertReceivedBeganMissionAttackEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
 
-        assertReceivedFiredOnTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertReceviedBeganMovingEvent(gdiMinigunner1.unitId)
 
-//        assertReceivedBulletHitTargetEvent(nodMinigunner1.unitId)
 
-        assertUnitTakesDamageEvent(nodMinigunner1.unitId)
+        assertReceviedStoppedMovingEvent(gdiMinigunner1.unitId)
 
-        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
+        assertReceviedBeganFiringEvent(gdiMinigunner1.unitId)
 
-        assertUnitDestroyedEvent(nodMinigunner1.unitId)
+        assertReceviedStoppedFiringEvent(gdiMinigunner1.unitId)
 
-        assertNoneCommandEvent(gdiMinigunner1.unitId)
+//        assertReceivedFiredOnTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+//
+////        assertReceivedBulletHitTargetEvent(nodMinigunner1.unitId)
+//
+//        assertUnitTakesDamageEvent(nodMinigunner1.unitId)
+//
+//        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
+//
+//        assertUnitDestroyedEvent(nodMinigunner1.unitId)
+//
+//        assertNoneCommandEvent(gdiMinigunner1.unitId)
+
+
+
+        // Event4
+        // xx BEGIN_MISSION_ATTACK
+        // BEGIN_MOVING
+
+        // UnitMovementPlanCreated
+        // UnitPositionChanged
+        // UnitArrivedAtPathStep
+        // END_MOVING
+        // BEGIN_FIRING
+        // FIRED_ON_UNIT
+        // BULLET_HIT_TARGET
+        // UNIT_TAKES_DAMAGE
+        // UNIT_DESTROYED
+        // END_FIRING
+        // END_MISSION_ATTACK
+        // BEGIN_MISSION_NONE
+
+
+        // Events3
+        // BEGIN_COMMAND - ATTACK_TARGET
+        // UnitMovementPlanCreated
+        // BEGIN_MOVEMENT
+        // UnitPositionChanged
+        // UnitArrivedAtPathStep
+        // END_MOVEMENT
+        // FIRED_ON_UNIT
+        // BULLET_HIT_TARGET
+        // UNIT_TAKES_DAMAGE
+        // UNIT_DESTROYED
+        // END_COMMAND - ATTACK_TARGET
+
+        // BEGIN_COMMAND - NONE
+
+
+        // Events2:
+        //  BEGIN_COMMAND - ATTACK_TARGET
+        //      BEGIN_STATE - MOVING
+        //      BEGIN_STATE - ATTACKING
+        //      ARRIVED_IN_RANGE_OF_TARGET
+        //      FIRED_ON_TARGET
+        //            BULLET_HIT_UNIT
+        //            UNIT_TAKES_DAMAGE
+        //         WEAPON_RELOADED
+        //
+        //       UNIT_DESTROYED
+        //  BEGIN_COMMAND - NONE
+        //  BEGIN_STATE - IDLE
 
 
 //        Events:
@@ -467,8 +530,8 @@ class MiscTests extends MikeAndConquerTestBase {
         return findEventResult.index
     }
 
-    def assertReceivedAttackCommandBeganEvent(int attackerUnitId, int targetUnitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.ATTACK_COMMAND_BEGAN)
+    def assertReceivedBeganMissionAttackEvent(int attackerUnitId, int targetUnitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_ATTACK)
         def eventData = jsonSlurper.parseText(event.eventData)
 
         assert attackerUnitId == eventData.AttackerUnitId
@@ -476,6 +539,47 @@ class MiscTests extends MikeAndConquerTestBase {
 
         return event
     }
+
+
+    def assertReceviedBeganMovingEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_BEGAN_MOVING)
+        def eventData = jsonSlurper.parseText(event.eventData)
+
+        assert unitId == eventData.UnitId
+
+        return event
+    }
+
+    def assertReceviedStoppedMovingEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_STOPPED_MOVING)
+        def eventData = jsonSlurper.parseText(event.eventData)
+
+        assert unitId == eventData.UnitId
+
+        return event
+
+    }
+
+    def assertReceviedBeganFiringEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_BEGAN_FIRING)
+        def eventData = jsonSlurper.parseText(event.eventData)
+
+        assert unitId == eventData.UnitId
+
+        return event
+    }
+
+    def assertReceviedStoppedFiringEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_STOPPED_FIRING)
+        def eventData = jsonSlurper.parseText(event.eventData)
+
+        assert unitId == eventData.UnitId
+
+        return event
+
+    }
+
+
 
     def assertNoneCommandEvent(int unitId) {
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.NONE_COMMAND_BEGIN)

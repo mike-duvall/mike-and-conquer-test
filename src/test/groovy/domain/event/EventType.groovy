@@ -19,7 +19,14 @@ class EventType {
     static String COMPLETED_BUILDING_BARRACKS = "CompletedBuildingBarracks"
     static String COMPLETED_BUILDING_MINIGUNNER = "CompletedBuildingMinigunner"
     static String GDI_BARRACKS_PLACED = "GDIBarracksPlaced"
-    static final String ATTACK_COMMAND_BEGAN = "AttackCommandBegan"
+    static final String BEGAN_MISSION_ATTACK = "BeganMissionAttack"
+
+    static final String UNIT_BEGAN_MOVING = "UnitBeganMoving"
+    static final String UNIT_STOPPED_MOVING = "UnitStoppedMoving"
+
+    static final String UNIT_BEGAN_FIRING = "UnitBeganFiring"
+    static final String UNIT_STOPPED_FIRING = "UnitStoppedFiring"
+
     static final String NONE_COMMAND_BEGIN = "NoneCommandBegan"
     static final String FIRED_ON_UNIT = "FiredOnUnit"
     static final String BULLET_HIT_TARGET = "BulletHitTarget"
