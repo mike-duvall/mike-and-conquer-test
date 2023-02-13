@@ -22,10 +22,11 @@ class EventType {
     static final String BEGAN_MISSION_ATTACK = "BeganMissionAttack"
 
     static final String UNIT_BEGAN_MOVING = "UnitBeganMoving"
-    static final String UNIT_STOPPED_MOVING = "UnitStoppedMoving"
 
     static final String UNIT_BEGAN_FIRING = "UnitBeganFiring"
-    static final String UNIT_STOPPED_FIRING = "UnitStoppedFiring"
+
+
+    static final String UNIT_BEGAN_IDLE = "UnitBeganIdle"
 
     static final String NONE_COMMAND_BEGIN = "NoneCommandBegan"
     static final String FIRED_ON_UNIT = "FiredOnUnit"
