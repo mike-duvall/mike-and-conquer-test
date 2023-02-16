@@ -228,6 +228,7 @@ class MiscTests extends MikeAndConquerTestBase {
         given:
         SimulationOptions simulationOptions = new SimulationOptions(gameSpeed: GameSpeed.Slow)
         setAndAssertSimulationOptions(simulationOptions)
+        int expectedAmountOfDamage = 10
 
         uiClient.startScenario()
 //        Minigunner gdiMinigunner1 = createRandomGDIMinigunner()
@@ -273,10 +274,29 @@ class MiscTests extends MikeAndConquerTestBase {
         assertReceviedBeganFiringEvent(gdiMinigunner1.unitId)
 
         assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 40)
+        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
 
+        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 30)
+        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
+
+        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 20)
+        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
+
+        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 10)
+        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
+
+        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 0)
+
+        assertUnitDestroyedEvent(nodMinigunner1.unitId)
 
         assertReceviedBeganIdleEvent(gdiMinigunner1.unitId)
 
+        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
 
 //        assertReceivedFiredOnTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
 //
@@ -632,10 +652,12 @@ class MiscTests extends MikeAndConquerTestBase {
     }
 
 
-    def assertUnitTakesDamageEvent(int unitId) {
+    def assertUnitTookDamageEvent(int unitId, int expectedAmountOfDamage, int expectedNewHealthAmount) {
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_TOOK_DAMAGE)
         def eventData = jsonSlurper.parseText(event.eventData)
         assert unitId == eventData.UnitId
+        assert expectedAmountOfDamage == eventData.AmountOfDamage
+        assert expectedNewHealthAmount == eventData.NewHealthAmount
         return event
     }
 
