@@ -2,6 +2,7 @@ package util
 
 import client.MikeAndConquerSimulationClient
 import client.MikeAndConquerUIClient
+import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
 import domain.Unit
 import groovy.json.JsonSlurper
@@ -22,15 +23,15 @@ class TestUtil {
         return true
     }
 
-    static void assertUnitOrderedToMoveEvent(
-            SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent,
+    static void assertBeganMissionMoveToDestinationEvent(
+            SimulationStateUpdateEvent expectedEvent,
             int minigunnerId,
             int destinationXInWorldCoordinates,
             int destinationYInWorldCoordinates) {
-        assert expectedUnitOrderedToMoveEvent.eventType == "UnitOrderedToMove"
+        assert expectedEvent.eventType == EventType.BEGAN_MISSION_MOVE_TO_DESTINATION
 
         def jsonSlurper = new JsonSlurper()
-        def unitOrderedToMveDataAsObject = jsonSlurper.parseText(expectedUnitOrderedToMoveEvent.eventData)
+        def unitOrderedToMveDataAsObject = jsonSlurper.parseText(expectedEvent.eventData)
 
         assert unitOrderedToMveDataAsObject.DestinationXInWorldCoordinates == destinationXInWorldCoordinates
         assert unitOrderedToMveDataAsObject.DestinationYInWorldCoordinates == destinationYInWorldCoordinates

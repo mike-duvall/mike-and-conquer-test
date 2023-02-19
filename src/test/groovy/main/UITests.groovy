@@ -61,8 +61,8 @@ class UITests extends MikeAndConquerTestBase {
 
 
         then:
-        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
-        TestUtil.assertUnitOrderedToMoveEvent(expectedUnitOrderedToMoveEvent, minigunnerId, destinationXInWorldCoordinates, destinationYInWorldCoordinates)
+        SimulationStateUpdateEvent expectedBegnMissionMoveToDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_MOVE_TO_DESTINATION)
+        TestUtil.assertBeganMissionMoveToDestinationEvent(expectedBegnMissionMoveToDestinationEvent, minigunnerId, destinationXInWorldCoordinates, destinationYInWorldCoordinates)
 
         and:
         SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
