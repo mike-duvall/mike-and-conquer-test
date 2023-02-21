@@ -295,7 +295,8 @@ class MiscTests extends MikeAndConquerTestBase {
 
         assertUnitDestroyedEvent(nodMinigunner1.unitId)
 
-        assertReceviedBeganIdleEvent(gdiMinigunner1.unitId)
+        assertBeganMissionNoneEvent(gdiMinigunner1.unitId)
+
 
         assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
 
@@ -515,8 +516,8 @@ class MiscTests extends MikeAndConquerTestBase {
     }
 
 
-    def assertReceviedBeganIdleEvent(int unitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_IDLE)
+    def assertBeganMissionNoneEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_NONE)
         def eventData = jsonSlurper.parseText(event.eventData)
 
         assert unitId == eventData.UnitId

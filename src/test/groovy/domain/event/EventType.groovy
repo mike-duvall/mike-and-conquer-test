@@ -9,12 +9,13 @@ class EventType {
     static final String UNIT_DELETED = "UnitDeleted"
 
     static final String BEGAN_MISSION_ATTACK = "BeganMissionAttack"
-    static final String BEGAN_MISSION_IDLE = "BeganMissionIdle"
-//    static final String UNIT_ORDERED_TO_MOVE = "UnitOrderedToMove"
+    static final String BEGAN_MISSION_NONE = "BeganMissionNone"
     static final String BEGAN_MISSION_MOVE_TO_DESTINATION = "BeganMissionMoveToDestination"
 
     static final String UNIT_BEGAN_MOVING = "UnitBeganMoving"
     static final String UNIT_BEGAN_FIRING = "UnitBeganFiring"
+//    static final String UNIT_BECAME_IDLE = "UnitBecameIdle"  // possibly replaced by UnitStoppedMoving and UnitStoppedFiring
+
     static final String BULLET_HIT_TARGET = "BulletHitTarget"
     static final String UNIT_TOOK_DAMAGE = "UnitTookDamage"
     static final String UNIT_RELOADED_WEAPON = "UnitReloadedWeapon"
