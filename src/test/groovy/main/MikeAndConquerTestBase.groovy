@@ -201,15 +201,6 @@ class MikeAndConquerTestBase extends Specification {
     Unit creatNodMinigunnerAtRandomLocationWithAITurnedOff() {
         simulationClient.createDeactivatedNodMinigunnerAtRandomLocation()
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
-
-//        def jsonSlurper = new JsonSlurper()
-//        def eventData = jsonSlurper.parseText(event.eventData)
-//        Unit unit = new Unit()
-//        unit.unitId = eventData.UnitId
-//        unit.x = eventData.X
-//        unit.y = eventData.Y
-//        unit.player = eventData.Player
-//        return unit
         return parseUnitFromEventData(event.eventData)
     }
 
@@ -253,12 +244,6 @@ class MikeAndConquerTestBase extends Specification {
     }
 
     Unit createNodMinigunnerAtWorldMapTileCoordinates(int x, int y) {
-//        WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
-
-//        simulationClient.createNodMinigunner(minigunnerLocationBuilder
-//                                                     .worldCoordinatesX(xInWorldCoordinates)
-//                                                     .worldCoordinatesY(yInWorldCoordinates)
-//                                                     .build() )
         simulationClient.createNodMinigunner(createLocationFromWorldMapTileCoordinates(x,y))
 
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)

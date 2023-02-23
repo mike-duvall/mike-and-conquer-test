@@ -486,16 +486,6 @@ class MiscTests extends MikeAndConquerTestBase {
         return event
     }
 
-//    def assertReceviedStoppedMovingEvent(int unitId) {
-//        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_STOPPED_MOVING)
-//        def eventData = jsonSlurper.parseText(event.eventData)
-//
-//        assert unitId == eventData.UnitId
-//
-//        return event
-//
-//    }
-
     def assertReceviedBeganFiringEvent(int unitId) {
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_BEGAN_FIRING)
         def eventData = jsonSlurper.parseText(event.eventData)
@@ -524,41 +514,6 @@ class MiscTests extends MikeAndConquerTestBase {
 
         return event
     }
-
-
-//    def assertReceviedStoppedFiringEvent(int unitId) {
-//        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_STOPPED_FIRING)
-//        def eventData = jsonSlurper.parseText(event.eventData)
-//
-//        assert unitId == eventData.UnitId
-//
-//        return event
-//
-//    }
-
-
-
-    def assertNoneCommandEvent(int unitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.NONE_COMMAND_BEGIN)
-        def eventData = jsonSlurper.parseText(event.eventData)
-
-        assert unitId == eventData.UnitId
-
-        return event
-    }
-
-
-
-    def assertReceivedFiredOnTargetEvent(int attackerUnitId, int targetUnitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.FIRED_ON_UNIT)
-        def eventData = jsonSlurper.parseText(event.eventData)
-
-        assert attackerUnitId == eventData.AttackerUnitId
-        assert targetUnitId == eventData.TargetUnitId
-
-        return event
-    }
-
 
     def assertReceivedBulletHitTargetEvent(int targetUnitId) {
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BULLET_HIT_TARGET)
@@ -592,12 +547,6 @@ class MiscTests extends MikeAndConquerTestBase {
     }
 
 
-
-
-
-
-
-
     def assertReceivedUnitArrivedAtPathStepEvent( int expectedXInMapTileSquareCoordinates, int expectedYInMapTileSquareCoordinates) {
         SimulationStateUpdateEvent unitArrivedAtPathStepEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_PATH_STEP)
         assert unitArrivedAtPathStepEvent.eventType == EventType.UNIT_ARRIVED_AT_PATH_STEP
@@ -605,6 +554,5 @@ class MiscTests extends MikeAndConquerTestBase {
         assert unitArrivedAtPathStepEventData.PathStep.X == expectedXInMapTileSquareCoordinates * 24 + 12
         assert unitArrivedAtPathStepEventData.PathStep.Y == expectedYInMapTileSquareCoordinates * 24 + 12
     }
-
 
 }
