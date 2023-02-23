@@ -87,14 +87,14 @@ class MiscTests extends MikeAndConquerTestBase {
         sleep (expectedTimeInMillis - 10000)
 
         then:
-        SimulationStateUpdateEvent unitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
-        def unitOrderedToMoveEventData = jsonSlurper.parseText(unitOrderedToMoveEvent.eventData)
-        assert unitOrderedToMoveEventData.DestinationXInWorldCoordinates == unitDestinationLocation.XInWorldCoordinates()
-        assert unitOrderedToMoveEventData.DestinationYInWorldCoordinates == unitDestinationLocation.YInWorldCoordinates()
-        assert unitOrderedToMoveEventData.UnitId == createdUnitId
+        SimulationStateUpdateEvent beganMissionMoveToDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_MOVE_TO_DESTINATION)
+        def beganMessionMoveToDestinationEventData = jsonSlurper.parseText(beganMissionMoveToDestinationEvent.eventData)
+        assert beganMessionMoveToDestinationEventData.DestinationXInWorldCoordinates == unitDestinationLocation.XInWorldCoordinates()
+        assert beganMessionMoveToDestinationEventData.DestinationYInWorldCoordinates == unitDestinationLocation.YInWorldCoordinates()
+        assert beganMessionMoveToDestinationEventData.UnitId == createdUnitId
 
         when:
-        startingTick = unitOrderedToMoveEventData.Timestamp
+        startingTick = beganMessionMoveToDestinationEventData.Timestamp
 
         then:
         SimulationStateUpdateEvent unitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
@@ -172,15 +172,8 @@ class MiscTests extends MikeAndConquerTestBase {
         simulationClient.moveUnit(minigunnerId, destinationLocation )
 
 
-        then:
-        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
-        TestUtil.assertUnitOrderedToMoveEvent(
-                expectedUnitOrderedToMoveEvent,
-                minigunnerId,
-                destinationLocation.XInWorldCoordinates(),
-                destinationLocation.YInWorldCoordinates())
 
-        and: "Planned path is equal to expected path"
+        then: "Planned path is equal to expected path"
         SimulationStateUpdateEvent expectedUnitMovementPlanCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_MOVEMENT_PLAN_CREATED)
         def expectedUnitMovementPlanCreatedEventDataAsObject = jsonSlurper.parseText(expectedUnitMovementPlanCreatedEvent.eventData)
 
@@ -210,6 +203,15 @@ class MiscTests extends MikeAndConquerTestBase {
             expectedPathStepIndex++
         }
 
+        and:
+        SimulationStateUpdateEvent expectedBeganMissionMoveToDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_MOVE_TO_DESTINATION)
+        TestUtil.assertBeganMissionMoveToDestinationEvent(
+                expectedBeganMissionMoveToDestinationEvent,
+                minigunnerId,
+                destinationLocation.XInWorldCoordinates(),
+                destinationLocation.YInWorldCoordinates())
+
+
         and: "Actual traveled path is equal to expected path"
         for(expectedPathStepIndex = 0; expectedPathStepIndex < expectedNumPathSteps; expectedPathStepIndex++) {
             assertReceivedUnitArrivedAtPathStepEvent(
@@ -223,6 +225,85 @@ class MiscTests extends MikeAndConquerTestBase {
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, minigunnerId)
 
     }
+
+    def "two gdi minigunners attack two nod minigunners" () {
+        given:
+        SimulationOptions simulationOptions = new SimulationOptions(gameSpeed: GameSpeed.Slow)
+        setAndAssertSimulationOptions(simulationOptions)
+        int expectedAmountOfDamage = 10
+
+        uiClient.startScenario()
+//        Minigunner gdiMinigunner1 = createRandomGDIMinigunner()
+//        Minigunner gdiMinigunner2 = createRandomGDIMinigunner()
+
+//        Unit gdiMinigunner1 = createGDIMinigunnerAtRandomLocation()
+//        Unit gdiMinigunner1 = createGDIMinigunnerAtWorldCoordinates(20,20)
+        Unit gdiMinigunner1 = createGDIMinigunnerAtWorldMapTileCoordinates(2,2)
+
+//        Unit gdiMinigunner2 = createGDIMinigunnerAtRandomLocation()
+
+//        Minigunner nodMinigunner1 = createRandomNodMinigunnerWithAiTurnedOff()
+//        Minigunner nodMinigunner2 = createRandomNodMinigunnerWithAiTurnedOff()
+
+//        Unit nodMinigunner1 = createNodMinigunnerAtRandomLocation()
+//        Unit nodMinigunner1 = createNodMinigunnerAtWorldCoordinates(20,80)
+//        Unit nodMinigunner1 = createNodMinigunnerAtWorldCoordinates(20,80)
+        Unit nodMinigunner1 = createNodMinigunnerAtWorldMapTileCoordinates(1,8)
+
+        when:
+        uiClient.selectUnit(gdiMinigunner1.unitId)
+        uiClient.selectUnit(nodMinigunner1.unitId)
+        WorldCoordinatesLocation neutralLocation = new WorldCoordinatesLocationBuilder()
+            .worldMapTileCoordinatesX(5)
+            .worldMapTileCoordinatesY(5)
+            .build()
+        uiClient.rightClick(neutralLocation)
+
+        and:
+        gdiMinigunner1 = uiClient.getUnit(gdiMinigunner1.unitId)
+        nodMinigunner1 = uiClient.getUnit(nodMinigunner1.unitId)
+
+        then:
+        assert gdiMinigunner1.selected == false
+        assert nodMinigunner1.selected == false
+
+
+        and:
+        assertReceivedBeganMissionAttackEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+
+        assertReceviedBeganMovingEvent(gdiMinigunner1.unitId)
+        assertReceviedBeganFiringEvent(gdiMinigunner1.unitId)
+
+        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 40)
+        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
+
+        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 30)
+        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
+
+        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 20)
+        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
+
+        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 10)
+        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
+
+        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 0)
+
+        assertUnitDestroyedEvent(nodMinigunner1.unitId)
+
+        assertBeganMissionNoneEvent(gdiMinigunner1.unitId)
+
+
+        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
+
+    }
+
+
+
 
     Point createRandomMinigunnerPosition()
     {
@@ -373,26 +454,105 @@ class MiscTests extends MikeAndConquerTestBase {
 
     }
 
-    def assertReceivedUnitArrivedAtPathStepEvent(int index, gameEventList, int expectedXInMapTileSquareCoordinates, int expectedYInMapTileSquareCoordinates) {
-        FindEventResult findEventResult = findNextEventAfter(index, gameEventList, "UnitArrivedAtPathStep")
+    def assertReceivedUnitArrivedAtPathStepEvent(int index, List<SimulationStateUpdateEvent> gameEventList, int expectedXInMapTileSquareCoordinates, int expectedYInMapTileSquareCoordinates) {
+        FindEventResult findEventResult = findNextEventAfter(index, gameEventList, EventType.UNIT_ARRIVED_AT_PATH_STEP)
 
         SimulationStateUpdateEvent unitArrivedAtPathStepEvent = findEventResult.event
-        assert unitArrivedAtPathStepEvent.eventType == "UnitArrivedAtPathStep"
+        assert unitArrivedAtPathStepEvent.eventType == EventType.UNIT_ARRIVED_AT_PATH_STEP
         def unitArrivedAtPathStepEventData = jsonSlurper.parseText(unitArrivedAtPathStepEvent.eventData)
         assert unitArrivedAtPathStepEventData.PathStep.X == expectedXInMapTileSquareCoordinates * 24 + 12
         assert unitArrivedAtPathStepEventData.PathStep.Y == expectedYInMapTileSquareCoordinates * 24 + 12
 
         return findEventResult.index
-
     }
+
+    def assertReceivedBeganMissionAttackEvent(int attackerUnitId, int targetUnitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_ATTACK)
+        def eventData = jsonSlurper.parseText(event.eventData)
+
+        assert attackerUnitId == eventData.AttackerUnitId
+        assert targetUnitId == eventData.TargetUnitId
+
+        return event
+    }
+
+
+    def assertReceviedBeganMovingEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_BEGAN_MOVING)
+        def eventData = jsonSlurper.parseText(event.eventData)
+
+        assert unitId == eventData.UnitId
+
+        return event
+    }
+
+    def assertReceviedBeganFiringEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_BEGAN_FIRING)
+        def eventData = jsonSlurper.parseText(event.eventData)
+
+        assert unitId == eventData.UnitId
+
+        return event
+    }
+
+    def assertBulletHitTargetEvent(int attackerUnitId, int targetUnitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BULLET_HIT_TARGET)
+        def eventData = jsonSlurper.parseText(event.eventData)
+
+        assert attackerUnitId == eventData.AttackerUnitId
+        assert targetUnitId == eventData.TargetUnitId
+
+        return event
+    }
+
+
+    def assertBeganMissionNoneEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_NONE)
+        def eventData = jsonSlurper.parseText(event.eventData)
+
+        assert unitId == eventData.UnitId
+
+        return event
+    }
+
+    def assertReceivedBulletHitTargetEvent(int targetUnitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BULLET_HIT_TARGET)
+        def eventData = jsonSlurper.parseText(event.eventData)
+        assert targetUnitId == eventData.TargetUnitId
+        return event
+    }
+
+
+    def assertUnitTookDamageEvent(int unitId, int expectedAmountOfDamage, int expectedNewHealthAmount) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_TOOK_DAMAGE)
+        def eventData = jsonSlurper.parseText(event.eventData)
+        assert unitId == eventData.UnitId
+        assert expectedAmountOfDamage == eventData.AmountOfDamage
+        assert expectedNewHealthAmount == eventData.NewHealthAmount
+        return event
+    }
+
+    def assertUnitWeaponReloadedEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_RELOADED_WEAPON)
+        def eventData = jsonSlurper.parseText(event.eventData)
+        assert unitId == eventData.UnitId
+        return event
+    }
+
+    def assertUnitDestroyedEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_DESTROYED)
+        def eventData = jsonSlurper.parseText(event.eventData)
+        assert unitId == eventData.UnitId
+        return event
+    }
+
 
     def assertReceivedUnitArrivedAtPathStepEvent( int expectedXInMapTileSquareCoordinates, int expectedYInMapTileSquareCoordinates) {
         SimulationStateUpdateEvent unitArrivedAtPathStepEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_PATH_STEP)
-        assert unitArrivedAtPathStepEvent.eventType == "UnitArrivedAtPathStep"
+        assert unitArrivedAtPathStepEvent.eventType == EventType.UNIT_ARRIVED_AT_PATH_STEP
         def unitArrivedAtPathStepEventData = jsonSlurper.parseText(unitArrivedAtPathStepEvent.eventData)
         assert unitArrivedAtPathStepEventData.PathStep.X == expectedXInMapTileSquareCoordinates * 24 + 12
         assert unitArrivedAtPathStepEventData.PathStep.Y == expectedYInMapTileSquareCoordinates * 24 + 12
     }
-
 
 }

@@ -16,6 +16,9 @@ class Command {
     static final String RELEASE_LEFT_MOUSE_BUTTON = 'ReleaseLeftMouseButton'
     static final String CREATE_GDI_MINIGUNNER_AT_RANDOM_LOCATION = "CreateGDIMinigunnerAtRandomLocation"
     static final String CREATE_NOD_MINIGUNNER_AT_RANDOM_LOCATION = "CreateNodMinigunnerAtRandomLocation"
+    static final String CREATE_GDI_MINIGUNNER = "CreateGDIMinigunner"
+    static final String CREATE_NOD_MINIGUNNER = "CreateNodMinigunner"
+
 
     Command() {
 

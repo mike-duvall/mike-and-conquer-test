@@ -61,8 +61,8 @@ class UITests extends MikeAndConquerTestBase {
 
 
         then:
-        SimulationStateUpdateEvent expectedUnitOrderedToMoveEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ORDERED_TO_MOVE)
-        TestUtil.assertUnitOrderedToMoveEvent(expectedUnitOrderedToMoveEvent, minigunnerId, destinationXInWorldCoordinates, destinationYInWorldCoordinates)
+        SimulationStateUpdateEvent expectedBegnMissionMoveToDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_MOVE_TO_DESTINATION)
+        TestUtil.assertBeganMissionMoveToDestinationEvent(expectedBegnMissionMoveToDestinationEvent, minigunnerId, destinationXInWorldCoordinates, destinationYInWorldCoordinates)
 
         and:
         SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
@@ -85,25 +85,27 @@ class UITests extends MikeAndConquerTestBase {
         uiClient.startScenario()
 
         when:
-        int gdiMinigunner1Id = createGDIMinigunnerAtWorldCoordinates(82, 369)
-        int gdiMinigunner2Id = createGDIMinigunnerAtWorldCoordinates(92, 380)
-        int gdiMinigunner3Id = createGDIMinigunnerAtWorldCoordinates(230, 300)
-        int gdiMinigunner4Id = createGDIMinigunnerAtWorldCoordinates(82, 300)
+        Unit gdiMinigunner1= createGDIMinigunnerAtWorldCoordinates(82, 369)
+        Unit gdiMinigunner2 = createGDIMinigunnerAtWorldCoordinates(92, 380)
+        Unit gdiMinigunner3 = createGDIMinigunnerAtWorldCoordinates(230, 300)
+        Unit gdiMinigunner4 = createGDIMinigunnerAtWorldCoordinates(82, 300)
 
         Set<Integer> uniqueMinigunnerIds = []
-        uniqueMinigunnerIds.add(gdiMinigunner1Id)
-        uniqueMinigunnerIds.add(gdiMinigunner2Id)
-        uniqueMinigunnerIds.add(gdiMinigunner3Id)
-        uniqueMinigunnerIds.add(gdiMinigunner4Id)
+        uniqueMinigunnerIds.add(gdiMinigunner1.unitId)
+        uniqueMinigunnerIds.add(gdiMinigunner2.unitId)
+        uniqueMinigunnerIds.add(gdiMinigunner3.unitId)
+        uniqueMinigunnerIds.add(gdiMinigunner4.unitId)
 
         then:
         assert uniqueMinigunnerIds.size() == 4
 
-        Unit gdiMinigunner1 = uiClient.getUnit(gdiMinigunner1Id)
-        Unit gdiMinigunner2 = uiClient.getUnit(gdiMinigunner2Id)
-        Unit gdiMinigunner3 = uiClient.getUnit(gdiMinigunner3Id)
-        Unit gdiMinigunner4 = uiClient.getUnit(gdiMinigunner4Id)
+        when:
+        gdiMinigunner1 = uiClient.getUnit(gdiMinigunner1.unitId)
+        gdiMinigunner2 = uiClient.getUnit(gdiMinigunner2.unitId)
+        gdiMinigunner3 = uiClient.getUnit(gdiMinigunner3.unitId)
+        gdiMinigunner4 = uiClient.getUnit(gdiMinigunner4.unitId)
 
+        then:
         assert gdiMinigunner1.selected == false
         assert gdiMinigunner2.selected == false
         assert gdiMinigunner3.selected == false
@@ -112,10 +114,10 @@ class UITests extends MikeAndConquerTestBase {
         when:
         uiClient.dragSelect(dragStartX, dragStartY, dragEndX, dragEndY)
 
-        gdiMinigunner1 = uiClient.getUnit(gdiMinigunner1Id)
-        gdiMinigunner2 = uiClient.getUnit(gdiMinigunner2Id)
-        gdiMinigunner3 = uiClient.getUnit(gdiMinigunner3Id)
-        gdiMinigunner4 = uiClient.getUnit(gdiMinigunner4Id)
+        gdiMinigunner1 = uiClient.getUnit(gdiMinigunner1.unitId)
+        gdiMinigunner2 = uiClient.getUnit(gdiMinigunner2.unitId)
+        gdiMinigunner3 = uiClient.getUnit(gdiMinigunner3.unitId)
+        gdiMinigunner4 = uiClient.getUnit(gdiMinigunner4.unitId)
 
         then:
         assert gdiMinigunner1.selected == true
@@ -132,19 +134,16 @@ class UITests extends MikeAndConquerTestBase {
         uiClient.rightClick(rightClickLocation)
 
         and:
-        gdiMinigunner1 = uiClient.getUnit(gdiMinigunner1Id)
-        gdiMinigunner2 = uiClient.getUnit(gdiMinigunner2Id)
-        gdiMinigunner3 = uiClient.getUnit(gdiMinigunner3Id)
-        gdiMinigunner4 = uiClient.getUnit(gdiMinigunner4Id)
-
-
+        gdiMinigunner1 = uiClient.getUnit(gdiMinigunner1.unitId)
+        gdiMinigunner2 = uiClient.getUnit(gdiMinigunner2.unitId)
+        gdiMinigunner3 = uiClient.getUnit(gdiMinigunner3.unitId)
+        gdiMinigunner4 = uiClient.getUnit(gdiMinigunner4.unitId)
 
         then:
         assert gdiMinigunner1.selected == false
         assert gdiMinigunner2.selected == false
         assert gdiMinigunner3.selected == false
         assert gdiMinigunner4.selected == false
-
 
         where:
         dragStartX              | dragStartY                | dragEndX                  | dragEndY

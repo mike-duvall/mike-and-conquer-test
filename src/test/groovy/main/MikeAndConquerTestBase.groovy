@@ -172,7 +172,7 @@ class MikeAndConquerTestBase extends Specification {
         return unit
     }
 
-    Unit creatNodMinigunnerAtRandomLocationWithAITurnedOff() {
+    Unit createNodMinigunnerAtRandomLocation() {
         simulationClient.createDeactivatedNodMinigunnerAtRandomLocation()
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
 
@@ -182,12 +182,30 @@ class MikeAndConquerTestBase extends Specification {
         unit.unitId = eventData.UnitId
         unit.x = eventData.X
         unit.y = eventData.Y
-        unit.player = eventData.Player
         return unit
     }
 
 
-    int createGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
+    Unit parseUnitFromMinigunnerCreatedEventData(String stringEventData) {
+        def jsonSlurper = new JsonSlurper()
+        def eventData = jsonSlurper.parseText(stringEventData)
+        Unit unit = new Unit()
+        unit.unitId = eventData.UnitId
+        unit.x = eventData.X
+        unit.y = eventData.Y
+        unit.player = eventData.Player
+        return unit
+
+    }
+
+    Unit creatNodMinigunnerAtRandomLocationWithAITurnedOff() {
+        simulationClient.createDeactivatedNodMinigunnerAtRandomLocation()
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+        return parseUnitFromEventData(event.eventData)
+    }
+
+
+    Unit createGDIMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
         WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
 
         simulationClient.createGDIMinigunner(minigunnerLocationBuilder
@@ -197,11 +215,42 @@ class MikeAndConquerTestBase extends Specification {
 
         SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
 
-        def jsonSlurper = new JsonSlurper()
-        def eventData = jsonSlurper.parseText(event.eventData)
-        return eventData.UnitId
-
+        return parseUnitFromEventData(event.eventData)
     }
+
+    Unit createGDIMinigunnerAtWorldMapTileCoordinates(int x, int y) {
+        WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
+
+        simulationClient.createGDIMinigunner(minigunnerLocationBuilder
+                                                     .worldMapTileCoordinatesX(x)
+                                                     .worldMapTileCoordinatesY(y)
+                                                     .build() )
+
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+        return parseUnitFromEventData(event.eventData)
+    }
+
+
+    Unit createNodMinigunnerAtWorldCoordinates(int xInWorldCoordinates, int yInWorldCoordinates) {
+        WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
+
+        simulationClient.createNodMinigunner(minigunnerLocationBuilder
+                                                     .worldCoordinatesX(xInWorldCoordinates)
+                                                     .worldCoordinatesY(yInWorldCoordinates)
+                                                     .build() )
+
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+        return parseUnitFromEventData(event.eventData)
+    }
+
+    Unit createNodMinigunnerAtWorldMapTileCoordinates(int x, int y) {
+        simulationClient.createNodMinigunner(createLocationFromWorldMapTileCoordinates(x,y))
+
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+        return parseUnitFromEventData(event.eventData)
+    }
+
+
 
     WorldCoordinatesLocation createLocationFromWorldMapTileCoordinates(int x, int y) {
         return new WorldCoordinatesLocationBuilder()
