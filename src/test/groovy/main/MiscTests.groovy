@@ -488,7 +488,7 @@ class MiscTests extends MikeAndConquerTestBase {
     }
 
     def assertReceivedBeganMissionAttackEvent(int attackerUnitId, int targetUnitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(
                 unitBeganMissionAttackMatcher(attackerUnitId, targetUnitId)
         )
         return event
@@ -505,7 +505,7 @@ class MiscTests extends MikeAndConquerTestBase {
 
     def assertReceivedBeganMovingEvent(int unitId) {
         SimulationStateUpdateEvent event =
-                sequentialEventReader.waitForEventOfType(unitBeganMovingMatcher(unitId))
+                sequentialEventReader.waitForEventMatchedBy(unitBeganMovingMatcher(unitId))
 
         return event
     }
@@ -519,7 +519,7 @@ class MiscTests extends MikeAndConquerTestBase {
     }
 
     def assertReceviedBeganFiringEvent(int unitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(unitBeganFiringMatcher(unitId))
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(unitBeganFiringMatcher(unitId))
         return event
     }
 
@@ -531,7 +531,7 @@ class MiscTests extends MikeAndConquerTestBase {
     }
 
     def assertBulletHitTargetEvent(int attackerUnitId, int targetUnitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(bulletHitTargetMatcher(attackerUnitId,targetUnitId))
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(bulletHitTargetMatcher(attackerUnitId, targetUnitId))
         return event
     }
 
@@ -548,7 +548,7 @@ class MiscTests extends MikeAndConquerTestBase {
     }
 
     def assertUnitTookDamageEvent(int unitId, int expectedAmountOfDamage, int expectedNewHealthAmount) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(unitTookDamageMatcher(unitId, expectedAmountOfDamage, expectedNewHealthAmount))
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(unitTookDamageMatcher(unitId, expectedAmountOfDamage, expectedNewHealthAmount))
         return event
     }
 
@@ -561,7 +561,7 @@ class MiscTests extends MikeAndConquerTestBase {
 
 
     def assertUnitWeaponReloadedEvent(int unitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(weaponReloadedMatcher(unitId))
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(weaponReloadedMatcher(unitId))
         return event
     }
 
@@ -573,7 +573,7 @@ class MiscTests extends MikeAndConquerTestBase {
     }
 
     def assertUnitDestroyedEvent(int unitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(unitDestroyedMatcher(unitId))
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(unitDestroyedMatcher(unitId))
         return event
     }
 
@@ -586,7 +586,7 @@ class MiscTests extends MikeAndConquerTestBase {
 
 
     def assertBeganMissionNoneEvent(int unitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(unitBeganMissionNoneMatcher(unitId))
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(unitBeganMissionNoneMatcher(unitId))
         return event
     }
 

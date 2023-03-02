@@ -23,7 +23,7 @@ class SequentialEventReader {
 
 
 
-    SimulationStateUpdateEvent waitForEventOfType(Closure eventMatcher) {
+    SimulationStateUpdateEvent waitForEventMatchedBy(Closure eventMatcher) {
 
         int timeoutInSeconds = 30
         SimulationStateUpdateEvent foundEvent = null
@@ -39,13 +39,6 @@ class SequentialEventReader {
                 SimulationStateUpdateEvent nextEventToEvaluate = allReceivedEvents.get(indexOfFurthestEvaluatedEvent)
                 indexOfFurthestEvaluatedEvent++
 
-//                if(nextEventToEvaluate.eventType == eventType) {
-//                    foundEvent = nextEventToEvaluate
-//                    done = true
-//                }
-//                else {
-//                    done = indexOfFurthestEvaluatedEvent >= allReceivedEvents.size()
-//                }
                 if(eventMatcher(nextEventToEvaluate)) {
                     foundEvent = nextEventToEvaluate
                     done = true
