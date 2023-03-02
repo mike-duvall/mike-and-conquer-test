@@ -230,27 +230,14 @@ class MiscTests extends MikeAndConquerTestBase {
         given:
         SimulationOptions simulationOptions = new SimulationOptions(gameSpeed: GameSpeed.Slow)
         setAndAssertSimulationOptions(simulationOptions)
-        int expectedAmountOfDamage = 10
 
         uiClient.startScenario()
-//        Minigunner gdiMinigunner1 = createRandomGDIMinigunner()
-//        Minigunner gdiMinigunner2 = createRandomGDIMinigunner()
 
-//        Unit gdiMinigunner1 = createGDIMinigunnerAtRandomLocation()
-//        Unit gdiMinigunner1 = createGDIMinigunnerAtWorldCoordinates(20,20)
-        Unit gdiMinigunner1 = createGDIMinigunnerAtWorldMapTileCoordinates(2,2)
-        Unit gdiMinigunner2 = createGDIMinigunnerAtWorldMapTileCoordinates(2,8)
+        Unit gdiMinigunner1 = createGDIMinigunnerAtRandomLocation()
+        Unit gdiMinigunner2 = createGDIMinigunnerAtRandomLocation()
 
-//        Unit gdiMinigunner2 = createGDIMinigunnerAtRandomLocation()
-
-//        Minigunner nodMinigunner1 = createRandomNodMinigunnerWithAiTurnedOff()
-//        Minigunner nodMinigunner2 = createRandomNodMinigunnerWithAiTurnedOff()
-
-//        Unit nodMinigunner1 = createNodMinigunnerAtRandomLocation()
-//        Unit nodMinigunner1 = createNodMinigunnerAtWorldCoordinates(20,80)
-//        Unit nodMinigunner1 = createNodMinigunnerAtWorldCoordinates(20,80)
-        Unit nodMinigunner1 = createNodMinigunnerAtWorldMapTileCoordinates(1,8)
-        Unit nodMinigunner2 = createNodMinigunnerAtWorldMapTileCoordinates(1,14)
+        Unit nodMinigunner1 = createNodMinigunnerAtRandomLocation()
+        Unit nodMinigunner2 = createNodMinigunnerAtRandomLocation()
 
         when:
         uiClient.selectUnit(gdiMinigunner1.unitId)
@@ -284,74 +271,50 @@ class MiscTests extends MikeAndConquerTestBase {
 
 
         and:
-        assertReceivedBeganMissionAttackEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        assertMinigunnerAttacksAndKillsMinigunner(gdiMinigunner1.unitId, nodMinigunner1.unitId)
 
-        assertReceivedBeganMovingEvent(gdiMinigunner1.unitId)
-        assertReceviedBeganFiringEvent(gdiMinigunner1.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
-
-        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 40)
-        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
-        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 30)
-        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
-        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 20)
-        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
-        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 10)
-        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
-        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 0)
-
-        assertUnitDestroyedEvent(nodMinigunner1.unitId)
-
-        assertBeganMissionNoneEvent(gdiMinigunner1.unitId)
-
-
-        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
-
+        and:
         sequentialEventReader.reset();
-
-        assertReceivedBeganMissionAttackEvent(gdiMinigunner2.unitId, nodMinigunner2.unitId)
-
-        assertReceivedBeganMovingEvent(gdiMinigunner2.unitId)
-        assertReceviedBeganFiringEvent(gdiMinigunner2.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner2.unitId, nodMinigunner2.unitId)
-
-        assertUnitTookDamageEvent(nodMinigunner2.unitId, expectedAmountOfDamage, 40)
-
-        assertUnitWeaponReloadedEvent(gdiMinigunner2.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner2.unitId, nodMinigunner2.unitId)
-        assertUnitTookDamageEvent(nodMinigunner2.unitId, expectedAmountOfDamage, 30)
-        assertUnitWeaponReloadedEvent(gdiMinigunner2.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner2.unitId, nodMinigunner2.unitId)
-        assertUnitTookDamageEvent(nodMinigunner2.unitId, expectedAmountOfDamage, 20)
-        assertUnitWeaponReloadedEvent(gdiMinigunner2.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner2.unitId, nodMinigunner2.unitId)
-        assertUnitTookDamageEvent(nodMinigunner2.unitId, expectedAmountOfDamage, 10)
-        assertUnitWeaponReloadedEvent(gdiMinigunner2.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner2.unitId, nodMinigunner2.unitId)
-        assertUnitTookDamageEvent(nodMinigunner2.unitId, expectedAmountOfDamage, 0)
-
-        assertUnitDestroyedEvent(nodMinigunner2.unitId)
-
-        assertBeganMissionNoneEvent(gdiMinigunner2.unitId)
-
-        assertUnitWeaponReloadedEvent(gdiMinigunner2.unitId)
-
+        assertMinigunnerAttacksAndKillsMinigunner(gdiMinigunner2.unitId, nodMinigunner2.unitId)
     }
 
+    def assertMinigunnerAttacksAndKillsMinigunner(int minigunner1Id, int minigunner2Id) {
+
+        int expectedAmountOfDamage = 10
+
+        assertReceivedBeganMissionAttackEvent(minigunner1Id, minigunner2Id)
+
+        assertReceivedBeganMovingEvent(minigunner1Id)
+        assertReceviedBeganFiringEvent(minigunner1Id)
+
+        assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
+
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 40)
+        assertUnitWeaponReloadedEvent(minigunner1Id)
+
+        assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 30)
+        assertUnitWeaponReloadedEvent(minigunner1Id)
+
+        assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 20)
+        assertUnitWeaponReloadedEvent(minigunner1Id)
+
+        assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 10)
+        assertUnitWeaponReloadedEvent(minigunner1Id)
+
+        assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 0)
+
+        assertUnitDestroyedEvent(minigunner2Id)
+
+        assertBeganMissionNoneEvent(minigunner1Id)
+
+
+        assertUnitWeaponReloadedEvent(minigunner1Id)
+
+    }
 
 
 
