@@ -46,6 +46,7 @@ class MikeAndConquerTestBase extends Specification {
     }
 
 
+
     void setAndAssertUIOptions(UIOptions uiOptions) {
         uiClient.setUIOptions(uiOptions)
         assertUIOptionsAreSetTo(uiOptions)

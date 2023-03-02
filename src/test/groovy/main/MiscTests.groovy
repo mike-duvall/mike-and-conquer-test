@@ -230,25 +230,14 @@ class MiscTests extends MikeAndConquerTestBase {
         given:
         SimulationOptions simulationOptions = new SimulationOptions(gameSpeed: GameSpeed.Slow)
         setAndAssertSimulationOptions(simulationOptions)
-        int expectedAmountOfDamage = 10
 
         uiClient.startScenario()
-//        Minigunner gdiMinigunner1 = createRandomGDIMinigunner()
-//        Minigunner gdiMinigunner2 = createRandomGDIMinigunner()
 
-//        Unit gdiMinigunner1 = createGDIMinigunnerAtRandomLocation()
-//        Unit gdiMinigunner1 = createGDIMinigunnerAtWorldCoordinates(20,20)
-        Unit gdiMinigunner1 = createGDIMinigunnerAtWorldMapTileCoordinates(2,2)
+        Unit gdiMinigunner1 = createGDIMinigunnerAtRandomLocation()
+        Unit gdiMinigunner2 = createGDIMinigunnerAtRandomLocation()
 
-//        Unit gdiMinigunner2 = createGDIMinigunnerAtRandomLocation()
-
-//        Minigunner nodMinigunner1 = createRandomNodMinigunnerWithAiTurnedOff()
-//        Minigunner nodMinigunner2 = createRandomNodMinigunnerWithAiTurnedOff()
-
-//        Unit nodMinigunner1 = createNodMinigunnerAtRandomLocation()
-//        Unit nodMinigunner1 = createNodMinigunnerAtWorldCoordinates(20,80)
-//        Unit nodMinigunner1 = createNodMinigunnerAtWorldCoordinates(20,80)
-        Unit nodMinigunner1 = createNodMinigunnerAtWorldMapTileCoordinates(1,8)
+        Unit nodMinigunner1 = createNodMinigunnerAtRandomLocation()
+        Unit nodMinigunner2 = createNodMinigunnerAtRandomLocation()
 
         when:
         uiClient.selectUnit(gdiMinigunner1.unitId)
@@ -267,41 +256,65 @@ class MiscTests extends MikeAndConquerTestBase {
         assert gdiMinigunner1.selected == false
         assert nodMinigunner1.selected == false
 
+        when:
+        uiClient.selectUnit(gdiMinigunner2.unitId)
+        uiClient.selectUnit(nodMinigunner2.unitId)
+        uiClient.rightClick(neutralLocation)
 
         and:
-        assertReceivedBeganMissionAttackEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
+        gdiMinigunner2 = uiClient.getUnit(gdiMinigunner2.unitId)
+        nodMinigunner2 = uiClient.getUnit(nodMinigunner2.unitId)
 
-        assertReceviedBeganMovingEvent(gdiMinigunner1.unitId)
-        assertReceviedBeganFiringEvent(gdiMinigunner1.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
-        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 40)
-        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
-        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 30)
-        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
-        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 20)
-        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
-        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 10)
-        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
-
-        assertBulletHitTargetEvent(gdiMinigunner1.unitId, nodMinigunner1.unitId)
-        assertUnitTookDamageEvent(nodMinigunner1.unitId, expectedAmountOfDamage, 0)
-
-        assertUnitDestroyedEvent(nodMinigunner1.unitId)
-
-        assertBeganMissionNoneEvent(gdiMinigunner1.unitId)
+        then:
+        assert gdiMinigunner2.selected == false
+        assert nodMinigunner2.selected == false
 
 
-        assertUnitWeaponReloadedEvent(gdiMinigunner1.unitId)
+        and:
+        assertMinigunnerAttacksAndKillsMinigunner(gdiMinigunner1.unitId, nodMinigunner1.unitId)
 
+        and:
+        sequentialEventReader.reset();
+        assertMinigunnerAttacksAndKillsMinigunner(gdiMinigunner2.unitId, nodMinigunner2.unitId)
     }
 
+    def assertMinigunnerAttacksAndKillsMinigunner(int minigunner1Id, int minigunner2Id) {
+
+        int expectedAmountOfDamage = 10
+
+        assertReceivedBeganMissionAttackEvent(minigunner1Id, minigunner2Id)
+
+        assertReceivedBeganMovingEvent(minigunner1Id)
+        assertReceviedBeganFiringEvent(minigunner1Id)
+
+        assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
+
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 40)
+        assertUnitWeaponReloadedEvent(minigunner1Id)
+
+        assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 30)
+        assertUnitWeaponReloadedEvent(minigunner1Id)
+
+        assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 20)
+        assertUnitWeaponReloadedEvent(minigunner1Id)
+
+        assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 10)
+        assertUnitWeaponReloadedEvent(minigunner1Id)
+
+        assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 0)
+
+        assertUnitDestroyedEvent(minigunner2Id)
+
+        assertBeganMissionNoneEvent(minigunner1Id)
+
+
+        assertUnitWeaponReloadedEvent(minigunner1Id)
+
+    }
 
 
 
@@ -466,83 +479,114 @@ class MiscTests extends MikeAndConquerTestBase {
         return findEventResult.index
     }
 
-    def assertReceivedBeganMissionAttackEvent(int attackerUnitId, int targetUnitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_ATTACK)
-        def eventData = jsonSlurper.parseText(event.eventData)
+    def unitBeganMissionAttackMatcher(int attackerUnitId, int targetUnitId) {
+        return {SimulationStateUpdateEvent e ->
+            def eventData = jsonSlurper.parseText(e.eventData)
+            return (e.eventType == EventType.BEGAN_MISSION_ATTACK) && (attackerUnitId == eventData.AttackerUnitId) && (targetUnitId == eventData.TargetUnitId)
+        }
 
-        assert attackerUnitId == eventData.AttackerUnitId
-        assert targetUnitId == eventData.TargetUnitId
+    }
+
+    def assertReceivedBeganMissionAttackEvent(int attackerUnitId, int targetUnitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(
+                unitBeganMissionAttackMatcher(attackerUnitId, targetUnitId)
+        )
+        return event
+    }
+
+
+
+    def unitBeganMovingMatcher(int unitId  ) {
+        return {SimulationStateUpdateEvent e ->
+            def eventData = jsonSlurper.parseText(e.eventData)
+            return (e.eventType == EventType.UNIT_BEGAN_MOVING) && (unitId == eventData.UnitId)
+        }
+    }
+
+    def assertReceivedBeganMovingEvent(int unitId) {
+        SimulationStateUpdateEvent event =
+                sequentialEventReader.waitForEventMatchedBy(unitBeganMovingMatcher(unitId))
 
         return event
     }
 
 
-    def assertReceviedBeganMovingEvent(int unitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_BEGAN_MOVING)
-        def eventData = jsonSlurper.parseText(event.eventData)
-
-        assert unitId == eventData.UnitId
-
-        return event
+    def unitBeganFiringMatcher(int unitId  ) {
+        return {SimulationStateUpdateEvent e ->
+            def eventData = jsonSlurper.parseText(e.eventData)
+            return (e.eventType == EventType.UNIT_BEGAN_FIRING) && (unitId == eventData.UnitId)
+        }
     }
 
     def assertReceviedBeganFiringEvent(int unitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_BEGAN_FIRING)
-        def eventData = jsonSlurper.parseText(event.eventData)
-
-        assert unitId == eventData.UnitId
-
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(unitBeganFiringMatcher(unitId))
         return event
     }
 
+    def bulletHitTargetMatcher(int attackerUnitId, int targetUnitId) {
+        return {SimulationStateUpdateEvent e ->
+            def eventData = jsonSlurper.parseText(e.eventData)
+            return (e.eventType == EventType.BULLET_HIT_TARGET) && (attackerUnitId == eventData.AttackerUnitId) && (targetUnitId == eventData.TargetUnitId)
+        }
+    }
+
     def assertBulletHitTargetEvent(int attackerUnitId, int targetUnitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BULLET_HIT_TARGET)
-        def eventData = jsonSlurper.parseText(event.eventData)
-
-        assert attackerUnitId == eventData.AttackerUnitId
-        assert targetUnitId == eventData.TargetUnitId
-
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(bulletHitTargetMatcher(attackerUnitId, targetUnitId))
         return event
+    }
+
+
+    def unitTookDamageMatcher(int unitId, int expectedAmountOfDamage, int expectedNewHealthAmount) {
+        return {SimulationStateUpdateEvent e ->
+            def eventData = jsonSlurper.parseText(e.eventData)
+            return  (e.eventType == EventType.UNIT_TOOK_DAMAGE) &&
+                    (unitId == eventData.UnitId) &&
+                    (expectedAmountOfDamage == eventData.AmountOfDamage) &&
+                    (expectedNewHealthAmount == eventData.NewHealthAmount)
+        }
+
+    }
+
+    def assertUnitTookDamageEvent(int unitId, int expectedAmountOfDamage, int expectedNewHealthAmount) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(unitTookDamageMatcher(unitId, expectedAmountOfDamage, expectedNewHealthAmount))
+        return event
+    }
+
+    def weaponReloadedMatcher(int unitId  ) {
+        return {SimulationStateUpdateEvent e ->
+            def eventData = jsonSlurper.parseText(e.eventData)
+            return (e.eventType == EventType.UNIT_RELOADED_WEAPON) && (unitId == eventData.UnitId)
+        }
+    }
+
+
+    def assertUnitWeaponReloadedEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(weaponReloadedMatcher(unitId))
+        return event
+    }
+
+    def unitDestroyedMatcher(int unitId  ) {
+        return {SimulationStateUpdateEvent e ->
+            def eventData = jsonSlurper.parseText(e.eventData)
+            return (e.eventType == EventType.UNIT_DESTROYED) && (unitId == eventData.UnitId)
+        }
+    }
+
+    def assertUnitDestroyedEvent(int unitId) {
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(unitDestroyedMatcher(unitId))
+        return event
+    }
+
+    def unitBeganMissionNoneMatcher(int unitId  ) {
+        return {SimulationStateUpdateEvent e ->
+            def eventData = jsonSlurper.parseText(e.eventData)
+            return (e.eventType == EventType.BEGAN_MISSION_NONE) && (unitId == eventData.UnitId)
+        }
     }
 
 
     def assertBeganMissionNoneEvent(int unitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_NONE)
-        def eventData = jsonSlurper.parseText(event.eventData)
-
-        assert unitId == eventData.UnitId
-
-        return event
-    }
-
-    def assertReceivedBulletHitTargetEvent(int targetUnitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.BULLET_HIT_TARGET)
-        def eventData = jsonSlurper.parseText(event.eventData)
-        assert targetUnitId == eventData.TargetUnitId
-        return event
-    }
-
-
-    def assertUnitTookDamageEvent(int unitId, int expectedAmountOfDamage, int expectedNewHealthAmount) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_TOOK_DAMAGE)
-        def eventData = jsonSlurper.parseText(event.eventData)
-        assert unitId == eventData.UnitId
-        assert expectedAmountOfDamage == eventData.AmountOfDamage
-        assert expectedNewHealthAmount == eventData.NewHealthAmount
-        return event
-    }
-
-    def assertUnitWeaponReloadedEvent(int unitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_RELOADED_WEAPON)
-        def eventData = jsonSlurper.parseText(event.eventData)
-        assert unitId == eventData.UnitId
-        return event
-    }
-
-    def assertUnitDestroyedEvent(int unitId) {
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.UNIT_DESTROYED)
-        def eventData = jsonSlurper.parseText(event.eventData)
-        assert unitId == eventData.UnitId
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventMatchedBy(unitBeganMissionNoneMatcher(unitId))
         return event
     }
 

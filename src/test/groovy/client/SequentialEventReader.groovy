@@ -1,5 +1,6 @@
 package client
 
+import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
 import spock.util.concurrent.PollingConditions
 
@@ -16,7 +17,14 @@ class SequentialEventReader {
         this.allReceivedEvents = []
     }
 
-    SimulationStateUpdateEvent waitForEventOfType(String eventType) {
+    void reset() {
+        this.allReceivedEvents = []
+        indexOfFurthestEvaluatedEvent = 0;
+    }
+
+
+
+    SimulationStateUpdateEvent waitForEventMatchedBy(Closure eventMatcher) {
 
         int timeoutInSeconds = 30
         SimulationStateUpdateEvent foundEvent = null
@@ -32,22 +40,34 @@ class SequentialEventReader {
                 SimulationStateUpdateEvent nextEventToEvaluate = allReceivedEvents.get(indexOfFurthestEvaluatedEvent)
                 indexOfFurthestEvaluatedEvent++
 
-                if(nextEventToEvaluate.eventType == eventType) {
+                if(eventMatcher(nextEventToEvaluate)) {
                     foundEvent = nextEventToEvaluate
                     done = true
                 }
                 else {
                     done = indexOfFurthestEvaluatedEvent >= allReceivedEvents.size()
                 }
+
             }
 
-            assert (foundEvent != null) && (eventType == foundEvent.eventType)
-
-
+            assert (foundEvent != null)
         }
 
         return foundEvent
 
+    }
+
+    def eventMatcher(String eventType) {
+        return {SimulationStateUpdateEvent e ->
+            return e.eventType == eventType
+        }
+
+    }
+
+
+
+    SimulationStateUpdateEvent waitForEventOfType(String eventType) {
+        return waitForEventMatchedBy (eventMatcher(eventType))
     }
 
 
