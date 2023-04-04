@@ -219,6 +219,21 @@ class MikeAndConquerTestBase extends Specification {
         return parseUnitFromEventData(event.eventData)
     }
 
+    Unit createGDIMinigunnerAtWorldCoordinatesWithHealth(int xInWorldCoordinates, int yInWorldCoordinates, int health) {
+        WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
+
+        simulationClient.createGDIMinigunner(minigunnerLocationBuilder
+                                                     .worldCoordinatesX(xInWorldCoordinates)
+                                                     .worldCoordinatesY(yInWorldCoordinates)
+                                                     .build() ,
+                                             health)
+
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+
+        return parseUnitFromEventData(event.eventData)
+    }
+
+
     Unit createGDIMinigunnerAtWorldMapTileCoordinates(int x, int y) {
         WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
 

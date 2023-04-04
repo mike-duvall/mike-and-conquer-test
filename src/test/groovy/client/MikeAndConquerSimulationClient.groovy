@@ -92,6 +92,24 @@ class MikeAndConquerSimulationClient extends BaseClient {
         doPostSimulationCommand( createUnitCommand)
     }
 
+    void createGDIMinigunner(WorldCoordinatesLocation location, int startingHealth) {
+
+        Command createUnitCommand = new Command()
+        createUnitCommand.commandType = Command.CREATE_GDI_MINIGUNNER
+
+        def commandParams =
+                [
+                        startLocationXInWorldCoordinates: location.XInWorldCoordinates(),
+                        startLocationYInWorldCoordinates: location.YInWorldCoordinates(),
+                        health: startingHealth
+                ]
+
+        createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
+
+        doPostSimulationCommand( createUnitCommand)
+    }
+
+
     void createNodMinigunner(WorldCoordinatesLocation location) {
 
         Command createUnitCommand = new Command()
