@@ -28,7 +28,7 @@ class MiscTests extends MikeAndConquerTestBase {
 
 
     def setup() {
-        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 2.0)
+        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.8)
         setAndAssertUIOptions(uiOptions)
         simulationClient.startScenario()
         sleep(1000)
