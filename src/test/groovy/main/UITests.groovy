@@ -16,7 +16,7 @@ class UITests extends MikeAndConquerTestBase {
 
 
     def setup() {
-        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 2.0)
+        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.8)
         setAndAssertUIOptions(uiOptions)
     }
 
