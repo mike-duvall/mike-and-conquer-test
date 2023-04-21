@@ -1,7 +1,7 @@
 package client
 
 import domain.Building
-import domain.Command
+import domain.UICommand
 import domain.Point
 import domain.Sidebar
 import domain.UIOptions
@@ -44,8 +44,8 @@ class MikeAndConquerUIClient extends BaseClient {
 
 
     void setUIOptions(UIOptions uiOptions) {
-        Command command = new Command()
-        command.commandType = Command.SET_UI_OPTIONS
+        UICommand command = new UICommand()
+        command.commandType = UICommand.SET_UI_OPTIONS
 
         def commandParams =
                 [
@@ -68,15 +68,15 @@ class MikeAndConquerUIClient extends BaseClient {
     }
 
     void startScenario() {
-        Command command = new Command()
-        command.commandType = Command.START_SCENARIO
+        UICommand command = new UICommand()
+        command.commandType = UICommand.START_SCENARIO
         doPostUICommand( command)
     }
 
 
     void selectUnit(int unitId) {
-        Command command = new Command()
-        command.commandType = Command.SELECT_UNIT
+        UICommand command = new UICommand()
+        command.commandType = UICommand.SELECT_UNIT
 
         def commandParams =
                 [
@@ -91,8 +91,8 @@ class MikeAndConquerUIClient extends BaseClient {
 
     void leftClick(WorldCoordinatesLocation location) {
 
-        Command command = new Command()
-        command.commandType = Command.LEFT_CLICK
+        UICommand command = new UICommand()
+        command.commandType = UICommand.LEFT_CLICK
 
         def commandParams =
                 [
@@ -112,8 +112,8 @@ class MikeAndConquerUIClient extends BaseClient {
                         SidebarIconName: sidebarIconName
                 ]
 
-        Command command = new Command(
-            Command.LEFT_CLICK_SIDEBAR,
+        UICommand command = new UICommand(
+            UICommand.LEFT_CLICK_SIDEBAR,
             JsonOutput.toJson(commandParams)
         )
 
@@ -125,8 +125,8 @@ class MikeAndConquerUIClient extends BaseClient {
 
     void rightClick(WorldCoordinatesLocation location) {
 
-        Command command = new Command()
-        command.commandType = Command.RIGHT_CLICK
+        UICommand command = new UICommand()
+        command.commandType = UICommand.RIGHT_CLICK
 
         def commandParams =
                 [
@@ -205,8 +205,8 @@ class MikeAndConquerUIClient extends BaseClient {
     }
 
     private void DoLeftClickAndHold(Point point1) {
-        Command command = new Command()
-        command.commandType = Command.LEFT_CLICK_AND_HOLD
+        UICommand command = new UICommand()
+        command.commandType = UICommand.LEFT_CLICK_AND_HOLD
 
         def commandParams =
                 [
@@ -220,8 +220,8 @@ class MikeAndConquerUIClient extends BaseClient {
     }
 
     void moveMouseToLocation(WorldCoordinatesLocation location) {
-        Command command = new Command()
-        command.commandType = Command.MOVE_MOUSE
+        UICommand command = new UICommand()
+        command.commandType = UICommand.MOVE_MOUSE
 
         def commandParams =
                 [
@@ -234,8 +234,8 @@ class MikeAndConquerUIClient extends BaseClient {
     }
 
     private void DoReleaseLeftMouseButton(Point point1) {
-        Command command = new Command()
-        command.commandType = Command.RELEASE_LEFT_MOUSE_BUTTON
+        UICommand command = new UICommand()
+        command.commandType = UICommand.RELEASE_LEFT_MOUSE_BUTTON
 
         def commandParams =
                 [

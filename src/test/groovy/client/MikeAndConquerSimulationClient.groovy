@@ -1,6 +1,6 @@
 package client
 
-import domain.Command
+import domain.SimulationCommand
 import domain.SimulationOptions
 import domain.WorldCoordinatesLocation
 import domain.event.SimulationStateUpdateEvent
@@ -15,8 +15,6 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
     int port = 5000
 
-//    private static final String SIDEBAR_BASE_URL = '/mac/Sidebar'
-//    private static final String NOD_TURRET_BASE_URL = '/mac/NodTurret'
 
 
     MikeAndConquerSimulationClient(String host,  boolean useTimeouts = true) {
@@ -35,15 +33,15 @@ class MikeAndConquerSimulationClient extends BaseClient {
     }
 
     void setSimulationOptions(SimulationOptions simulationOptions) {
-        Command command = new Command()
-        command.commandType = "SetOptions"
+        SimulationCommand command = new SimulationCommand()
+        command.commandType = SimulationCommand.SET_OPTIONS
 
         def commandParams =
                 [
                     gameSpeed: simulationOptions.gameSpeed
                 ]
 
-        command.commandData =  JsonOutput.toJson(commandParams)
+        command.jsonCommandData =  JsonOutput.toJson(commandParams)
 
         doPostSimulationCommand(command)
     }
@@ -63,23 +61,23 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
     void removeUnit(int unitId) {
 
-        Command createUnitCommand = new Command()
-        createUnitCommand.commandType = "RemoveUnit"
+        SimulationCommand createUnitCommand = new SimulationCommand()
+        createUnitCommand.commandType = SimulationCommand.REMOVE_UNIT
 
         def commandParams =
                 [
                         unitId: unitId
                 ]
 
-        createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
+        createUnitCommand.jsonCommandData =  JsonOutput.toJson(commandParams)
         doPostSimulationCommand( createUnitCommand)
     }
 
 
     void createGDIMinigunner(WorldCoordinatesLocation location) {
 
-        Command createUnitCommand = new Command()
-        createUnitCommand.commandType = Command.CREATE_GDI_MINIGUNNER
+        SimulationCommand createUnitCommand = new SimulationCommand()
+        createUnitCommand.commandType = SimulationCommand.CREATE_GDI_MINIGUNNER
 
         def commandParams =
             [
@@ -87,15 +85,15 @@ class MikeAndConquerSimulationClient extends BaseClient {
                 startLocationYInWorldCoordinates: location.YInWorldCoordinates()
             ]
 
-        createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
+        createUnitCommand.jsonCommandData =  JsonOutput.toJson(commandParams)
 
         doPostSimulationCommand( createUnitCommand)
     }
 
     void createNodMinigunner(WorldCoordinatesLocation location) {
 
-        Command createUnitCommand = new Command()
-        createUnitCommand.commandType = Command.CREATE_NOD_MINIGUNNER
+        SimulationCommand createUnitCommand = new SimulationCommand()
+        createUnitCommand.commandType = SimulationCommand.CREATE_NOD_MINIGUNNER
 
         def commandParams =
                 [
@@ -103,7 +101,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
                         startLocationYInWorldCoordinates: location.YInWorldCoordinates()
                 ]
 
-        createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
+        createUnitCommand.jsonCommandData =  JsonOutput.toJson(commandParams)
 
         doPostSimulationCommand( createUnitCommand)
     }
@@ -111,22 +109,22 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
 
     void createGDIMinigunnerAtRandomLocation() {
-        Command createUnitCommand = new Command()
-        createUnitCommand.commandType = Command.CREATE_GDI_MINIGUNNER_AT_RANDOM_LOCATION
+        SimulationCommand createUnitCommand = new SimulationCommand()
+        createUnitCommand.commandType = SimulationCommand.CREATE_GDI_MINIGUNNER_AT_RANDOM_LOCATION
         doPostSimulationCommand( createUnitCommand)
     }
 
     void createDeactivatedNodMinigunnerAtRandomLocation() {
 
-        Command createUnitCommand = new Command()
-        createUnitCommand.commandType = Command.CREATE_NOD_MINIGUNNER_AT_RANDOM_LOCATION
+        SimulationCommand createUnitCommand = new SimulationCommand()
+        createUnitCommand.commandType = SimulationCommand.CREATE_NOD_MINIGUNNER_AT_RANDOM_LOCATION
 
         def commandParams =
                 [
                         deactivated: true
                 ]
 
-        createUnitCommand.commandData =  JsonOutput.toJson(commandParams)
+        createUnitCommand.jsonCommandData =  JsonOutput.toJson(commandParams)
 
         doPostSimulationCommand( createUnitCommand)
     }
@@ -135,8 +133,8 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
     void addJeep(WorldCoordinatesLocation location) {
 
-        Command command = new Command()
-        command.commandType = "CreateJeep"
+        SimulationCommand command = new SimulationCommand()
+        command.commandType = SimulationCommand.CREATE_JEEP
 
         def commandParams =
                 [
@@ -144,15 +142,15 @@ class MikeAndConquerSimulationClient extends BaseClient {
                         startLocationYInWorldCoordinates: location.YInWorldCoordinates()
                 ]
 
-        command.commandData =  JsonOutput.toJson(commandParams)
+        command.jsonCommandData =  JsonOutput.toJson(commandParams)
 
         doPostSimulationCommand( command)
     }
 
     void createMCV(WorldCoordinatesLocation location) {
 
-        Command command = new Command()
-        command.commandType = "CreateMCV"
+        SimulationCommand command = new SimulationCommand()
+        command.commandType = SimulationCommand.CREATE_MVC
 
         def commandParams =
                 [
@@ -160,7 +158,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
                         startLocationYInWorldCoordinates: location.YInWorldCoordinates()
                 ]
 
-        command.commandData =  JsonOutput.toJson(commandParams)
+        command.jsonCommandData =  JsonOutput.toJson(commandParams)
 
         doPostSimulationCommand( command)
     }
@@ -168,8 +166,8 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
     void startScenario() {
 
-        Command command = new Command()
-        command.commandType = "StartScenario"
+        SimulationCommand command = new SimulationCommand()
+        command.commandType = SimulationCommand.START_SCENARIO
 
         doPostSimulationCommand( command)
     }
@@ -203,8 +201,8 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
     void moveUnit(int unitId, WorldCoordinatesLocation location) {
 
-        Command command = new Command()
-        command.commandType = "OrderUnitMove"
+        SimulationCommand command = new SimulationCommand()
+        command.commandType = SimulationCommand.ORDER_UNIT_TO_MOVE
 
         def commandParams =
                 [
@@ -213,7 +211,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
                         destinationLocationYInWorldCoordinates: location.YInWorldCoordinates()
                 ]
 
-        command.commandData =  JsonOutput.toJson(commandParams)
+        command.jsonCommandData =  JsonOutput.toJson(commandParams)
 
         doPostSimulationCommand( command)
     }
