@@ -1,7 +1,6 @@
 package client
 
 import domain.SimulationCommand
-//import domain.UICommand
 import domain.SimulationOptions
 import domain.WorldCoordinatesLocation
 import domain.event.SimulationStateUpdateEvent
