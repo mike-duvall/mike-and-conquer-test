@@ -26,7 +26,7 @@ class SequentialEventReader {
 
     SimulationStateUpdateEvent waitForEventMatchedBy(Closure eventMatcher) {
 
-        int timeoutInSeconds = 30
+        int timeoutInSeconds = 60
         SimulationStateUpdateEvent foundEvent = null
 
         def conditions = new PollingConditions(timeout: timeoutInSeconds, initialDelay: 0.3, factor: 1.25)

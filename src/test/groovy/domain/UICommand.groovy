@@ -1,6 +1,6 @@
 package domain
 
-class Command {
+class UICommand {
 
     String commandType
     String commandData
@@ -14,17 +14,13 @@ class Command {
     static final String RIGHT_CLICK = 'RightClick'
     static final String MOVE_MOUSE = 'MoveMouse'
     static final String RELEASE_LEFT_MOUSE_BUTTON = 'ReleaseLeftMouseButton'
-    static final String CREATE_GDI_MINIGUNNER_AT_RANDOM_LOCATION = "CreateGDIMinigunnerAtRandomLocation"
-    static final String CREATE_NOD_MINIGUNNER_AT_RANDOM_LOCATION = "CreateNodMinigunnerAtRandomLocation"
-    static final String CREATE_GDI_MINIGUNNER = "CreateGDIMinigunner"
-    static final String CREATE_NOD_MINIGUNNER = "CreateNodMinigunner"
 
 
-    Command() {
+    UICommand() {
 
     }
 
-    Command(String commandType, String commandData) {
+    UICommand(String commandType, String commandData) {
         this.commandType = commandType
         this.commandData = commandData
     }
