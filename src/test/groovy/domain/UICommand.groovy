@@ -3,7 +3,7 @@ package domain
 class UICommand {
 
     String commandType
-    String commandData
+    String jsonCommandData
 
     static final String SET_UI_OPTIONS = 'SetUIOptions'
     static final String START_SCENARIO = 'StartScenario'
@@ -20,9 +20,9 @@ class UICommand {
 
     }
 
-    UICommand(String commandType, String commandData) {
+    UICommand(String commandType, String jsonCommandData) {
         this.commandType = commandType
-        this.commandData = commandData
+        this.jsonCommandData = jsonCommandData
     }
 
 

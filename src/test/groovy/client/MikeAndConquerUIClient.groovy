@@ -53,7 +53,7 @@ class MikeAndConquerUIClient extends BaseClient {
                         MapZoomLevel: uiOptions.mapZoomLevel
                 ]
 
-        command.commandData =  JsonOutput.toJson(commandParams)
+        command.jsonCommandData =  JsonOutput.toJson(commandParams)
         doPostUICommand( command)
     }
 
@@ -83,7 +83,7 @@ class MikeAndConquerUIClient extends BaseClient {
                         UnitId: unitId
                 ]
 
-        command.commandData =  JsonOutput.toJson(commandParams)
+        command.jsonCommandData =  JsonOutput.toJson(commandParams)
 
         doPostUICommand( command)
     }
@@ -100,7 +100,7 @@ class MikeAndConquerUIClient extends BaseClient {
                         YInWorldCoordinates: location.YInWorldCoordinates()
                 ]
 
-        command.commandData =  JsonOutput.toJson(commandParams)
+        command.jsonCommandData =  JsonOutput.toJson(commandParams)
 
         doPostUICommand( command)
     }
@@ -134,7 +134,7 @@ class MikeAndConquerUIClient extends BaseClient {
                         YInWorldCoordinates: location.YInWorldCoordinates()
                 ]
 
-        command.commandData =  JsonOutput.toJson(commandParams)
+        command.jsonCommandData =  JsonOutput.toJson(commandParams)
 
         doPostUICommand( command)
     }
@@ -214,7 +214,7 @@ class MikeAndConquerUIClient extends BaseClient {
                         YInWorldCoordinates: point1.y
                 ]
 
-        command.commandData = JsonOutput.toJson(commandParams)
+        command.jsonCommandData = JsonOutput.toJson(commandParams)
 
         doPostUICommand( command)
     }
@@ -229,7 +229,7 @@ class MikeAndConquerUIClient extends BaseClient {
                         YInWorldCoordinates: location.y
                 ]
 
-        command.commandData = JsonOutput.toJson(commandParams)
+        command.jsonCommandData = JsonOutput.toJson(commandParams)
         doPostUICommand( command)
     }
 
@@ -244,7 +244,7 @@ class MikeAndConquerUIClient extends BaseClient {
 
                 ]
 
-        command.commandData = JsonOutput.toJson(commandParams)
+        command.jsonCommandData = JsonOutput.toJson(commandParams)
 
         doPostUICommand( command)
     }
