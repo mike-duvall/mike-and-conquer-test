@@ -9,11 +9,38 @@ import domain.WorldCoordinatesLocation
 import domain.WorldCoordinatesLocationBuilder
 import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
+import org.spockframework.runtime.extension.IGlobalExtension
+import org.spockframework.runtime.model.SpecInfo
 import spock.util.concurrent.PollingConditions
+import util.TakeScreenshotOnTestFailListener
 import util.TestUtil
 
-class BuldingPlacementTests extends MikeAndConquerTestBase {
+class BuldingPlacementTests extends MikeAndConquerTestBase implements IGlobalExtension {
 
+    static TakeScreenshotOnTestFailListener takeScreenshotOnTestFailListener = null
+
+
+    TakeScreenshotOnTestFailListener getTakeScreenshotOnTestFailListener() {
+        if(takeScreenshotOnTestFailListener == null) {
+            takeScreenshotOnTestFailListener = new TakeScreenshotOnTestFailListener()
+        }
+        return takeScreenshotOnTestFailListener
+    }
+
+    @Override
+    void start() {
+
+    }
+
+    @Override
+    void visitSpec(SpecInfo specInfo) {
+        specInfo.addListener(getTakeScreenshotOnTestFailListener())
+    }
+
+    @Override
+    void stop() {
+
+    }
 
     def setup() {
         UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
@@ -23,6 +50,8 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         setAndAssertSimulationOptions(simulationOptions)
 
         uiClient.startScenario()
+
+        getTakeScreenshotOnTestFailListener().uiClient = uiClient
 
 //        // Add bogus minigunner to not delete so game state stays in "Playing"
 //        gameClient.addGDIMinigunnerAtMapSquare(4,5)
@@ -45,7 +74,8 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         int mcvId = createdMCV.unitId
 
         then:
-        assert mcvId != -1
+//        assert mcvId != -1
+        assert mcvId == -1
 
         when:
         uiClient.selectUnit(mcvId)
