@@ -35,7 +35,6 @@ class BuildDirectoryUtil {
         String fileNameWithFullAbsolutePath = targetDirectorAbsolutePath + "\\" + fileName
         File outputFile = new File(fileNameWithFullAbsolutePath)
         ImageIO.write(bufferedImage, "png", outputFile);
-//        return "Writing screenshot to file: " + fileNameWithFullAbsolutePath
         return fileNameWithFullAbsolutePath
 
     }

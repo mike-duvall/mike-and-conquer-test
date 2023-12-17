@@ -171,27 +171,11 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
         String realGameCopiedFilename = realGameFilename.replaceAll("real-game", "copied-real-game")
         String mikeAndConquerCopiedFilename = realGameFilename.replaceAll("real-game", "actual-mike-and-conquer")
 
-//        BuildDirectoryUtil buildDirectoryUtil = new BuildDirectoryUtil()
         BuildDirectoryUtil.writeImageToFileInBuildDirectory(realGameScreenshot, "screenshot", realGameCopiedFilename )
         BuildDirectoryUtil.writeImageToFileInBuildDirectory(screenshotSubImage, "screenshot", mikeAndConquerCopiedFilename )
 
         assert ImageUtil.imagesAreEqual(screenshotSubImage, realGameScreenshot)
     }
-
-//    void writeImageToFileInBuildDirectory(BufferedImage bufferedImage, String fileName) {
-//        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-//        File targetDir = new File(relPath+"../../../../build/screenshot")
-//        // TODO:  come up with more reliable way to find this path
-//        // Seems to work differently between IntelliJ versions
-////        File targetDir = new File(relPath+"../../../build/screenshot")
-//        if(!targetDir.exists()) {
-//            targetDir.mkdir();
-//        }
-//        String absPath = targetDir.getAbsolutePath()
-//        File outputfile = new File(absPath + "\\" + fileName);
-//        ImageIO.write(bufferedImage, "png", outputfile);
-//    }
-
 
     Unit createGDIMinigunnerAtRandomLocation() {
         simulationClient.createGDIMinigunnerAtRandomLocation()
