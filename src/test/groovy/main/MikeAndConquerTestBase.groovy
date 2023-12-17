@@ -12,20 +12,51 @@ import domain.WorldCoordinatesLocationBuilder
 import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
 import groovy.json.JsonSlurper
+import org.spockframework.runtime.extension.IGlobalExtension
+import org.spockframework.runtime.model.SpecInfo
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
+import util.BuildDirectoryUtil
 import util.ImageUtil
+import util.TakeScreenshotOnTestFailListener
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 
-class MikeAndConquerTestBase extends Specification {
+class MikeAndConquerTestBase extends Specification implements IGlobalExtension  {
 
 
     MikeAndConquerSimulationClient simulationClient
     MikeAndConquerUIClient uiClient
     SequentialEventReader sequentialEventReader
     JsonSlurper jsonSlurper
+
+
+    static TakeScreenshotOnTestFailListener takeScreenshotOnTestFailListener = null
+
+
+    TakeScreenshotOnTestFailListener getTakeScreenshotOnTestFailListener() {
+        if(takeScreenshotOnTestFailListener == null) {
+            takeScreenshotOnTestFailListener = new TakeScreenshotOnTestFailListener()
+        }
+        return takeScreenshotOnTestFailListener
+    }
+
+    @Override
+    void start() {
+
+    }
+
+    @Override
+    void visitSpec(SpecInfo specInfo) {
+        specInfo.addListener(getTakeScreenshotOnTestFailListener())
+    }
+
+    @Override
+    void stop() {
+
+    }
+
 
 
     def setup() {
@@ -42,6 +73,7 @@ class MikeAndConquerTestBase extends Specification {
         jsonSlurper = new JsonSlurper()
 
         uiClient = new MikeAndConquerUIClient(host, useTimeouts )
+        getTakeScreenshotOnTestFailListener().uiClient = uiClient
 
     }
 
@@ -139,25 +171,26 @@ class MikeAndConquerTestBase extends Specification {
         String realGameCopiedFilename = realGameFilename.replaceAll("real-game", "copied-real-game")
         String mikeAndConquerCopiedFilename = realGameFilename.replaceAll("real-game", "actual-mike-and-conquer")
 
-        writeImageToFileInBuildDirectory(realGameScreenshot, realGameCopiedFilename )
-        writeImageToFileInBuildDirectory(screenshotSubImage, mikeAndConquerCopiedFilename )
+//        BuildDirectoryUtil buildDirectoryUtil = new BuildDirectoryUtil()
+        BuildDirectoryUtil.writeImageToFileInBuildDirectory(realGameScreenshot, "screenshot", realGameCopiedFilename )
+        BuildDirectoryUtil.writeImageToFileInBuildDirectory(screenshotSubImage, "screenshot", mikeAndConquerCopiedFilename )
 
         assert ImageUtil.imagesAreEqual(screenshotSubImage, realGameScreenshot)
     }
 
-    void writeImageToFileInBuildDirectory(BufferedImage bufferedImage, String fileName) {
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath+"../../../../build/screenshot")
-        // TODO:  come up with more reliable way to find this path
-        // Seems to work differently between IntelliJ versions
-//        File targetDir = new File(relPath+"../../../build/screenshot")
-        if(!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        String absPath = targetDir.getAbsolutePath()
-        File outputfile = new File(absPath + "\\" + fileName);
-        ImageIO.write(bufferedImage, "png", outputfile);
-    }
+//    void writeImageToFileInBuildDirectory(BufferedImage bufferedImage, String fileName) {
+//        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
+//        File targetDir = new File(relPath+"../../../../build/screenshot")
+//        // TODO:  come up with more reliable way to find this path
+//        // Seems to work differently between IntelliJ versions
+////        File targetDir = new File(relPath+"../../../build/screenshot")
+//        if(!targetDir.exists()) {
+//            targetDir.mkdir();
+//        }
+//        String absPath = targetDir.getAbsolutePath()
+//        File outputfile = new File(absPath + "\\" + fileName);
+//        ImageIO.write(bufferedImage, "png", outputfile);
+//    }
 
 
     Unit createGDIMinigunnerAtRandomLocation() {

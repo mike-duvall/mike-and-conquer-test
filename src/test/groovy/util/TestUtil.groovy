@@ -11,7 +11,7 @@ import spock.util.concurrent.PollingConditions
 class TestUtil {
 
 
-    static boolean  assertUnitIsSelected(MikeAndConquerUIClient uiClient, int unitId) {
+    static boolean assertUnitIsSelected(MikeAndConquerUIClient uiClient, int unitId) {
 
         int timeoutInSeconds = 10
         def conditions = new PollingConditions(timeout: timeoutInSeconds, initialDelay: 1.5, factor: 1.25)
