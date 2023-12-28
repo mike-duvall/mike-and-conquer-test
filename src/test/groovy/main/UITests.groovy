@@ -313,4 +313,32 @@ class UITests extends MikeAndConquerTestBase {
 
     }
 
+    def "Minigunner health bar and selection cursor show up correctly"() {
+        given:
+        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
+        setAndAssertUIOptions(uiOptions)
+
+        uiClient.startScenario()
+
+        int health = 30;
+        Unit gdiMinigunner = createGDIMinigunnerAtWorldCoordinates(520, 406)
+
+        when:
+        uiClient.selectUnit(gdiMinigunner.unitId)
+
+        int testScenarioNumber = 1
+        String scenarioPrefix = 'minigunner-selection-and-health-bar'
+
+        int startX = 514
+        int startY = 392
+        int screenshotCompareWidth = 13
+        int screenshotCompareHeight = 17
+
+        then:
+        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
+
+    }
+
+
+
 }
