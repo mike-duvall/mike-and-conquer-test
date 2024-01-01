@@ -90,6 +90,9 @@ class MikeAndConquerSimulationClient extends BaseClient {
         doPostSimulationCommand( createUnitCommand)
     }
 
+
+
+
     void createNodMinigunner(WorldCoordinatesLocation location) {
 
         SimulationCommand createUnitCommand = new SimulationCommand()
@@ -217,4 +220,19 @@ class MikeAndConquerSimulationClient extends BaseClient {
     }
 
 
+    void applyDamageToUnit(int unitId, int damageAmount) {
+
+        SimulationCommand command = new SimulationCommand()
+        command.commandType = SimulationCommand.APPLY_DAMAGE_TO_UNIT
+
+        def commandParams =
+                [
+                        unitId: unitId,
+                        damageAmount: damageAmount
+                ]
+
+        command.jsonCommandData =  JsonOutput.toJson(commandParams)
+
+        doPostSimulationCommand( command)
+    }
 }

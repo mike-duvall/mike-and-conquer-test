@@ -313,7 +313,7 @@ class UITests extends MikeAndConquerTestBase {
 
     }
 
-    def "Minigunner health bar and selection cursor show up correctly"() {
+    def "Minigunner health bar and selection cursor show up correctly with 50 health"() {
         given:
         UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
         setAndAssertUIOptions(uiOptions)
@@ -326,7 +326,35 @@ class UITests extends MikeAndConquerTestBase {
         when:
         uiClient.selectUnit(gdiMinigunner.unitId)
 
-        int testScenarioNumber = 1
+        int testScenarioNumber = 10
+        String scenarioPrefix = 'minigunner-selection-and-health-bar'
+
+        int startX = 514
+        int startY = 392
+        int screenshotCompareWidth = 13
+        int screenshotCompareHeight = 17
+
+        then:
+        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
+
+    }
+
+
+    def "Minigunner health bar and selection cursor show up correctly with 45 health"() {
+        given:
+        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
+        setAndAssertUIOptions(uiOptions)
+
+        uiClient.startScenario()
+
+        int health = 30;
+        Unit gdiMinigunner = createGDIMinigunnerAtWorldCoordinatesWithHealth(520, 406, 45)
+        sleep(2000)
+
+        when:
+        uiClient.selectUnit(gdiMinigunner.unitId)
+
+        int testScenarioNumber = 9
         String scenarioPrefix = 'minigunner-selection-and-health-bar'
 
         int startX = 514

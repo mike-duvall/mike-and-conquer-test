@@ -13,4 +13,5 @@ class Unit {
     boolean aiIsOn
     int destinationX
     int destinationY
+
 }
