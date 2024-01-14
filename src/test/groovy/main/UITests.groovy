@@ -313,20 +313,21 @@ class UITests extends MikeAndConquerTestBase {
 
     }
 
-    def "Minigunner health bar and selection cursor show up correctly with 50 health"() {
+    @Unroll
+    def "Minigunner health bar and selection cursor show up correctly with #health health"() {
         given:
         UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
         setAndAssertUIOptions(uiOptions)
 
         uiClient.startScenario()
 
-        int health = 30;
-        Unit gdiMinigunner = createGDIMinigunnerAtWorldCoordinates(520, 406)
+
+        Unit gdiMinigunner = createGDIMinigunnerAtWorldCoordinatesWithHealth(520, 406, health)
 
         when:
         uiClient.selectUnit(gdiMinigunner.unitId)
 
-        int testScenarioNumber = 10
+        int testScenarioNumber = health
         String scenarioPrefix = 'minigunner-selection-and-health-bar'
 
         int startX = 514
@@ -337,35 +338,81 @@ class UITests extends MikeAndConquerTestBase {
         then:
         assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
 
+        // Data tables must have at least two columns:  https://spockframework.org/spock/docs/1.1/all_in_one.html#data-tables
+        // So adding dummy column
+        where:
+        health  | _
+        50      | _
+        45      | _
+//        40      | _
+//        35      | _
+//        30      | _
+        25      | _
+//        20      | _
+//        15      | _
+        10      | _
+//        5       | _
+
+
     }
 
 
-    def "Minigunner health bar and selection cursor show up correctly with 45 health"() {
-        given:
-        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
-        setAndAssertUIOptions(uiOptions)
 
-        uiClient.startScenario()
 
-        int health = 30;
-        Unit gdiMinigunner = createGDIMinigunnerAtWorldCoordinatesWithHealth(520, 406, 45)
-        sleep(2000)
-
-        when:
-        uiClient.selectUnit(gdiMinigunner.unitId)
-
-        int testScenarioNumber = 9
-        String scenarioPrefix = 'minigunner-selection-and-health-bar'
-
-        int startX = 514
-        int startY = 392
-        int screenshotCompareWidth = 13
-        int screenshotCompareHeight = 17
-
-        then:
-        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
-
-    }
+//    def "Minigunner health bar and selection cursor show up correctly with 50 health"() {
+//        given:
+//        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
+//        setAndAssertUIOptions(uiOptions)
+//
+//        uiClient.startScenario()
+//
+//        int health = 30;
+//        Unit gdiMinigunner = createGDIMinigunnerAtWorldCoordinatesWithHealth(520, 406)
+//
+//        when:
+//        uiClient.selectUnit(gdiMinigunner.unitId)
+//
+//        int testScenarioNumber = 50
+//        String scenarioPrefix = 'minigunner-selection-and-health-bar'
+//
+//        int startX = 514
+//        int startY = 392
+//        int screenshotCompareWidth = 13
+//        int screenshotCompareHeight = 17
+//
+//        then:
+//        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
+//
+//    }
+//
+//
+//
+//    def "Minigunner health bar and selection cursor show up correctly with 45 health"() {
+//        given:
+//        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
+//        setAndAssertUIOptions(uiOptions)
+//
+//        uiClient.startScenario()
+//
+//        int health = 30;
+//        Unit gdiMinigunner = createGDIMinigunnerAtWorldCoordinatesWithHealth(520, 406, 45)
+//        sleep(2000)
+//
+//        when:
+//        uiClient.selectUnit(gdiMinigunner.unitId)
+//
+//        int testScenarioNumber = 45
+//        String scenarioPrefix = 'minigunner-selection-and-health-bar'
+//
+//        int startX = 514
+//        int startY = 392
+//        int screenshotCompareWidth = 13
+//        int screenshotCompareHeight = 17
+//
+//        then:
+//        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
+//
+//    }
 
 
 
