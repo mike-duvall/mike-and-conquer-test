@@ -344,14 +344,14 @@ class UITests extends MikeAndConquerTestBase {
         health  | _
         50      | _
         45      | _
-//        40      | _
-//        35      | _
-//        30      | _
+        40      | _
+        35      | _
+        30      | _
         25      | _
-//        20      | _
-//        15      | _
+        20      | _
+        15      | _
         10      | _
-//        5       | _
+        5       | _
 
 
     }
@@ -359,60 +359,6 @@ class UITests extends MikeAndConquerTestBase {
 
 
 
-//    def "Minigunner health bar and selection cursor show up correctly with 50 health"() {
-//        given:
-//        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
-//        setAndAssertUIOptions(uiOptions)
-//
-//        uiClient.startScenario()
-//
-//        int health = 30;
-//        Unit gdiMinigunner = createGDIMinigunnerAtWorldCoordinatesWithHealth(520, 406)
-//
-//        when:
-//        uiClient.selectUnit(gdiMinigunner.unitId)
-//
-//        int testScenarioNumber = 50
-//        String scenarioPrefix = 'minigunner-selection-and-health-bar'
-//
-//        int startX = 514
-//        int startY = 392
-//        int screenshotCompareWidth = 13
-//        int screenshotCompareHeight = 17
-//
-//        then:
-//        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
-//
-//    }
-//
-//
-//
-//    def "Minigunner health bar and selection cursor show up correctly with 45 health"() {
-//        given:
-//        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
-//        setAndAssertUIOptions(uiOptions)
-//
-//        uiClient.startScenario()
-//
-//        int health = 30;
-//        Unit gdiMinigunner = createGDIMinigunnerAtWorldCoordinatesWithHealth(520, 406, 45)
-//        sleep(2000)
-//
-//        when:
-//        uiClient.selectUnit(gdiMinigunner.unitId)
-//
-//        int testScenarioNumber = 45
-//        String scenarioPrefix = 'minigunner-selection-and-health-bar'
-//
-//        int startX = 514
-//        int startY = 392
-//        int screenshotCompareWidth = 13
-//        int screenshotCompareHeight = 17
-//
-//        then:
-//        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
-//
-//    }
 
 
 
