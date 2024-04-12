@@ -2,6 +2,7 @@ package domain
 
 class SimulationCommand {
 
+
     String commandType
     String jsonCommandData
 
@@ -15,6 +16,7 @@ class SimulationCommand {
     static final String REMOVE_UNIT = "RemoveUnit"
     static final String START_SCENARIO = "StartScenario"
     static final String ORDER_UNIT_TO_MOVE = "OrderUnitMove"
+    static final String APPLY_DAMAGE_TO_UNIT = "ApplyDamageToUnit"
 
 
     SimulationCommand() {

@@ -115,6 +115,7 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
         createdUnit.unitId = unitDataObject.UnitId
         createdUnit.x = unitDataObject.X
         createdUnit.y = unitDataObject.Y
+        createdUnit.health = unitDataObject.Health
         return createdUnit
     }
 
@@ -235,6 +236,26 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
 
         return parseUnitFromEventData(event.eventData)
     }
+
+    Unit createGDIMinigunnerAtWorldCoordinatesWithHealth(int xInWorldCoordinates, int yInWorldCoordinates, int desiredHealth) {
+        WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
+
+        simulationClient.createGDIMinigunner(minigunnerLocationBuilder
+                                                     .worldCoordinatesX(xInWorldCoordinates)
+                                                     .worldCoordinatesY(yInWorldCoordinates)
+                                                     .build() )
+
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+        Unit createdUnit = parseUnitFromEventData(event.eventData)
+
+        int damageAmount = createdUnit.health - desiredHealth;
+        simulationClient.applyDamageToUnit(createdUnit.unitId, damageAmount)
+
+        return createdUnit
+    }
+
+
+
 
     Unit createGDIMinigunnerAtWorldMapTileCoordinates(int x, int y) {
         WorldCoordinatesLocationBuilder minigunnerLocationBuilder = new WorldCoordinatesLocationBuilder()
