@@ -341,7 +341,15 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
                 .build()
 
         uiClient.moveMouseToLocation(worldCoordinatesLocation)
+    }
 
+    void leftClickAtWorldCoordinates(int x, int y) {
+        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
+                .worldCoordinatesX(x)
+                .worldCoordinatesY(y)
+                .build()
+
+        uiClient.leftClick(worldCoordinatesLocation)
     }
 
 

@@ -3,8 +3,8 @@ package domain
 class Unit {
 
     int unitId
-    int x
-    int y
+    int xInWorldCoordinates
+    int yInWorldCoordinates
     String player
     int screenX
     int screenY

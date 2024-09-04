@@ -154,6 +154,45 @@ class UITests extends MikeAndConquerTestBase {
 
     }
 
+    def "should select MCV when it is clicked on in misc correct locations" () {
+
+            given:
+            uiClient.startScenario()
+            uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 1.0))
+            int mcvWorldMapTileX = 21
+            int mcvWorldMapTileY = 12
+
+            when:
+            int mcvId = createMCVAtWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
+
+            then:
+            Unit mcv = uiClient.getUnit(mcvId)
+            assert mcv.selected == false
+
+            when:
+            WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
+                    .worldCoordinatesX(mcv.xInWorldCoordinates - 5)
+                    .worldCoordinatesY(mcv.yInWorldCoordinates -5)
+                    .build()
+
+
+            moveMouseToWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
+            leftClickAtWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
+            mcv = uiClient.getUnit(mcvId)
+
+            then:
+            assert mcv.selected == true
+
+             Pick up here: Add remaining tests cases for all four corners, hard code locations for now
+             Some tests should fail because the click detection box in the game code is off and seems to be shifted up
+
+//         Pickup here
+//         Have test click in upper left corner of MCV and assert it's select
+//         Figure out how to determine width and height of MCV so that we
+//         we can know what the upper left corner is
+
+    }
+
     def "should set mouse cursor correctly when MCV is selected" () {
 
         given:
