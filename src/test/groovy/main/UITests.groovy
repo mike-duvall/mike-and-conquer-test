@@ -154,15 +154,19 @@ class UITests extends MikeAndConquerTestBase {
 
     }
 
-    def "should select MCV when it is clicked on in misc correct locations" () {
+    @Unroll
+    def "When MCV is clicked at xoffset #xoffset and yoffset #yoffset, selection state should be #shouldBeSelected" () {
 
             given:
             uiClient.startScenario()
             uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 1.0))
-            int mcvWorldMapTileX = 21
-            int mcvWorldMapTileY = 12
+//            int mcvWorldMapTileX = 21
+//            int mcvWorldMapTileY = 12
+            int mcvWorldMapTileX = 0
+            int mcvWorldMapTileY = 0
 
-            when:
+
+        when:
             int mcvId = createMCVAtWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
 
             then:
@@ -170,9 +174,13 @@ class UITests extends MikeAndConquerTestBase {
             assert mcv.selected == false
 
             when:
+//            WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
+//                    .worldCoordinatesX(mcv.xInWorldCoordinates - 5)
+//                    .worldCoordinatesY(mcv.yInWorldCoordinates -5)
+//                    .build()
             WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
-                    .worldCoordinatesX(mcv.xInWorldCoordinates - 5)
-                    .worldCoordinatesY(mcv.yInWorldCoordinates -5)
+                    .worldCoordinatesX(mcv.xInWorldCoordinates + xoffset)
+                    .worldCoordinatesY(mcv.yInWorldCoordinates + yoffset)
                     .build()
 
 
@@ -181,17 +189,20 @@ class UITests extends MikeAndConquerTestBase {
             mcv = uiClient.getUnit(mcvId)
 
             then:
-            assert mcv.selected == true
+            assert mcv.selected == shouldBeSelected
 
-             Pick up here: Add remaining tests cases for all four corners, hard code locations for now
-             Some tests should fail because the click detection box in the game code is off and seems to be shifted up
+//             Pick up here: Add remaining tests cases for all four corners, hard code locations for now
+//             Some tests should fail because the click detection box in the game code is off and seems to be shifted up
 
-//         Pickup here
-//         Have test click in upper left corner of MCV and assert it's select
-//         Figure out how to determine width and height of MCV so that we
-//         we can know what the upper left corner is
+        where:
+        xoffset | yoffset   | shouldBeSelected
+//        -10      | -5        | true
+//        -3      | -3        | true
+//        15      |    25        | true
+            12  |   12  | true
 
-    }
+
+     }
 
     def "should set mouse cursor correctly when MCV is selected" () {
 

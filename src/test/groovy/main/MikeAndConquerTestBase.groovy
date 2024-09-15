@@ -113,8 +113,8 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
         def unitDataObject = jsonSlurper.parseText(unitCreatedEventData)
         Unit createdUnit = new Unit()
         createdUnit.unitId = unitDataObject.UnitId
-        createdUnit.x = unitDataObject.X
-        createdUnit.y = unitDataObject.Y
+        createdUnit.xInWorldCoordinates = unitDataObject.X
+        createdUnit.yInWorldCoordinates = unitDataObject.Y
         createdUnit.health = unitDataObject.Health
         return createdUnit
     }

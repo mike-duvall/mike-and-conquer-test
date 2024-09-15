@@ -84,6 +84,17 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         then:
         assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
 
+        Pickup here
+        Fix this test
+         Revisit how sprites are drawn in general
+         Revisit position of the sprite vs middleofSprite
+         MinigunnerView vs MCVView
+         Is position the position of the middle of the sprite or upper left
+         Is middle of sprite obsolete, or always set to sprite size / 2
+         Maybe middleOfSprite is wrong name.  Maybe change it to spriteOrigin?
+
+
+
         when:
         uiClient.leftClick(mcvDestinationLocation)   // First select it
         uiClient.leftClick(mcvDestinationLocation)   // Then click to create construction yard
