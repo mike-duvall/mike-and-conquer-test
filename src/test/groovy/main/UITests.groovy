@@ -160,10 +160,10 @@ class UITests extends MikeAndConquerTestBase {
             given:
             uiClient.startScenario()
             uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 1.0))
-//            int mcvWorldMapTileX = 21
-//            int mcvWorldMapTileY = 12
-            int mcvWorldMapTileX = 0
-            int mcvWorldMapTileY = 0
+            int mcvWorldMapTileX = 21
+            int mcvWorldMapTileY = 12
+//            int mcvWorldMapTileX = 0
+//            int mcvWorldMapTileY = 0
 
 
         when:
@@ -172,6 +172,7 @@ class UITests extends MikeAndConquerTestBase {
             then:
             Unit mcv = uiClient.getUnit(mcvId)
             assert mcv.selected == false
+//            assert mcv.selected == true
 
             when:
 //            WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
@@ -183,7 +184,6 @@ class UITests extends MikeAndConquerTestBase {
                     .worldCoordinatesY(mcv.yInWorldCoordinates + yoffset)
                     .build()
 
-
             moveMouseToWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
             leftClickAtWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
             mcv = uiClient.getUnit(mcvId)
@@ -191,15 +191,16 @@ class UITests extends MikeAndConquerTestBase {
             then:
             assert mcv.selected == shouldBeSelected
 
-//             Pick up here: Add remaining tests cases for all four corners, hard code locations for now
-//             Some tests should fail because the click detection box in the game code is off and seems to be shifted up
-
         where:
-        xoffset | yoffset   | shouldBeSelected
-//        -10      | -5        | true
-//        -3      | -3        | true
-//        15      |    25        | true
-            12  |   12  | true
+            xoffset |   yoffset | shouldBeSelected
+            14      |   -14     | false
+            -14     |   -14     | false
+            -14     |   14      | false
+            -12     |   12      | true
+            -12     |   -12     | true
+            12      |   -12     | true
+            12      |   12      | true
+            14      |   14      | false
 
 
      }
@@ -289,7 +290,7 @@ class UITests extends MikeAndConquerTestBase {
 
         when:
         Unit nodMinigunner = creatNodMinigunnerAtRandomLocationWithAITurnedOff()
-        moveMouseToWorldCoordinates(nodMinigunner.x, nodMinigunner.y)
+        moveMouseToWorldCoordinates(nodMinigunner.xInWorldCoordinates, nodMinigunner.yInWorldCoordinates)
         mouseCursorState = uiClient.getMouseCursorState()
 
         then:
@@ -343,7 +344,7 @@ class UITests extends MikeAndConquerTestBase {
 
         when:
         Unit nodMinigunner = creatNodMinigunnerAtRandomLocationWithAITurnedOff()
-        moveMouseToWorldCoordinates(nodMinigunner.x, nodMinigunner.y)
+        moveMouseToWorldCoordinates(nodMinigunner.xInWorldCoordinates, nodMinigunner.yInWorldCoordinates)
         mouseCursorState = uiClient.getMouseCursorState()
 
         then:
@@ -384,6 +385,7 @@ class UITests extends MikeAndConquerTestBase {
         int startY = 392
         int screenshotCompareWidth = 13
         int screenshotCompareHeight = 17
+
 
         then:
         assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)

@@ -78,8 +78,8 @@ class MiscTests extends MikeAndConquerTestBase {
         int createdUnitId = createdUnit.unitId
 
         then:
-        assert createdUnit.x == unitStartLocation.XInWorldCoordinates()
-        assert createdUnit.y == unitStartLocation.YInWorldCoordinates()
+        assert createdUnit.xInWorldCoordinates == unitStartLocation.XInWorldCoordinates()
+        assert createdUnit.yInWorldCoordinates == unitStartLocation.YInWorldCoordinates()
 
         when:
         simulationClient.moveUnit(createdUnit.unitId, unitDestinationLocation)
