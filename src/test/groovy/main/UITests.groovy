@@ -9,8 +9,10 @@ import domain.WorldCoordinatesLocationBuilder
 import domain.event.EventType
 import domain.event.SimulationStateUpdateEvent
 import spock.lang.Unroll
+import util.BuildDirectoryUtil
 import util.TestUtil
 
+import java.awt.image.BufferedImage
 
 class UITests extends MikeAndConquerTestBase {
 
@@ -162,29 +164,23 @@ class UITests extends MikeAndConquerTestBase {
             uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 1.0))
             int mcvWorldMapTileX = 21
             int mcvWorldMapTileY = 12
-//            int mcvWorldMapTileX = 0
-//            int mcvWorldMapTileY = 0
-
 
         when:
-            int mcvId = createMCVAtWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
+            Unit mcv = createMCVAtWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
+            int mcvId = mcv.unitId
 
             then:
-            Unit mcv = uiClient.getUnit(mcvId)
             assert mcv.selected == false
 //            assert mcv.selected == true
 
             when:
-//            WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
-//                    .worldCoordinatesX(mcv.xInWorldCoordinates - 5)
-//                    .worldCoordinatesY(mcv.yInWorldCoordinates -5)
-//                    .build()
             WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
                     .worldCoordinatesX(mcv.xInWorldCoordinates + xoffset)
                     .worldCoordinatesY(mcv.yInWorldCoordinates + yoffset)
                     .build()
 
             moveMouseToWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
+//            takeDebugScreenshot("mcv-selection-test-${xoffset}-${yoffset}-${shouldBeSelected}-1")
             leftClickAtWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
             mcv = uiClient.getUnit(mcvId)
 
@@ -195,15 +191,78 @@ class UITests extends MikeAndConquerTestBase {
             xoffset |   yoffset | shouldBeSelected
             14      |   -14     | false
             -14     |   -14     | false
+            -11     |   -11     | true
+            -5      |   -5      | true
+            5       |      5    | true
             -14     |   14      | false
             -12     |   12      | true
-            -12     |   -12     | true
-            12      |   -12     | true
+            -12     |   -12     | false
+            12      |   -12     | false
             12      |   12      | true
             14      |   14      | false
-
-
      }
+
+
+    @Unroll
+    def "When Minigunner is clicked at xoffset #xoffset and yoffset #yoffset, selection state should be #shouldBeSelected" () {
+
+        given:
+        uiClient.startScenario()
+        uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 1.0))
+//        uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 2.6))
+        int minigunnerWorldMapTileX = 21
+        int minigunnerWorldMapTileY = 12
+
+
+
+
+        when:
+
+        Unit minigunner = createGDIMinigunnerAtWorldMapTileCoordinates(minigunnerWorldMapTileX, minigunnerWorldMapTileY)
+        int minigunnerId = minigunner.unitId
+
+        then:
+        assert minigunner.selected == false
+//        assert minigunner.selected == true   // Uncomment this to make test fail, to facilitate seeing failure screenshot
+
+
+        when:
+        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
+                .worldCoordinatesX(minigunner.xInWorldCoordinates + xoffset)
+                .worldCoordinatesY(minigunner.yInWorldCoordinates + yoffset)
+                .build()
+
+        moveMouseToWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
+//        takeDebugScreenshot("minigunner-selection-test-${xoffset}-${yoffset}-${shouldBeSelected}-1")
+        leftClickAtWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
+        minigunner = uiClient.getUnit(minigunnerId)
+
+        then:
+        assert minigunner.selected == shouldBeSelected
+
+        where:
+        xoffset |   yoffset | shouldBeSelected
+        0       |   0       | true
+        3       |   3       | true
+        5       |   3       | true
+        6       |   3       | true
+        7       |   3       | true
+        7       |   4       | true
+        7       |   5       | false
+        -6       |   4   | false
+        -6      |   -12     | false
+        -5  | -12   | true
+        8          | -12       | false
+        7           | -12   | true
+    }
+
+    void takeDebugScreenshot(String screenshotName) {
+        String fileName = screenshotName + ".png"
+        BufferedImage fullScreenShot = uiClient.getScreenshot()
+        String screenshotFileNameWithPath = BuildDirectoryUtil.writeImageToFileInBuildDirectory(fullScreenShot, "debug-screenshots", fileName)
+        println "Taking screenshot. Screenshot location=" + screenshotFileNameWithPath
+
+    }
 
     def "should set mouse cursor correctly when MCV is selected" () {
 
@@ -213,7 +272,8 @@ class UITests extends MikeAndConquerTestBase {
         int mcvWorldMapTileY = 12
 
         and:
-        int mcvId = createMCVAtWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
+        Unit mcv = createMCVAtWorldMapTileCoordinates(mcvWorldMapTileX, mcvWorldMapTileY)
+        int mcvId = mcv.unitId
 
         WorldCoordinatesLocation mountainSquareLocation = createLocationFromWorldMapTileCoordinates(3,0)
         WorldCoordinatesLocation clearSquareLocation = createLocationFromWorldMapTileCoordinates(10, 10)

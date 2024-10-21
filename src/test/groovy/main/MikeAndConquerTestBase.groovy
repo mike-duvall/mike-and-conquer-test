@@ -298,21 +298,27 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
                 .build()
     }
 
-    int createMCVAtWorldMapTileCoordinates(int x, int y) {
+
+    Unit createMCV(WorldCoordinatesLocation location) {
+        simulationClient.createMCV(location)
+
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
+
+        return parseUnitFromEventData(event.eventData)
+
+    }
+
+    Unit createMCVAtWorldMapTileCoordinates(int x, int y) {
         WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
                 .worldMapTileCoordinatesX(x)
                 .worldMapTileCoordinatesY(y)
                 .build()
 
-        simulationClient.createMCV(worldCoordinatesLocation)
-
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
-
-        def jsonSlurper = new JsonSlurper()
-        def eventData = jsonSlurper.parseText(event.eventData)
-        return eventData.UnitId
-
+        return createMCV(worldCoordinatesLocation)
     }
+
+
+
 
     void leftClickAtWorldMapTileCoordinates(int x, int y) {
         WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
