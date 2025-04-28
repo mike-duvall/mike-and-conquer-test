@@ -162,6 +162,7 @@ class UITests extends MikeAndConquerTestBase {
             given:
             uiClient.startScenario()
             uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 1.0))
+//            uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 2.0))
             int mcvWorldMapTileX = 21
             int mcvWorldMapTileY = 12
 
@@ -180,7 +181,7 @@ class UITests extends MikeAndConquerTestBase {
                     .build()
 
             moveMouseToWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
-//            takeDebugScreenshot("mcv-selection-test-${xoffset}-${yoffset}-${shouldBeSelected}-1")
+            takeDebugScreenshot("mcv-selection-test-${xoffset}-${yoffset}-${shouldBeSelected}-1")
             leftClickAtWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
             mcv = uiClient.getUnit(mcvId)
 
@@ -465,8 +466,57 @@ class UITests extends MikeAndConquerTestBase {
         10      | _
         5       | _
 
+    }
+
+
+
+//     Pickup here
+//     This test is failing
+//     Pickup with understanding logic of how health bar is drawn, and why max health = 600
+
+    @Unroll
+    def "MCV health bar and selection cursor show up correctly with #health health"() {
+        given:
+        UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.0)
+        setAndAssertUIOptions(uiOptions)
+
+        uiClient.startScenario()
+
+        int mcvX = 516
+        int mcvY = 348
+
+        Unit mcv = createMCVAtWorldCoordinatesWithHealth(mcvX, mcvY, health)
+
+        when:
+        uiClient.selectUnit(mcv.unitId)
+
+        then:
+        true
+
+        int testScenarioNumber = health
+        String scenarioPrefix = 'mcv-selection-and-health-bar'
+
+        int startX = mcvX - 18
+        int startY = mcvY - 18
+        int screenshotCompareWidth = 37
+        int screenshotCompareHeight = 37
+
+
+        then:
+        assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
+
+        // Data tables must have at least two columns:  https://spockframework.org/spock/docs/1.1/all_in_one.html#data-tables
+        // So adding dummy column
+        where:
+        health  | _
+        600     | _
+        570     | _
+        564     | _
+        465     | _
+
 
     }
+
 
 
 

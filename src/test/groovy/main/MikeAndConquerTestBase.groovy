@@ -299,6 +299,29 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
     }
 
 
+    Unit createMCVAtWorldCoordinatesWithHealth(int xInWorldCoordinates, int yInWorldCoordinates, int desiredHealth) {
+        WorldCoordinatesLocationBuilder locationBuilder = new WorldCoordinatesLocationBuilder()
+
+        locationBuilder
+                .worldCoordinatesX(xInWorldCoordinates)
+                .worldCoordinatesY(yInWorldCoordinates)
+
+//        simulationClient.create(locationBuilder
+//                .worldCoordinatesX(xInWorldCoordinates)
+//                .worldCoordinatesY(yInWorldCoordinates)
+//                .build() )
+//
+//        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MINIGUNNER_CREATED)
+//        Unit createdUnit = parseUnitFromEventData(event.eventData)
+
+        Unit createdUnit = createMCV(locationBuilder.build())
+        int damageAmount = createdUnit.health - desiredHealth;
+        simulationClient.applyDamageToUnit(createdUnit.unitId, damageAmount)
+        return createdUnit
+    }
+
+
+
     Unit createMCV(WorldCoordinatesLocation location) {
         simulationClient.createMCV(location)
 
