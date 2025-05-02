@@ -469,11 +469,6 @@ class UITests extends MikeAndConquerTestBase {
     }
 
 
-
-//     Pickup here
-//     This test is failing
-//     Pickup with understanding logic of how health bar is drawn, and why max health = 600
-
     @Unroll
     def "MCV health bar and selection cursor show up correctly with #health health"() {
         given:
@@ -513,6 +508,10 @@ class UITests extends MikeAndConquerTestBase {
         570     | _
         564     | _
         465     | _
+        300     | _
+        159     | _
+        145     | _
+
 
 
     }
