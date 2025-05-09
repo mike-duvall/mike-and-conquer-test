@@ -36,11 +36,6 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
                 .worldMapTileCoordinatesY(8)
                 .build()
 
-//        WorldCoordinatesLocation mcvStartLocation = new WorldCoordinatesLocationBuilder()
-//                .worldMapTileCoordinatesX(0)
-//                .worldMapTileCoordinatesY(0)
-//                .build()
-
         simulationClient.createMCV(mcvStartLocation)
 
         SimulationStateUpdateEvent mcvCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
