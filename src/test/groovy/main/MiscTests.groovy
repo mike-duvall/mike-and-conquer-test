@@ -78,8 +78,8 @@ class MiscTests extends MikeAndConquerTestBase {
         int createdUnitId = createdUnit.unitId
 
         then:
-        assert createdUnit.x == unitStartLocation.XInWorldCoordinates()
-        assert createdUnit.y == unitStartLocation.YInWorldCoordinates()
+        assert createdUnit.xInWorldCoordinates == unitStartLocation.XInWorldCoordinates()
+        assert createdUnit.yInWorldCoordinates == unitStartLocation.YInWorldCoordinates()
 
         when:
         simulationClient.moveUnit(createdUnit.unitId, unitDestinationLocation)
@@ -224,6 +224,93 @@ class MiscTests extends MikeAndConquerTestBase {
         SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
         TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, minigunnerId)
 
+    }
+
+
+    def "Move an MCV and assert correct path is followed"() {
+        given:
+        int mcvId = -1
+
+        SimulationOptions simulationOptions = new SimulationOptions(gameSpeed: GameSpeed.Fastest)
+        setAndAssertSimulationOptions(simulationOptions)
+
+        when:
+        WorldCoordinatesLocation startLocation = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(14)
+                .worldMapTileCoordinatesY(13)
+                .build()
+
+        simulationClient.createMCV(startLocation)
+
+        then:
+        String expectedCreationEventType = "MCVCreated"
+        SimulationStateUpdateEvent mcvCreatedEvent = sequentialEventReader.waitForEventOfType(expectedCreationEventType)
+
+        assert mcvCreatedEvent.eventType == expectedCreationEventType
+
+        when:
+        Unit createdUnit = parseUnitFromEventData(mcvCreatedEvent.eventData)
+        mcvId = createdUnit.unitId
+
+        then:
+        assert mcvId != -1
+
+        when:
+        WorldCoordinatesLocation destinationLocation = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(7)
+                .worldMapTileCoordinatesY(15)
+                .build()
+
+        simulationClient.moveUnit(mcvId, destinationLocation)
+
+        then: "Planned path is equal to expected path"
+        SimulationStateUpdateEvent expectedUnitMovementPlanCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_MOVEMENT_PLAN_CREATED)
+        def expectedUnitMovementPlanCreatedEventDataAsObject = jsonSlurper.parseText(expectedUnitMovementPlanCreatedEvent.eventData)
+
+        int expectedNumPathSteps = 11
+        assert expectedUnitMovementPlanCreatedEventDataAsObject.UnitId == mcvId
+        assert expectedUnitMovementPlanCreatedEventDataAsObject.PathSteps.size() == expectedNumPathSteps
+        def pathStepList = expectedUnitMovementPlanCreatedEventDataAsObject.PathSteps
+
+        ArrayList<PathStep> expectedPathSteps = []
+        expectedPathSteps.add(new PathStep(x: 14, y: 13))
+        expectedPathSteps.add(new PathStep(x: 14, y: 14))
+        expectedPathSteps.add(new PathStep(x: 14, y: 15))
+        expectedPathSteps.add(new PathStep(x: 13, y: 16))
+        expectedPathSteps.add(new PathStep(x: 12, y: 17))
+        expectedPathSteps.add(new PathStep(x: 11, y: 17))
+        expectedPathSteps.add(new PathStep(x: 10, y: 17))
+        expectedPathSteps.add(new PathStep(x: 9, y: 17))
+        expectedPathSteps.add(new PathStep(x: 8, y: 17))
+        expectedPathSteps.add(new PathStep(x: 7, y: 16))
+        expectedPathSteps.add(new PathStep(x: 7, y: 15))
+
+        int expectedPathStepIndex = 0
+        for (def nextPathStep : pathStepList) {
+            assert nextPathStep.X == expectedPathSteps[expectedPathStepIndex].x
+            assert nextPathStep.Y == expectedPathSteps[expectedPathStepIndex].y
+            expectedPathStepIndex++
+        }
+
+        and:
+        SimulationStateUpdateEvent expectedBeganMissionMoveToDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.BEGAN_MISSION_MOVE_TO_DESTINATION)
+        TestUtil.assertBeganMissionMoveToDestinationEvent(
+                expectedBeganMissionMoveToDestinationEvent,
+                mcvId,
+                destinationLocation.XInWorldCoordinates(),
+                destinationLocation.YInWorldCoordinates())
+
+        and: "Actual traveled path is equal to expected path"
+        for (expectedPathStepIndex = 0; expectedPathStepIndex < expectedNumPathSteps; expectedPathStepIndex++) {
+            assertReceivedUnitArrivedAtPathStepEvent(
+                    expectedPathSteps[expectedPathStepIndex].x,
+                    expectedPathSteps[expectedPathStepIndex].y
+            )
+        }
+
+        and:
+        SimulationStateUpdateEvent expectedUnitArrivedAtDestinationEvent = sequentialEventReader.waitForEventOfType(EventType.UNIT_ARRIVED_AT_DESTINATION)
+        TestUtil.assertUnitArrivedAtDestinationEvent(expectedUnitArrivedAtDestinationEvent, mcvId)
     }
 
     def "two gdi minigunners attack two nod minigunners" () {

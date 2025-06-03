@@ -147,6 +147,8 @@ class MikeAndConquerUIClient extends BaseClient {
         Unit unit = new Unit()
         unit.unitId = resp.responseData.unitId
         unit.selected = resp.responseData.selected
+        unit.xInWorldCoordinates = resp.responseData.xInWorldCoordinates
+        unit.yInWorldCoordinates = resp.responseData.yInWorldCoordinates
 
         return unit
     }

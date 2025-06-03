@@ -113,8 +113,8 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
         def unitDataObject = jsonSlurper.parseText(unitCreatedEventData)
         Unit createdUnit = new Unit()
         createdUnit.unitId = unitDataObject.UnitId
-        createdUnit.x = unitDataObject.X
-        createdUnit.y = unitDataObject.Y
+        createdUnit.xInWorldCoordinates = unitDataObject.X
+        createdUnit.yInWorldCoordinates = unitDataObject.Y
         createdUnit.health = unitDataObject.Health
         return createdUnit
     }
@@ -186,8 +186,8 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
         def eventData = jsonSlurper.parseText(event.eventData)
         Unit unit = new Unit()
         unit.unitId = eventData.UnitId
-        unit.x = eventData.X
-        unit.y = eventData.Y
+        unit.xInWorldCoordinates = eventData.X
+        unit.yInWorldCoordinates = eventData.Y
         return unit
     }
 
@@ -199,8 +199,8 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
         def eventData = jsonSlurper.parseText(event.eventData)
         Unit unit = new Unit()
         unit.unitId = eventData.UnitId
-        unit.x = eventData.X
-        unit.y = eventData.Y
+        unit.xInWorldCoordinates = eventData.X
+        unit.yInWorldCoordinates = eventData.Y
         return unit
     }
 
@@ -298,21 +298,42 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
                 .build()
     }
 
-    int createMCVAtWorldMapTileCoordinates(int x, int y) {
+
+    Unit createMCVAtWorldCoordinatesWithHealth(int xInWorldCoordinates, int yInWorldCoordinates, int desiredHealth) {
+        WorldCoordinatesLocationBuilder locationBuilder = new WorldCoordinatesLocationBuilder()
+
+        locationBuilder
+                .worldCoordinatesX(xInWorldCoordinates)
+                .worldCoordinatesY(yInWorldCoordinates)
+
+        Unit createdUnit = createMCV(locationBuilder.build())
+        int damageAmount = createdUnit.health - desiredHealth;
+        simulationClient.applyDamageToUnit(createdUnit.unitId, damageAmount)
+        return createdUnit
+    }
+
+
+
+    Unit createMCV(WorldCoordinatesLocation location) {
+        simulationClient.createMCV(location)
+
+        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
+
+        return parseUnitFromEventData(event.eventData)
+
+    }
+
+    Unit createMCVAtWorldMapTileCoordinates(int x, int y) {
         WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
                 .worldMapTileCoordinatesX(x)
                 .worldMapTileCoordinatesY(y)
                 .build()
 
-        simulationClient.createMCV(worldCoordinatesLocation)
-
-        SimulationStateUpdateEvent event = sequentialEventReader.waitForEventOfType(EventType.MCV_CREATED)
-
-        def jsonSlurper = new JsonSlurper()
-        def eventData = jsonSlurper.parseText(event.eventData)
-        return eventData.UnitId
-
+        return createMCV(worldCoordinatesLocation)
     }
+
+
+
 
     void leftClickAtWorldMapTileCoordinates(int x, int y) {
         WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
@@ -341,7 +362,15 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
                 .build()
 
         uiClient.moveMouseToLocation(worldCoordinatesLocation)
+    }
 
+    void leftClickAtWorldCoordinates(int x, int y) {
+        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
+                .worldCoordinatesX(x)
+                .worldCoordinatesY(y)
+                .build()
+
+        uiClient.leftClick(worldCoordinatesLocation)
     }
 
 

@@ -15,13 +15,18 @@ class TakeScreenshotOnTestFailListener extends AbstractRunListener {
     MikeAndConquerUIClient uiClient
 
     void error(ErrorInfo error) {
-        String testName = error.method.name
-        String testNameNoSpaces = testName.replace(" ", "_")
-        String fileName = "screenshot-on-failed-test---" + testNameNoSpaces + ".png"
+        try {
+            String testName = error.method.name
+            String testNameNoSpaces = testName.replace(" ", "_")
+            String fileName = "screenshot-on-failed-test---" + testNameNoSpaces + ".png"
 
-        BufferedImage fullScreenShot = uiClient.getScreenshot()
-        String screenshotFileNameWithPath = BuildDirectoryUtil.writeImageToFileInBuildDirectory(fullScreenShot, "test-failure-screenshots", fileName )
-        println "Taking screenshot on test failure.  Screenshot location=" + screenshotFileNameWithPath
+            BufferedImage fullScreenShot = uiClient.getScreenshot()
+            String screenshotFileNameWithPath = BuildDirectoryUtil.writeImageToFileInBuildDirectory(fullScreenShot, "test-failure-screenshots", fileName)
+            println "Taking screenshot on test failure.  Screenshot location=" + screenshotFileNameWithPath
+        }
+        catch(Exception e) {
+            println "Error trying to log test failure:  Exception: " + e.printStackTrace()
+        }
     }
 
 }

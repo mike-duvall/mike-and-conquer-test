@@ -84,6 +84,7 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         then:
         assertScreenshotMatches(scenarioPrefix, testScenarioNumber, startX , startY, screenshotCompareWidth, screenshotCompareHeight)
 
+
         when:
         uiClient.leftClick(mcvDestinationLocation)   // First select it
         uiClient.leftClick(mcvDestinationLocation)   // Then click to create construction yard
