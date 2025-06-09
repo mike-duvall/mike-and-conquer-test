@@ -58,7 +58,7 @@ class MiscTests extends MikeAndConquerTestBase {
 
         when:
         if(unitType == "Jeep") {
-            simulationClient.addJeep(unitStartLocation)
+            simulationClient.createJeep(unitStartLocation)
         }
         else if (unitType == "MCV") {
             simulationClient.createMCV(unitStartLocation)

@@ -134,7 +134,7 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
 
 
-    void addJeep(WorldCoordinatesLocation location) {
+    void createJeep(WorldCoordinatesLocation location) {
 
         SimulationCommand command = new SimulationCommand()
         command.commandType = SimulationCommand.CREATE_JEEP
