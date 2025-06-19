@@ -333,7 +333,17 @@ class MikeAndConquerTestBase extends Specification implements IGlobalExtension  
     }
 
 
+    Unit createJeepAtWorldMapTileCoordinates(int worldMapTileX, int worldMapTileY) {
+        WorldCoordinatesLocation location = new WorldCoordinatesLocationBuilder()
+                .worldMapTileCoordinatesX(worldMapTileX)
+                .worldMapTileCoordinatesY(worldMapTileY)
+                .build()
 
+        simulationClient.createJeep(location)
+
+        SimulationStateUpdateEvent jeepCreatedEvent = sequentialEventReader.waitForEventOfType(EventType.JEEP_CREATED)
+        return parseUnitFromEventData(jeepCreatedEvent.eventData)
+    }
 
     void leftClickAtWorldMapTileCoordinates(int x, int y) {
         WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
