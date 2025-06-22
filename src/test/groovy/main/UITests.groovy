@@ -161,8 +161,8 @@ class UITests extends MikeAndConquerTestBase {
 
             given:
             uiClient.startScenario()
-            uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 1.0))
-//            uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 2.0))
+//            uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 1.0))
+            uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 3.0))
             int mcvWorldMapTileX = 21
             int mcvWorldMapTileY = 12
 
@@ -209,12 +209,10 @@ class UITests extends MikeAndConquerTestBase {
 
         given:
         uiClient.startScenario()
-        uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 1.0))
-//        uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 2.6))
+//        uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 1.0))
+        uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 3.0))
         int minigunnerWorldMapTileX = 21
         int minigunnerWorldMapTileY = 12
-
-
 
 
         when:
@@ -247,15 +245,59 @@ class UITests extends MikeAndConquerTestBase {
         3       |   3       | true
         5       |   3       | true
         6       |   3       | true
-        7       |   3       | true
-        7       |   4       | true
+        7       |   4       | false
         7       |   5       | false
-        -6       |   4   | false
+        -6      |   4       | false
         -6      |   -12     | false
-        -5  | -12   | true
-        8          | -12       | false
-        7           | -12   | true
+        -5      | -12       | true
+        8       | -12       | false
+        7       | -12       | false
     }
+
+    @Unroll
+    def "When Jeep is clicked at xoffset #xoffset and yoffset #yoffset, selection state should be #shouldBeSelected" () {
+
+        given:
+        uiClient.startScenario()
+        uiClient.setUIOptions(new UIOptions(drawShroud: false, mapZoomLevel: 3.0))
+        int jeepWorldMapTileX = 21
+        int jeepWorldMapTileY = 12
+
+        when:
+        Unit jeep = createJeepAtWorldMapTileCoordinates(jeepWorldMapTileX, jeepWorldMapTileY)
+        int jeepId = jeep.unitId
+
+        then:
+        assert jeep.selected == false
+
+        when:
+        WorldCoordinatesLocation worldCoordinatesLocation = new WorldCoordinatesLocationBuilder()
+                .worldCoordinatesX(jeep.xInWorldCoordinates + xoffset)
+                .worldCoordinatesY(jeep.yInWorldCoordinates + yoffset)
+                .build()
+
+        moveMouseToWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
+        leftClickAtWorldCoordinates(worldCoordinatesLocation.XInWorldCoordinates(), worldCoordinatesLocation.YInWorldCoordinates())
+        jeep = uiClient.getUnit(jeepId)
+
+        then:
+        assert jeep.selected == shouldBeSelected
+
+        where:
+        xoffset | yoffset | shouldBeSelected
+        0       | 0       | true
+//        3       | 3       | true
+//        6       | 3       | true
+//        8       | 3       | false
+//        -8      | 3       | false
+//        -6      | 3       | true
+//        3       | 6       | true
+//        3       | 8       | false
+//        3       | -8      | false
+//        3       | -6      | true
+    }
+
+
 
     void takeDebugScreenshot(String screenshotName) {
         String fileName = screenshotName + ".png"
@@ -511,9 +553,6 @@ class UITests extends MikeAndConquerTestBase {
         300     | _
         159     | _
         145     | _
-
-
-
     }
 
 

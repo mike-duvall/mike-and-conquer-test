@@ -6,6 +6,7 @@ class EventType {
     
     static final String MINIGUNNER_CREATED = "MinigunnerCreated"
     static final String MCV_CREATED = "MCVCreated"
+    static final String JEEP_CREATED = "JeepCreated"
     static final String UNIT_DELETED = "UnitDeleted"
 
     static final String BEGAN_MISSION_ATTACK = "BeganMissionAttack"
