@@ -553,9 +553,6 @@ class UITests extends MikeAndConquerTestBase {
         300     | _
         159     | _
         145     | _
-
-
-
     }
 
 
