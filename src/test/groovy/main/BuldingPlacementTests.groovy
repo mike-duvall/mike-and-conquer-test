@@ -180,7 +180,7 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         and:
         // Give a moment for building placement indicator to get updated
         // before attempting to click and place the barracks
-        sleep(200)
+        sleep(500)
 
         and:
         leftClickAtWorldMapTileCoordinates(16,5)
