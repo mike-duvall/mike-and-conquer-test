@@ -7,8 +7,8 @@ version = "1.0"
 description = "mike-and-conquer-test"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     // mandatory dependencies for using Spock
-    implementation 'org.apache.groovy:groovy-all:4.0.23'
+    implementation 'org.apache.groovy:groovy-all:4.0.27'
     testImplementation "org.spockframework:spock-core:2.3-groovy-4.0"
 
     // Modern HTTP client dependencies
