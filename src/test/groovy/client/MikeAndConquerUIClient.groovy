@@ -177,7 +177,7 @@ class MikeAndConquerUIClient extends BaseClient {
 
     String getMouseCursorState() {
         def resp = doGetRestCall('/ui/query/mouseCursor')
-        String cursorState =  resp.responseData.str
+        String cursorState =  resp.responseData
         return cursorState
     }
 
