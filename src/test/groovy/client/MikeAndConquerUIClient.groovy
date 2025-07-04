@@ -9,9 +9,8 @@ import domain.Unit
 import domain.WorldCoordinatesLocation
 import domain.WorldCoordinatesLocationBuilder
 import groovy.json.JsonOutput
-import groovyx.net.http.RESTClient
-import org.apache.http.params.CoreConnectionPNames
-
+import org.apache.hc.client5.http.classic.methods.HttpGet
+import org.apache.hc.core5.http.io.entity.EntityUtils
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
@@ -19,22 +18,16 @@ import java.awt.image.BufferedImage
 
 class MikeAndConquerUIClient extends BaseClient {
 
-
     String hostUrl
     int port = 5010
 
-//    private static final String SIDEBAR_BASE_URL = '/mac/Sidebar'
-//    private static final String NOD_TURRET_BASE_URL = '/mac/NodTurret'
-
-
-    MikeAndConquerUIClient(String host,  boolean useTimeouts = true) {
+    MikeAndConquerUIClient(String host, boolean useTimeouts = true) {
+        super() // Call parent constructor which sets up the modern HTTP client
         hostUrl = "http://$host:$port"
-        restClient = new RESTClient(hostUrl)
+        baseUrl = hostUrl
 
-        if(useTimeouts) {
-            restClient.client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, new Integer(5000))
-            restClient.client.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, new Integer(5000))
-        }
+        // Note: Timeouts are now configured in the parent BaseClient constructor
+        // The useTimeouts parameter is kept for backward compatibility
     }
 
 
@@ -184,7 +177,7 @@ class MikeAndConquerUIClient extends BaseClient {
 
     String getMouseCursorState() {
         def resp = doGetRestCall('/ui/query/mouseCursor')
-        String cursorState =  resp.responseData.str
+        String cursorState =  resp.responseData
         return cursorState
     }
 
@@ -252,10 +245,24 @@ class MikeAndConquerUIClient extends BaseClient {
     }
 
     BufferedImage  getScreenshot() {
-        def resp = restClient.get( path : '/ui/screenshot' )
-        ByteArrayInputStream byteArrayInputStream = resp.responseData
-        BufferedImage screenShotImage = ImageIO.read(byteArrayInputStream)
-        return screenShotImage
+        String fullUrl = baseUrl + '/ui/screenshot'
+        HttpGet httpGet = new HttpGet(fullUrl)
+
+        def screenshot = httpClient.execute(httpGet) { httpResponse ->
+            int statusCode = httpResponse.getCode()
+
+            if (statusCode != 200) {
+                String responseBody = EntityUtils.toString(httpResponse.getEntity())
+                throw new RuntimeException("HTTP Error ${statusCode}: ${responseBody}")
+            }
+
+            // Get the response as a byte array and convert to BufferedImage
+            byte[] imageBytes = EntityUtils.toByteArray(httpResponse.getEntity())
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageBytes)
+            return ImageIO.read(byteArrayInputStream)
+        }
+
+        return screenshot
     }
 
 
