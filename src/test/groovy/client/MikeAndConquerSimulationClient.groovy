@@ -170,8 +170,6 @@ class MikeAndConquerSimulationClient extends BaseClient {
     List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents(int startIndex) {
         def resp = doGetRestCall('/simulation/query/events', ['startIndex': startIndex])
 
-//        ArrayList anArrayList = resp.responseData
-//        int xx = anArrayList.size()
         int numItems = resp.responseData.size()
 
         List<SimulationStateUpdateEvent> allSimulationStateUpdateEvents = []
