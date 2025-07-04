@@ -11,22 +11,22 @@ repositories {
   // Spock releases are available from Maven Central
   mavenCentral()
   // Spock snapshots are available from the Sonatype OSS snapshot repository
-  maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+  maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
   // mandatory dependencies for using Spock
-  compile "org.codehaus.groovy:groovy-all:2.4.1"
-  testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+  implementation 'org.codehaus.groovy:groovy-all:3.0.7'
+  testImplementation "org.spockframework:spock-core:2.3-groovy-3.0"
 
   // optional dependencies for using Spock
-  testCompile "org.hamcrest:hamcrest-core:1.3" // only necessary if Hamcrest matchers are used
-  testRuntime "cglib:cglib-nodep:3.1"          // allows mocking of classes (in addition to interfaces)
-  testRuntime "org.objenesis:objenesis:2.1"    // allows mocking of classes without default constructor (together with CGLIB)
+  testImplementation "org.hamcrest:hamcrest-core:1.3" // only necessary if Hamcrest matchers are used
+  testRuntimeOnly "cglib:cglib-nodep:3.1"          // allows mocking of classes (in addition to interfaces)
+  testRuntimeOnly "org.objenesis:objenesis:2.1"    // allows mocking of classes without default constructor (together with CGLIB)
 
-  testCompile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.6'
+  testImplementation group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.6'
 
-  compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
+  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
 
 }
 
