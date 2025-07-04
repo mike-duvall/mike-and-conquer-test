@@ -5,26 +5,17 @@ import domain.SimulationOptions
 import domain.WorldCoordinatesLocation
 import domain.event.SimulationStateUpdateEvent
 import groovy.json.JsonOutput
-import groovyx.net.http.RESTClient
-import org.apache.http.params.CoreConnectionPNames
 
 class MikeAndConquerSimulationClient extends BaseClient {
 
-
-    String hostUrl
-
     int port = 5000
 
+    MikeAndConquerSimulationClient(String host, boolean useTimeouts = true) {
+        super() // Call parent constructor which sets up the modern HTTP client
+        baseUrl = "http://$host:$port"
 
-
-    MikeAndConquerSimulationClient(String host,  boolean useTimeouts = true) {
-        hostUrl = "http://$host:$port"
-        restClient = new RESTClient(hostUrl)
-
-        if(useTimeouts) {
-            restClient.client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, new Integer(5000))
-            restClient.client.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, new Integer(5000))
-        }
+        // Note: Timeouts are now configured in the parent BaseClient constructor
+        // The useTimeouts parameter is kept for backward compatibility
     }
 
 
@@ -179,7 +170,9 @@ class MikeAndConquerSimulationClient extends BaseClient {
     List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents(int startIndex) {
         def resp = doGetRestCall('/simulation/query/events', ['startIndex': startIndex])
 
-        int numItems = resp.responseData.size
+//        ArrayList anArrayList = resp.responseData
+//        int xx = anArrayList.size()
+        int numItems = resp.responseData.size()
 
         List<SimulationStateUpdateEvent> allSimulationStateUpdateEvents = []
         for (int i = 0; i < numItems; i++) {

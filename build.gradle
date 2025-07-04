@@ -1,35 +1,42 @@
-apply plugin: "groovy"
-
-apply plugin: "idea"
+plugins {
+    id 'groovy'
+    id 'idea'
+}
 
 version = "1.0"
 description = "mike-and-conquer-test-8"
 
-sourceCompatibility = 1.8
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 repositories {
-  // Spock releases are available from Maven Central
-  mavenCentral()
-  // Spock snapshots are available from the Sonatype OSS snapshot repository
-  maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    // Spock releases are available from Maven Central
+    mavenCentral()
 }
 
 dependencies {
-  // mandatory dependencies for using Spock
-  implementation 'org.codehaus.groovy:groovy-all:3.0.7'
-  testImplementation "org.spockframework:spock-core:2.3-groovy-3.0"
+    // mandatory dependencies for using Spock
+    implementation 'org.apache.groovy:groovy-all:4.0.23'
+    testImplementation "org.spockframework:spock-core:2.3-groovy-4.0"
 
-  // optional dependencies for using Spock
-  testImplementation "org.hamcrest:hamcrest-core:1.3" // only necessary if Hamcrest matchers are used
-  testRuntimeOnly "cglib:cglib-nodep:3.1"          // allows mocking of classes (in addition to interfaces)
-  testRuntimeOnly "org.objenesis:objenesis:2.1"    // allows mocking of classes without default constructor (together with CGLIB)
+    // Modern HTTP client dependencies
+    implementation 'org.apache.groovy:groovy-json:4.0.23'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
 
-  testImplementation group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.6'
+    // optional dependencies for using Spock
+    testImplementation "org.hamcrest:hamcrest-core:2.2" // only necessary if Hamcrest matchers are used
+    testRuntimeOnly "net.bytebuddy:byte-buddy:1.14.18"          // allows mocking of classes (in addition to interfaces)
+    testRuntimeOnly "org.objenesis:objenesis:3.4"    // allows mocking of classes without default constructor (together with ByteBuddy)
 
-  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
+    // Remove old http-builder, use modern HTTP client instead
+    // testImplementation group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1'
 
+    // Keep this for backward compatibility if needed elsewhere
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
 }
 
-
-
-
+test {
+    useJUnitPlatform()
+}
