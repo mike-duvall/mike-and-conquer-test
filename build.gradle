@@ -4,7 +4,7 @@ plugins {
 }
 
 version = "1.0"
-description = "mike-and-conquer-test-8"
+description = "mike-and-conquer-test"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
