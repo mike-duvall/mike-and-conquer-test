@@ -21,20 +21,9 @@ dependencies {
     implementation 'org.apache.groovy:groovy-all:4.0.27'
     testImplementation "org.spockframework:spock-core:2.3-groovy-4.0"
 
-    // Modern HTTP client dependencies
     implementation 'org.apache.groovy:groovy-json:4.0.23'
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
 
-    // optional dependencies for using Spock
-    testImplementation "org.hamcrest:hamcrest-core:2.2" // only necessary if Hamcrest matchers are used
-    testRuntimeOnly "net.bytebuddy:byte-buddy:1.14.18"          // allows mocking of classes (in addition to interfaces)
-    testRuntimeOnly "org.objenesis:objenesis:3.4"    // allows mocking of classes without default constructor (together with ByteBuddy)
-
-    // Remove old http-builder, use modern HTTP client instead
-    // testImplementation group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1'
-
-    // Keep this for backward compatibility if needed elsewhere
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
 }
 
 test {
