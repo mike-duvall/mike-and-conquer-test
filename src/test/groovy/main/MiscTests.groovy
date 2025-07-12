@@ -367,7 +367,7 @@ class MiscTests extends MikeAndConquerTestBase {
 
     def assertMinigunnerAttacksAndKillsMinigunner(int minigunner1Id, int minigunner2Id) {
 
-        int expectedAmountOfDamage = 10
+        int expectedAmountOfDamage = 15
 
         assertReceivedBeganMissionAttackEvent(minigunner1Id, minigunner2Id)
 
@@ -376,11 +376,7 @@ class MiscTests extends MikeAndConquerTestBase {
 
         assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
 
-        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 40)
-        assertUnitWeaponReloadedEvent(minigunner1Id)
-
-        assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
-        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 30)
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 35)
         assertUnitWeaponReloadedEvent(minigunner1Id)
 
         assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
@@ -388,7 +384,7 @@ class MiscTests extends MikeAndConquerTestBase {
         assertUnitWeaponReloadedEvent(minigunner1Id)
 
         assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
-        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 10)
+        assertUnitTookDamageEvent(minigunner2Id, expectedAmountOfDamage, 5)
         assertUnitWeaponReloadedEvent(minigunner1Id)
 
         assertBulletHitTargetEvent(minigunner1Id, minigunner2Id)
@@ -687,3 +683,4 @@ class MiscTests extends MikeAndConquerTestBase {
     }
 
 }
+
