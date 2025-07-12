@@ -181,6 +181,12 @@ class MikeAndConquerUIClient extends BaseClient {
         return cursorState
     }
 
+    boolean getBarracksPlacementStatus() {
+        def resp = doGetRestCall('/ui/query/barracksplacement')
+        boolean isValidPlacement = resp.responseData.isValidPlacement
+        return isValidPlacement
+    }
+
     void dragSelect(int x1, int y1, int x2, int y2) {
 
         Point point1 = new Point(x1, y1)
