@@ -178,9 +178,9 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         moveMouseToWorldMapTileCoordinates(16, 5)
 
         and:
-        // Give a moment for building placement indicator to get updated
+        // Wait for building placement indicator to be valid
         // before attempting to click and place the barracks
-        sleep(1000)
+        assertBarracksPlacementIsValid()
 
         and:
         leftClickAtWorldMapTileCoordinates(16,5)
@@ -255,6 +255,15 @@ class BuldingPlacementTests extends MikeAndConquerTestBase {
         }
         return true
 
+    }
+
+    def assertBarracksPlacementIsValid() {
+        def conditions = new PollingConditions(timeout: 10, initialDelay: 0.5, factor: 1.25)
+        conditions.eventually {
+            boolean isValid = uiClient.getBarracksPlacementStatus()
+            assert isValid == true
+        }
+        return true
     }
 
 //    def "should be able to build barracks when a minigunner is selected"() {
