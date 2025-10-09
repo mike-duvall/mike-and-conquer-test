@@ -5,6 +5,7 @@ import domain.SimulationOptions
 import domain.WorldCoordinatesLocation
 import domain.event.SimulationStateUpdateEvent
 import groovy.json.JsonOutput
+import domain.SimulationState
 
 class MikeAndConquerSimulationClient extends BaseClient {
 
@@ -39,16 +40,19 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
 
     SimulationOptions getSimulationOptions() {
-
         def resp = doGetRestCall('/simulation/query/options')
-
         SimulationOptions simulationOptions = new SimulationOptions()
-
         simulationOptions.gameSpeed = resp.responseData.gameSpeed
-
         return simulationOptions
     }
 
+    SimulationState getCurrentSimulationState() {
+        def resp = doGetRestCall('/simulation/query/simulationstate')
+        SimulationState simulationOptions = new SimulationState()
+        simulationOptions.simulationState = resp.responseData.simulationState
+        return simulationOptions
+
+    }
 
     void removeUnit(int unitId) {
 
@@ -159,12 +163,17 @@ class MikeAndConquerSimulationClient extends BaseClient {
 
 
     void startScenario() {
-
         SimulationCommand command = new SimulationCommand()
         command.commandType = SimulationCommand.START_SCENARIO
-
         doPostSimulationCommand( command)
     }
+
+    void startScenarioInitialization() {
+        SimulationCommand command = new SimulationCommand()
+        command.commandType = SimulationCommand.START_SCENARIO_INITIALIZATION
+        doPostSimulationCommand( command)
+    }
+
 
 
     List<SimulationStateUpdateEvent> getSimulationStateUpdateEvents(int startIndex) {

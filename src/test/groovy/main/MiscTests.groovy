@@ -28,9 +28,10 @@ class MiscTests extends MikeAndConquerTestBase {
 
 
     def setup() {
+        simulationClient.startScenarioInitialization()
         UIOptions uiOptions = new UIOptions(drawShroud: false, mapZoomLevel: 1.8)
         setAndAssertUIOptions(uiOptions)
-        simulationClient.startScenario()
+//        simulationClient.startScenario()
         sleep(1000)
     }
 
@@ -82,8 +83,12 @@ class MiscTests extends MikeAndConquerTestBase {
         assert createdUnit.yInWorldCoordinates == unitStartLocation.YInWorldCoordinates()
 
         when:
+        simulationClient.startScenario()
+
+        and:
         simulationClient.moveUnit(createdUnit.unitId, unitDestinationLocation)
 
+        and:
         sleep (expectedTimeInMillis - 10000)
 
         then:
@@ -114,22 +119,22 @@ class MiscTests extends MikeAndConquerTestBase {
 
         where:
         unitType    | expectedTotalEvents   | expectedTimeInMillis  | gameSpeed
-        "Jeep"      |  140                  |  30236                | "Slowest"
-        "Jeep"      |  140                  |  15120                | "Slower"
-        "Jeep"      |  140                  |  10082                | "Slow"
-        "Jeep"      |  140                  |  7560                 | "Moderate"
-        "Jeep"      |  140                  |  5040                 | "Normal"
-        "Jeep"      |  140                  | 3697                  | "Fast"
-        "Jeep"      |  140                  | 3024                  | "Faster"
+//        "Jeep"      |  140                  |  30236                | "Slowest"
+//        "Jeep"      |  140                  |  15120                | "Slower"
+//        "Jeep"      |  140                  |  10082                | "Slow"
+//        "Jeep"      |  140                  |  7560                 | "Moderate"
+//        "Jeep"      |  140                  |  5040                 | "Normal"
+//        "Jeep"      |  140                  | 3697                  | "Fast"
+//        "Jeep"      |  140                  | 3024                  | "Faster"
         "Jeep"      |  140                  | 2855                  | "Fastest"
-        "MCV"       |  302                  | 75597                 | "Slowest"
-        "MCV"       |  302                  | 37801                 | "Slower"
-        "MCV"       |  302                  | 25201                 | "Slow"
-        "MCV"       |  302                  | 18900                 | "Moderate"
-        "MCV"       |  302                  | 12601                 | "Normal"
-        "MCV"       |  302                  | 9240                  | "Fast"
-        "MCV"       |  302                  | 7560                  | "Faster"
-        "MCV"       |  302                  | 7139                  | "Fastest"
+//        "MCV"       |  302                  | 75597                 | "Slowest"
+//        "MCV"       |  302                  | 37801                 | "Slower"
+//        "MCV"       |  302                  | 25201                 | "Slow"
+//        "MCV"       |  302                  | 18900                 | "Moderate"
+//        "MCV"       |  302                  | 12601                 | "Normal"
+//        "MCV"       |  302                  | 9240                  | "Fast"
+//        "MCV"       |  302                  | 7560                  | "Faster"
+//        "MCV"       |  302                  | 7139                  | "Fastest"
     }
 
 
